@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Gestión de Gastos - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/gastos.css">
+    <link rel="stylesheet" href="../css/gastos-actions-dropdown.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-building"></i>
+                <span>Gerencias De Condominio</span>
+            </div>
+            <div class="user-section">
+                <span class="user-name"></span>
+                <button class="volver-btn" onclick="volverDashboard()">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="cxp-main">
+        <div class="cxp-container">
+            <nav class="breadcrumb">
+                <a href="index.html" class="breadcrumb-link">
+                    <i class="fas fa-building"></i>
+                    Dashboard
+                </a>
+                <i class="fas fa-chevron-right"></i>
+                <span class="breadcrumb-current">Cuentas por pagar</span>
+            </nav>
+
+            <header class="cxp-page-header">
+                <div>
+                    <h1>Cuentas por pagar</h1>
+                    <p>Controla obligaciones, aprobaciones y pagos del condominio con trazabilidad completa.</p>
+                </div>
+                <div class="cxp-header-controls">
+                    <label for="cxpPeriodSelector">Periodo de gestión</label>
+                    <select id="cxpPeriodSelector" name="cxpPeriodSelector" style="min-width: 200px; padding: 0.6rem 1rem; border-radius: 0.5rem; border: 1px solid #dde3f1; font-size: 0.95rem;">
+                        <option value="">Cargando periodos...</option>
+                    </select>
+                </div>
+            </header>
+
+            <section class="cxp-actions" aria-label="Acciones rápidas">
+                <button type="button" class="btn btn-light" id="btnOpenProvider">
+                    <i class="fas fa-user-plus"></i>
+                    Nuevo proveedor
+                </button>
+                <button type="button" class="btn btn-light" id="btnOpenAccount">
+                    <i class="fas fa-folder-plus"></i>
+                    Nueva cuenta contable
+                </button>
+                <button type="button" class="btn btn-light" id="btnOpenAccountType">
+                    <i class="fas fa-tags"></i>
+                    Tipo de cuenta
+                </button>
+                <button type="button" class="btn btn-primary" id="btnOpenObligation">
+                    <i class="fas fa-file-invoice"></i>
+                    Registrar obligación
+                </button>
+                <button type="button" class="btn btn-light" id="btnOpenPayment">
+                    <i class="fas fa-dollar-sign"></i>
+                    Registrar pago
+                </button>
+                <button type="button" class="btn btn-success" id="btnGenerarRecibo">
+                    <i class="fas fa-file-pdf"></i>
+                    Generar recibo
+                </button>
+            </section>
+
+            <section class="cxp-summary" aria-label="Resumen ejecutivo cuentas por pagar">
+                <article class="summary-card">
+                    <h2>Pendiente por pagar</h2>
+                    <p class="summary-card__value summary-card__value--accent" id="kpiPendingAmount">$0.00</p>
+                    <p class="summary-card__meta"><span id="kpiPendingCount">0</span> obligaciones</p>
+                </article>
+                <article class="summary-card">
+                    <h2>Pagado</h2>
+                    <p class="summary-card__value summary-card__value--accent" id="kpiPaidAmount">$0.00</p>
+                    <p class="summary-card__meta"><span id="kpiPaidCount">0</span> pagos</p>
+                </article>
+            </section>
+
+            <section class="cxp-board">
+                <article class="cxp-card cxp-card--obligations cxp-card--wide">
+                    <header class="cxp-card__header">
+                        <div>
+                            <h2>Obligaciones del mes</h2>
+                            <p>Periodo: <strong id="currentPeriodLabel">-</strong> | Listado de facturas pendientes por proveedor y fecha de vencimiento.</p>
+                        </div>
+                        <div class="cxp-card__meta">
+                            <span>Total registrado: <strong id="obligationsTotal">$0.00</strong></span>
+                            <span>Vencen pronto: <strong id="obligationsDueSoon">0</strong></span>
+                        </div>
+                    </header>
+                    <div class="cxp-card__body">
+                        <table class="cxp-table">
+                            <thead>
+                                <tr>
+                                    <th>Factura</th>
+                                    <th>Proveedor</th>
+                                    <th>Concepto</th>
+                                    <th>Frecuencia</th>
+                                    <th>Vencimiento</th>
+                                    <th>Monto total</th>
+                                    <th>Pagado</th>
+                                    <th>Saldo</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="obligationsTableBody">
+                                <tr>
+                                    <td colspan="10" class="cxp-table__empty">No hay obligaciones registradas para este
+                                        mes.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <!-- Obligaciones Vencidas -->
+                <article class="cxp-card cxp-card--wide" id="overdueObligationsCard" style="display: none;">
+                    <header class="cxp-card__header">
+                        <div>
+                            <h2><i class="fas fa-exclamation-triangle"></i> Obligaciones vencidas</h2>
+                            <p>Pagos atrasados que requieren atención inmediata.</p>
+                        </div>
+                        <div class="cxp-card__stats">
+                            <span class="cxp-stat cxp-stat--danger">
+                                <strong id="overdueCount">0</strong>
+                                <small>Vencidas</small>
+                            </span>
+                            <span class="cxp-stat cxp-stat--danger">
+                                <strong id="overdueTotal">USD 0,00</strong>
+                                <small>Total adeudado</small>
+                            </span>
+                        </div>
+                    </header>
+                    <div class="cxp-card__body">
+                        <table class="cxp-table">
+                            <thead>
+                                <tr>
+                                    <th>Factura</th>
+                                    <th>Proveedor</th>
+                                    <th>Concepto</th>
+                                    <th>Vencimiento</th>
+                                    <th>Días vencidos</th>
+                                    <th>Monto total</th>
+                                    <th>Pagado</th>
+                                    <th>Saldo</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="overdueObligationsTableBody">
+                                <tr>
+                                    <td colspan="10" class="cxp-table__empty">No hay obligaciones vencidas.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </section>
+
+            <section class="cxp-panels">
+                <div class="cxp-tabs" role="tablist">
+                    <button class="cxp-tab active" type="button" data-tab="cxpHistoryPanel">
+                        <i class="fas fa-clipboard-list"></i>
+                        Historial de pagos
+                    </button>
+                    <button class="cxp-tab" type="button" data-tab="cxpReportsPanel">
+                        <i class="fas fa-chart-line"></i>
+                        Reportes
+                    </button>
+                    <button class="cxp-tab" type="button" data-tab="cxpAccountsPanel">
+                        <i class="fas fa-folder-open"></i>
+                        Cuentas contables
+                    </button>
+                    <button class="cxp-tab" type="button" data-tab="cxpProvidersPanel">
+                        <i class="fas fa-handshake"></i>
+                        Proveedores
+                    </button>
+                </div>
+
+                <div class="cxp-tab-panels">
+                    <section class="cxp-tab-panel active" id="cxpHistoryPanel">
+                        <header class="cxp-panel__header">
+                            <div>
+                                <h3>Historial de pagos</h3>
+                                <p>Detalle de desembolsos realizados por proveedor y método.</p>
+                            </div>
+                            <div class="cxp-panel__filters" style="display: flex; gap: 1rem; align-items: flex-end;">
+                                <div>
+                                    <label for="historyYearFilter">Año</label>
+                                    <select id="historyYearFilter" style="min-width: 100px;">
+                                        <option value="">Selecciona</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="historyMonthFilter">Mes</label>
+                                    <select id="historyMonthFilter" style="min-width: 120px;">
+                                        <option value="">Selecciona</option>
+                                        <option value="01">Enero</option>
+                                        <option value="02">Febrero</option>
+                                        <option value="03">Marzo</option>
+                                        <option value="04">Abril</option>
+                                        <option value="05">Mayo</option>
+                                        <option value="06">Junio</option>
+                                        <option value="07">Julio</option>
+                                        <option value="08">Agosto</option>
+                                        <option value="09">Septiembre</option>
+                                        <option value="10">Octubre</option>
+                                        <option value="11">Noviembre</option>
+                                        <option value="12">Diciembre</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-primary" id="btnBuscarHistorial" title="Buscar">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                                <button type="button" class="btn btn-success" id="btnExportPDF" title="Exportar a PDF">
+                                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                                </button>
+                            </div>
+                        </header>
+                        <div class="cxp-panel__body">
+                            <table class="cxp-table">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Proveedor</th>
+                                        <th>Documento</th>
+                                        <th>Método</th>
+                                        <th>Monto</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentsHistoryBody">
+                                    <tr>
+                                        <td colspan="6" class="cxp-table__empty">Aún no hay pagos registrados.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="cxp-tab-panel" id="cxpReportsPanel">
+                        <header class="cxp-panel__header">
+                            <div>
+                                <h3>Reportes y rendición</h3>
+                                <p>Resumen de egresos y obligaciones para presentación a la comunidad.</p>
+                            </div>
+                            <div class="cxp-panel__filters">
+                                <label for="reportRangeStart">Desde</label>
+                                <input type="date" id="reportRangeStart">
+                                <label for="reportRangeEnd">Hasta</label>
+                                <input type="date" id="reportRangeEnd">
+                                <button type="button" class="btn btn-light" id="btnGenerateReports">Generar</button>
+                            </div>
+                        </header>
+                        <div class="cxp-panel__body">
+                            <article class="report-card">
+                                <h4>Historial por proveedor</h4>
+                                <p class="report-card__meta">Pagos realizados al proveedor seleccionado.</p>
+                                <div class="report-card__controls">
+                                    <label for="reportProviderSelect">Proveedor</label>
+                                    <select id="reportProviderSelect">
+                                        <option value="">Selecciona un proveedor</option>
+                                    </select>
+                                </div>
+                                <table class="cxp-table" style="margin-top: 1rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Documento</th>
+                                            <th>Concepto</th>
+                                            <th>Método</th>
+                                            <th>Monto</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="reportProviderHistory">
+                                        <tr>
+                                            <td colspan="6" class="cxp-table__empty">Selecciona un proveedor para ver su
+                                                historial.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="cxp-tab-panel" id="cxpAccountsPanel">
+                        <header class="cxp-panel__header">
+                            <div>
+                                <h3>Catálogo de cuentas contables</h3>
+                                <p>Clasificación de gastos del condominio para control presupuestario.</p>
+                            </div>
+                        </header>
+                        <div class="cxp-panel__body">
+                            <table class="cxp-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Nombre de cuenta</th>
+                                        <th>Tipo de cuenta</th>
+                                        <th>Descripción</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="accountsTableBody">
+                                    <tr>
+                                        <td colspan="6" class="cxp-table__empty">No hay cuentas contables registradas.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="cxp-tab-panel" id="cxpProvidersPanel">
+                        <header class="cxp-panel__header">
+                            <div>
+                                <h3>Directorio de proveedores</h3>
+                                <p>Datos de contacto y cuentas bancarias registradas en el sistema.</p>
+                            </div>
+                        </header>
+                        <div class="cxp-panel__body">
+                            <table class="cxp-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre / Razón social</th>
+                                        <th>RIF</th>
+                                        <th>Contacto</th>
+                                        <th>Información bancaria</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="providersTableBody">
+                                    <tr>
+                                        <td colspan="5" class="cxp-table__empty">No hay proveedores registrados.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div class="cxp-modal" id="obligationModal" aria-hidden="true">
+        <div class="cxp-modal__backdrop" data-close-modal></div>
+        <div class="cxp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="obligationModalTitle">
+            <header class="cxp-modal__header">
+                <div style="flex: 1;">
+                    <h2 id="obligationModalTitle"><i class="fas fa-file-invoice"></i> Registrar obligación</h2>
+                    <p id="obligationEditIndicator" style="display: none; margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #f59e0b; font-weight: 500;">
+                        <i class="fas fa-edit"></i> Editando obligación existente
+                    </p>
+                </div>
+                <button type="button" class="cxp-modal__close" data-close-modal><i class="fas fa-times"></i></button>
+            </header>
+            <form id="obligationForm" class="cxp-modal__body" novalidate>
+                <div class="form-grid">
+                    <label class="form-field">
+                        <span>Proveedor</span>
+                        <select id="obligationProvider" name="obligationProvider" required></select>
+                    </label>
+                    <label class="form-field">
+                        <span>Cuenta contable</span>
+                        <select id="obligationAccount" name="obligationAccount" required>
+                            <option value="">Selecciona una cuenta</option>
+                        </select>
+                    </label>
+                    <label class="form-field">
+                        <span>N° factura / documento</span>
+                        <input type="text" id="obligationDocument" name="obligationDocument" maxlength="30" required>
+                    </label>
+                    <label class="form-field">
+                        <span>Fecha de emisión</span>
+                        <input type="text" id="obligationIssueDate" name="obligationIssueDate" data-date-picker
+                            placeholder="dd/mm/aaaa" required>
+                    </label>
+                    <label class="form-field">
+                        <span>Fecha de vencimiento</span>
+                        <input type="text" id="obligationDueDate" name="obligationDueDate" data-date-picker
+                            placeholder="dd/mm/aaaa" required>
+                    </label>
+                    <label class="form-field">
+                        <span>Monto total (USD)</span>
+                        <input type="number" id="obligationAmount" name="obligationAmount" min="0" step="0.01" required>
+                    </label>
+                    <label class="form-field">
+                        <span>Concepto / descripción</span>
+                        <textarea id="obligationConcept" name="obligationConcept" rows="3" maxlength="200"
+                            required></textarea>
+                    </label>
+                    <label class="form-field">
+                        <span>Aprobado por</span>
+                        <input type="text" id="obligationApprovedBy" name="obligationApprovedBy" maxlength="60">
+                    </label>
+                    <label class="form-field">
+                        <span>Fecha de aprobación</span>
+                        <input type="text" id="obligationApprovedDate" name="obligationApprovedDate" data-date-picker
+                            placeholder="dd/mm/aaaa">
+                    </label>
+                    <label class="form-field">
+                        <span>Frecuencia de pago</span>
+                        <select id="obligationFrequency" name="obligationFrequency" required>
+                            <option value="unico">Pago único</option>
+                            <option value="mensual">Mensual</option>
+                            <option value="bimensual">Bimensual</option>
+                            <option value="trimestral">Trimestral</option>
+                            <option value="anual">Anual</option>
+                        </select>
+                    </label>
+                </div>
+                <footer class="cxp-modal__footer">
+                    <button type="button" class="btn btn-light" data-close-modal>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <div class="cxp-modal" id="paymentModal" aria-hidden="true">
+        <div class="cxp-modal__backdrop" data-close-modal></div>
+        <div class="cxp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+            <header class="cxp-modal__header">
+                <h2 id="paymentModalTitle"><i class="fas fa-dollar-sign"></i> Registrar pago</h2>
+                <button type="button" class="cxp-modal__close" data-close-modal><i class="fas fa-times"></i></button>
+            </header>
+            <form id="paymentForm" class="cxp-modal__body" novalidate>
+                <div class="form-grid">
+                    <!-- Información del proveedor (visible cuando se abre desde una obligación) -->
+                    <div id="paymentProviderInfoContainer" style="grid-column: span 2; display: none; padding: 1rem; background: #f0f9ff; border-radius: 8px; margin-bottom: 1rem;">
+                        <p id="paymentProviderInfo" style="margin: 0; font-weight: 500; color: #1e40af;"></p>
+                    </div>
+                    
+                    <label class="form-field" id="paymentProviderField">
+                        <span>Proveedor</span>
+                        <select id="paymentProvider" name="paymentProvider" required></select>
+                    </label>
+                    <label class="form-field">
+                        <span>N° Documento</span>
+                        <input type="text" id="paymentDocumentNumber" name="paymentDocumentNumber" required
+                            placeholder="Número de documento" readonly>
+                    </label>
+                    <label class="form-field" id="paymentDocumentField" style="grid-column: span 2 !important;">
+                        <span>Obligación</span>
+                        <select id="paymentDocument" name="paymentDocument" required style="font-size: 0.95rem;">
+                            <option value="">Selecciona una obligación</option>
+                        </select>
+                        <input type="hidden" id="paymentObligacionId" name="paymentObligacionId">
+                    </label>
+                    <label class="form-field">
+                        <span>Fecha de pago</span>
+                        <input type="text" id="paymentDate" name="paymentDate" data-date-picker placeholder="dd/mm/aaaa"
+                            required>
+                    </label>
+                    <label class="form-field">
+                        <span>Monto pagado (USD)</span>
+                        <input type="number" id="paymentAmount" name="paymentAmount" min="0" step="0.01" required>
+                    </label>
+                    <label class="form-field">
+                        <span>Método de pago</span>
+                        <select id="paymentMethod" name="paymentMethod" required>
+                            <option value="">Selecciona método</option>
+                        </select>
+                    </label>
+                    <label class="form-field">
+                        <span>Banco receptor (Proveedor)</span>
+                        <select id="paymentBankReceiver" name="paymentBankReceiver" required>
+                            <option value="">Selecciona cuenta del proveedor</option>
+                        </select>
+                    </label>
+                    <label class="form-field">
+                        <span>Banco emisor (Condominio)</span>
+                        <select id="paymentBankIssuer" name="paymentBankIssuer" required>
+                            <option value="">Selecciona banco emisor</option>
+                        </select>
+                    </label>
+                    <label class="form-field">
+                        <span>N° Referencia</span>
+                        <input type="text" id="paymentReference" name="paymentReference"
+                            placeholder="Número de referencia" maxlength="50" required>
+                    </label>
+                    <label class="form-field">
+                        <span>Tasa de cambio (Bs/USD)</span>
+                        <input type="number" id="paymentRate" name="paymentRate" min="0" step="0.01"
+                            placeholder="Ej: 36.50">
+                    </label>
+                    <label class="form-field">
+                        <span>Registrado por</span>
+                        <input type="text" id="paymentRegisteredBy" name="paymentRegisteredBy" maxlength="60"
+                            placeholder="Nombre de quien registra" required>
+                    </label>
+                    <label class="form-field">
+                        <span>Comprobante de pago</span>
+                        <input type="file" id="paymentReceipt" name="paymentReceipt" accept="image/*,.pdf">
+                        <small style="color: #666; font-size: 0.85rem;">Imagen o PDF del comprobante</small>
+                    </label>
+                    <label class="form-field" style="grid-column: span 2;">
+                        <span>Notas</span>
+                        <textarea id="paymentNotes" name="paymentNotes" rows="3" maxlength="200"
+                            placeholder="Observaciones adicionales"></textarea>
+                    </label>
+                </div>
+                <footer class="cxp-modal__footer">
+                    <button type="button" class="btn btn-light" data-close-modal>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <div class="cxp-modal" id="paymentDetailModal" aria-hidden="true">
+        <div class="cxp-modal__backdrop" data-close-modal></div>
+        <div class="cxp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="paymentDetailModalTitle">
+            <header class="cxp-modal__header">
+                <h2 id="paymentDetailModalTitle"><i class="fas fa-file-invoice-dollar"></i> Detalles del pago</h2>
+                <button type="button" class="cxp-modal__close" data-close-modal><i class="fas fa-times"></i></button>
+            </header>
+            <div class="cxp-modal__body">
+                <div class="form-grid">
+                    <div class="form-field">
+                        <span>Proveedor</span>
+                        <p id="paymentDetailProvider" class="detail-value" style="font-weight: 500; margin: 0.5rem 0;">—
+                        </p>
+                    </div>
+                    <div class="form-field">
+                        <span>N° documento</span>
+                        <p id="paymentDetailDocument" class="detail-value" style="font-weight: 500; margin: 0.5rem 0;">—
+                        </p>
+                    </div>
+                    <div class="form-field" style="grid-column: span 2;">
+                        <span>Concepto</span>
+                        <p id="paymentDetailConcept" class="detail-value" style="font-weight: 500; margin: 0.5rem 0;">—
+                        </p>
+                    </div>
+                    <div class="form-field">
+                        <span>Fecha de pago</span>
+                        <p id="paymentDetailDate" class="detail-value" style="font-weight: 500; margin: 0.5rem 0;">—</p>
+                    </div>
+                    <div class="form-field">
+                        <span>Método</span>
+                        <p id="paymentDetailMethod" class="detail-value" style="font-weight: 500; margin: 0.5rem 0;">—
+                        </p>
+                    </div>
+                    <div class="form-field">
+                        <span>Estado</span>
+                        <p id="paymentDetailStatus" class="detail-value" style="font-weight: 500; margin: 0.5rem 0;">—
+                        </p>
+                    </div>
+                    <div class="form-field">
+                        <span>Monto pagado (USD)</span>
+                        <p id="paymentDetailAmountUsd" class="detail-value"
+                            style="font-weight: 500; margin: 0.5rem 0; color: #2563eb;">—</p>
+                    </div>
+                    <div class="form-field">
+                        <span>Monto pagado (Bs)</span>
+                        <p id="paymentDetailAmountBs" class="detail-value" style="font-weight: 500; margin: 0.5rem 0;">—
+                        </p>
+                    </div>
+                    <div class="form-field">
+                        <span>Tasa de cambio</span>
+                        <p id="paymentDetailRate" class="detail-value" style="font-weight: 500; margin: 0.5rem 0;">—</p>
+                    </div>
+                    <div class="form-field">
+                        <span>Banco emisor (Condominio)</span>
+                        <p id="paymentDetailBankIssuer" class="detail-value"
+                            style="font-weight: 500; margin: 0.5rem 0;">—</p>
+                    </div>
+                    <div class="form-field">
+                        <span>Banco receptor (Proveedor)</span>
+                        <p id="paymentDetailBankReceiver" class="detail-value"
+                            style="font-weight: 500; margin: 0.5rem 0;">—</p>
+                    </div>
+                    <div class="form-field">
+                        <span>N° referencia</span>
+                        <p id="paymentDetailReference" class="detail-value" style="font-weight: 500; margin: 0.5rem 0;">
+                            —</p>
+                    </div>
+                    <div class="form-field">
+                        <span>Registrado por</span>
+                        <p id="paymentDetailRegisteredBy" class="detail-value"
+                            style="font-weight: 500; margin: 0.5rem 0;">—</p>
+                    </div>
+                    <div class="form-field" style="grid-column: span 2;">
+                        <span>Notas</span>
+                        <p id="paymentDetailNotes" class="detail-value" style="font-weight: 500; margin: 0.5rem 0;">—
+                        </p>
+                    </div>
+                    <div class="form-field" style="grid-column: span 2;">
+                        <span>Comprobante</span>
+                        <p class="detail-value" style="margin: 0.5rem 0;">
+                            <a id="paymentDetailReceiptLink" href="#" target="_blank" rel="noopener"
+                                style="display:none; color: #2563eb; text-decoration: underline;">
+                                <i class="fas fa-file-pdf"></i> Ver comprobante
+                            </a>
+                            <span id="paymentDetailReceiptPlaceholder" style="color: #6b7280;">Sin comprobante
+                                adjunto</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <footer class="cxp-modal__footer">
+                <button type="button" class="btn btn-light" data-close-modal>Cerrar</button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="cxp-modal" id="accountModal" aria-hidden="true">
+        <div class="cxp-modal__backdrop" data-close-modal></div>
+        <div class="cxp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">
+            <header class="cxp-modal__header">
+                <h2 id="accountModalTitle"><i class="fas fa-folder-plus"></i> Registrar cuenta contable</h2>
+                <button type="button" class="cxp-modal__close" data-close-modal><i class="fas fa-times"></i></button>
+            </header>
+            <form id="accountForm" class="cxp-modal__body" novalidate>
+                <div class="form-grid">
+                    <label class="form-field">
+                        <span>Código de cuenta</span>
+                        <input type="text" id="accountCode" name="accountCode" maxlength="10" placeholder="Ej: 009"
+                            required>
+                        <small class="form-error" data-error-for="accountCode"></small>
+                    </label>
+                    <label class="form-field">
+                        <span>Nombre de la cuenta</span>
+                        <input type="text" id="accountName" name="accountName" maxlength="100" 
+                            required>
+                        <small class="form-error" data-error-for="accountName"></small>
+                    </label>
+                    <label class="form-field">
+                        <span>Tipo de cuenta</span>
+                        <select id="accountType" name="accountType" required>
+                            <option value="">Selecciona tipo</option>
+                        </select>
+                        <small class="form-error" data-error-for="accountType"></small>
+                    </label>
+                    <label class="form-field" style="grid-column: span 2;">
+                        <span>Descripción</span>
+                        <textarea id="accountDescription" name="accountDescription" rows="3" maxlength="200"
+                            placeholder="Descripción de la cuenta contable" required></textarea>
+                        <small class="form-error" data-error-for="accountDescription"></small>
+                    </label>
+                    <label class="form-field">
+                        <span>Estado</span>
+                        <select id="accountActive" name="accountActive" required>
+                            <option value="1">Activa</option>
+                            <option value="0">Inactiva</option>
+                        </select>
+                    </label>
+                </div>
+                <footer class="cxp-modal__footer">
+                    <button type="button" class="btn btn-light" data-close-modal>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <div class="cxp-modal" id="providerModal" aria-hidden="true">
+        <div class="cxp-modal__backdrop" data-close-modal></div>
+        <div class="cxp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="providerModalTitle">
+            <header class="cxp-modal__header">
+                <h2 id="providerModalTitle"><i class="fas fa-handshake"></i> Registrar proveedor</h2>
+                <button type="button" class="cxp-modal__close" data-close-modal data-close-provider><i
+                        class="fas fa-times"></i></button>
+            </header>
+            <form id="providerForm" class="cxp-modal__body" novalidate>
+                <div class="form-grid">
+                    <label class="form-field" style="grid-column: span 2;">
+                        <span>Nombre / Razón social</span>
+                        <input type="text" id="providerName" name="providerName" maxlength="100" required>
+                        <small class="form-error" data-error-for="providerName"></small>
+                    </label>
+                    <label class="form-field">
+                        <span>Tipo de documento</span>
+                        <select id="providerDocType" name="providerDocType" required>
+                            <option value="V">V - Venezolano</option>
+                            <option value="J" selected>J - Jurídico</option>
+                            <option value="E">E - Extranjero</option>
+                        </select>
+                        <small class="form-error" data-error-for="providerDocType"></small>
+                    </label>
+                    <label class="form-field">
+                        <span>Número de documento</span>
+                        <input type="text" id="providerTaxId" name="providerTaxId" maxlength="20"
+                            pattern="^[0-9]{6,20}$" placeholder="Ej: 123456789" required>
+                        <small class="form-error" data-error-for="providerTaxId"></small>
+                    </label>
+                    <label class="form-field">
+                        <span>Correo electrónico</span>
+                        <input type="email" id="providerEmail" name="providerEmail" maxlength="120"
+                            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required>
+                        <small class="form-error" data-error-for="providerEmail"></small>
+                    </label>
+                    <label class="form-field">
+                        <span>Teléfono</span>
+                        <input type="tel" id="providerPhone" name="providerPhone" minlength="11" maxlength="11"
+                            pattern="^[0-9]{11}$" inputmode="numeric" data-digit-only required>
+                        <small class="form-error" data-error-for="providerPhone"></small>
+                    </label>
+                    <label class="form-field">
+                        <span>Banco</span>
+                        <select id="providerBank" name="providerBank" required>
+                            <option value="">Selecciona un banco</option>
+                        </select>
+                        <small class="form-error" data-error-for="providerBank"></small>
+                    </label>
+
+                    <label class="form-field">
+                        <span>Número de cuenta</span>
+                        <input type="text" id="providerAccountNumber" name="providerAccountNumber" maxlength="20"
+                            placeholder="Ej: 01020123456789012345" required>
+                        <small class="form-error" data-error-for="providerAccountNumber"></small>
+                    </label>
+                    <label class="form-field">
+                        <span>Titular de la cuenta</span>
+                        <input type="text" id="providerAccountHolder" name="providerAccountHolder" maxlength="100"
+                            placeholder="Nombre del titular" required>
+                        <small class="form-error" data-error-for="providerAccountHolder"></small>
+                    </label>
+                    <label class="form-field" style="grid-column: span 2;">
+                        <span>Notas</span>
+                        <textarea id="providerNotes" name="providerNotes" rows="3" maxlength="200"></textarea>
+                        <small class="form-error" data-error-for="providerNotes"></small>
+                    </label>
+                </div>
+                <footer class="cxp-modal__footer">
+                    <button type="button" class="btn btn-light" data-close-modal data-close-provider>Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Generar Recibo -->
+    <div id="reciboModal" class="cxp-modal">
+        <div class="cxp-modal__dialog" style="max-width: 500px;">
+            <header class="cxp-modal__header">
+                <h2 id="reciboModalTitle">Generar Recibo de Condominio</h2>
+                <button type="button" class="cxp-modal__close" data-close-modal aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </header>
+            <form id="reciboForm" class="cxp-modal__body">
+                <div class="form-grid">
+                    <label class="form-field" style="grid-column: span 2;">
+                        <span>Apartamento *</span>
+                        <select id="reciboApartamento" name="reciboApartamento" required>
+                            <option value="">Selecciona un apartamento</option>
+                        </select>
+                        <small class="form-error" data-error-for="reciboApartamento"></small>
+                    </label>
+                    <label class="form-field" style="grid-column: span 2;">
+                        <span>Fecha del recibo *</span>
+                        <input type="date" id="reciboFecha" name="reciboFecha" required>
+                        <small class="form-error" data-error-for="reciboFecha"></small>
+                    </label>
+                </div>
+                <footer class="cxp-modal__footer">
+                    <button type="button" class="btn btn-light" data-close-modal>Cancelar</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-file-pdf"></i>
+                        Generar PDF
+                    </button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <div class="cxp-modal" id="accountTypeModal" aria-hidden="true">
+        <div class="cxp-modal__backdrop" data-close-modal></div>
+        <div class="cxp-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="accountTypeModalTitle">
+            <header class="cxp-modal__header">
+                <h2 id="accountTypeModalTitle"><i class="fas fa-tags"></i> Gestionar tipos de cuenta contable</h2>
+                <button type="button" class="cxp-modal__close" data-close-modal><i class="fas fa-times"></i></button>
+            </header>
+            <div class="cxp-modal__body">
+                <form id="accountTypeForm" class="form-grid" novalidate style="margin-bottom: 2rem;">
+                    <label class="form-field">
+                        <span>Nombre del tipo</span>
+                        <input type="text" id="accountTypeName" name="accountTypeName" maxlength="20" 
+                            placeholder="Ej: gasto_fijo" required>
+                        <small class="form-error" data-error-for="accountTypeName"></small>
+                    </label>
+                    <label class="form-field">
+                        <span>Categoría de balance</span>
+                        <select id="accountTypeCategory" name="accountTypeCategory" required>
+                            <option value="">Selecciona categoría</option>
+                        </select>
+                        <small class="form-error" data-error-for="accountTypeCategory"></small>
+                    </label>
+                    <div style="grid-column: span 2; display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn-light" id="btnCancelAccountType">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar tipo</button>
+                    </div>
+                </form>
+                
+                <div class="cxp-table-wrapper">
+                    <table class="cxp-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Categoría Balance</th>
+                                <th>Naturaleza Saldo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accountTypeTableBody">
+                            <tr>
+                                <td colspan="4" class="cxp-table__empty">Cargando tipos de cuenta...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <footer class="cxp-modal__footer">
+                <button type="button" class="btn btn-light" data-close-modal>Cerrar</button>
+            </footer>
+        </div>
+    </div>
+
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script src="../js/main.js?v=3.0"></script>
+    <script src="../js/gastos-db.js?v=2.1"></script>
+    <script src="../js/totalGasto.js"></script>
+</body>
+
+</html>

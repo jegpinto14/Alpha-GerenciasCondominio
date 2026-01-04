@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Pagos Extraordinarios - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/pagos-extraordinarios.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-building"></i>
+                <span>Gerencias De Condominio</span>
+            </div>
+            <div class="user-section">
+                <span class="user-name"></span>
+                <button class="volver-btn" onclick="volverDashboard()">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="index.html" class="breadcrumb-link">
+                <i class="fas fa-building"></i>
+                Dashboard
+            </a>
+            <i class="fas fa-chevron-right"></i>
+            <span class="breadcrumb-current">Pagos extraordinarios</span>
+        </nav>
+
+        <section class="page-header">
+            <h1>Pagos Extraordinarios</h1>
+            <p>Crea, edita y controla los productos de pagos especiales que ofrece la comunidad.</p>
+        </section>
+
+        <section class="actions-section">
+            <div class="actions-summary">
+                <div class="summary-card">
+                    <div class="summary-icon active">
+                        <i class="fas fa-toggle-on"></i>
+                    </div>
+                    <div>
+                        <p class="summary-label">Activos</p>
+                        <p class="summary-value" id="productosActivos">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon inactive">
+                        <i class="fas fa-toggle-off"></i>
+                    </div>
+                    <div>
+                        <p class="summary-label">Inactivos</p>
+                        <p class="summary-value" id="productosInactivos">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon total">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div>
+                        <p class="summary-label">Total productos</p>
+                        <p class="summary-value" id="productosTotal">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon sales">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <p class="summary-label">Compras totales</p>
+                        <p class="summary-value" id="productosCompras">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="actions-toolbar">
+                <div class="filter-group">
+                    <label for="filtroEstadoProductos"><i class="fas fa-filter"></i> Estado</label>
+                    <select id="filtroEstadoProductos">
+                        <option value="todos">Todos</option>
+                        <option value="activo">Activos</option>
+                        <option value="inactivo">Inactivos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="busquedaProductos"><i class="fas fa-search"></i> Buscar</label>
+                    <input type="text" id="busquedaProductos" placeholder="Busca por nombre o categoría">
+                </div>
+                <button class="btn-primary" id="btnNuevoProducto">
+                    <i class="fas fa-plus"></i>
+                    Nuevo producto
+                </button>
+            </div>
+        </section>
+
+        <section class="productos-section">
+            <div class="productos-card">
+                <div class="productos-header">
+                    <h2><i class="fas fa-gem"></i> Productos extraordinarios</h2>
+                    <span class="badge" id="productosBadge">Mostrando todos</span>
+                </div>
+                <div class="productos-wrapper" id="productosWrapper">
+                    <!-- Items renderizados dinámicamente -->
+                </div>
+                <div class="empty-state" id="productosEmptyState" style="display:none;">
+                    <i class="fas fa-box-open"></i>
+                    <h3>No hay productos</h3>
+                    <p>No se encontraron productos con los filtros aplicados.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal crear/editar producto -->
+    <div class="modal" id="productoModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close="modal"></div>
+        <div class="modal-dialog" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="productoModalTitulo"><i class="fas fa-gem"></i> Nuevo producto</h3>
+                <button class="modal-close" id="cerrarProductoModal" type="button" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="productoForm">
+                    <input type="hidden" id="productoId">
+                    <input type="hidden" id="productoImagenActual">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="productoNombre">Nombre del producto</label>
+                            <input type="text" id="productoNombre" maxlength="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productoFecha">Fecha</label>
+                            <input type="text" id="productoFecha" lang="es-VE" placeholder="dd/mm/aaaa" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="productoImagen">Imagen del producto</label>
+                            <div class="upload-control">
+                                <div class="upload-display">
+                                    <div class="upload-text">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <div>
+                                            <strong>Haz clic para seleccionar</strong>
+                                            <span id="productoImagenNombre">Ningún archivo seleccionado</span>
+                                        </div>
+                                    </div>
+                                    <i class="fas fa-folder-open"></i>
+                                </div>
+                                <input type="file" id="productoImagen" accept="image/*">
+                            </div>
+                            <div class="upload-hint">Formatos aceptados: JPG, PNG, WEBP (máx. 2 MB)</div>
+                        </div>
+                        <div class="form-group preview-only" id="productoPreview" hidden>
+                            <div class="preview-content solo-imagen">
+                                <img src="" alt="Imagen seleccionada" id="productoPreviewImg">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="productoPrecio">Precio (USD)</label>
+                            <input type="number" id="productoPrecio" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productoEstado">Estado</label>
+                            <select id="productoEstado">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="productoDescripcion">Descripción</label>
+                        <textarea id="productoDescripcion" rows="4" placeholder="Describe el pago extraordinario y su finalidad"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancelarProducto">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i>
+                            Guardar producto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal confirmación eliminar -->
+    <div class="modal" id="eliminarProductoModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close="modal"></div>
+        <div class="modal-dialog" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3><i class="fas fa-trash"></i> Eliminar producto</h3>
+                <button class="modal-close" id="cerrarEliminarProducto" type="button" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="eliminarProductoMensaje">¿Estás seguro de eliminar este producto extraordinario?</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelarEliminarProducto">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn-danger" id="confirmarEliminarProducto">
+                        <i class="fas fa-trash"></i>
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/pagos-extraordinarios.js"></script>
+</body>
+</html>

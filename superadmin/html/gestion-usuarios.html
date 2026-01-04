@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Gestión de Usuarios - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/usuarios.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-building"></i>
+                <span>Gerencias De Condominio</span>
+            </div>
+            <div class="user-section">
+                <span class="user-name"></span>
+                <button class="volver-btn" onclick="volverDashboard()">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="index.html" class="breadcrumb-link">
+                <i class="fas fa-building"></i>
+                Dashboard
+            </a>
+            <i class="fas fa-chevron-right"></i>
+            <span class="breadcrumb-current">Gestión de Usuarios</span>
+        </nav>
+
+        <!-- Page Title -->
+        <section class="page-header">
+            <h1>Gestión de Usuarios</h1>
+            <p>Crea y administra usuarios del sistema con roles de administrador</p>
+        </section>
+
+        <!-- Create User Section -->
+        <section class="create-user-section">
+            <div class="create-user-card">
+                <h2>Crear Nuevo Usuario</h2>
+                <form class="user-form" id="userForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="username">
+                                <i class="fas fa-user"></i>
+                                Nombre de Usuario
+                            </label>
+                            <input type="text" 
+                                   id="username" 
+                                   name="username"
+                                   placeholder="Ingresa el nombre de usuario"
+                                   maxlength="10"
+                                   minlength="3"
+                                   pattern="[a-zA-Z0-9_]+"
+                                   title="Solo letras, números y guiones bajos. Máximo 10 caracteres"
+                                   required>
+                            <small class="input-help">Máximo 10 caracteres. Solo letras, números y _</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">
+                                <i class="fas fa-lock"></i>
+                                Contraseña
+                            </label>
+                            <input type="password" 
+                                   id="password" 
+                                   name="password"
+                                   placeholder="Ingresa la contraseña"
+                                   minlength="7"
+                                   maxlength="12"
+                                   title="Entre 7 y 12 caracteres"
+                                   required>
+                            <small class="input-help">Entre 7 y 12 caracteres</small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="confirmPassword">
+                                <i class="fas fa-lock"></i>
+                                Confirmar Contraseña
+                            </label>
+                            <input type="password" 
+                                   id="confirmPassword" 
+                                   name="confirmPassword"
+                                   placeholder="Confirma la contraseña"
+                                   minlength="7"
+                                   maxlength="12"
+                                   title="Debe coincidir con la contraseña"
+                                   required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rol">
+                                <i class="fas fa-user-tag"></i>
+                                Rol del Usuario
+                            </label>
+                            <select id="rol" name="rol" required>
+                                <option value="">Selecciona un rol</option>
+                                <option value="1">Superadmin</option>
+                                <option value="2">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="limpiarFormulario()">
+                            <i class="fas fa-times"></i>
+                            Limpiar
+                        </button>
+                        <button type="submit" class="btn-create">
+                            <i class="fas fa-user-plus"></i>
+                            Crear Usuario
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Users List Section -->
+        <section class="users-list-section">
+            <div class="users-list-card">
+                <div class="list-header">
+                    <h2>Usuarios del Sistema</h2>
+                    <button class="btn-refresh" onclick="cargarUsuarios()">
+                        <i class="fas fa-sync-alt"></i>
+                        Actualizar
+                    </button>
+                </div>
+                
+                <div class="users-table-container">
+                    <table class="users-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Fecha Creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Los usuarios se cargarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+            <div class="spinner"></div>
+            <p>Procesando...</p>
+        </div>
+    </main>
+
+    <!-- Modal de Edición de Usuario -->
+    <div class="modal-overlay" id="editUserModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Usuario</h3>
+                <button class="modal-close" onclick="cerrarModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form class="modal-form" id="editUserForm">
+                <input type="hidden" id="editUserId" name="userId">
+                
+                <div class="form-group">
+                    <label for="editUsername">
+                        <i class="fas fa-user"></i>
+                        Nombre de Usuario
+                    </label>
+                    <input type="text" 
+                           id="editUsername" 
+                           name="username"
+                           placeholder="Ingresa el nombre de usuario"
+                           maxlength="10"
+                           minlength="3"
+                           pattern="[a-zA-Z0-9_]+"
+                           title="Solo letras, números y guiones bajos. Máximo 10 caracteres"
+                           required>
+                    <small class="input-help">Máximo 10 caracteres. Solo letras, números y _</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="editRol">
+                        <i class="fas fa-user-tag"></i>
+                        Rol del Usuario
+                    </label>
+                    <select id="editRol" name="rol" required>
+                        <option value="">Selecciona un rol</option>
+                        <option value="1">Superadmin</option>
+                        <option value="2">Admin</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editPassword">
+                        <i class="fas fa-lock"></i>
+                        Nueva Contraseña (opcional)
+                    </label>
+                    <input type="password" 
+                           id="editPassword" 
+                           name="password"
+                           placeholder="Deja vacío para mantener la actual"
+                           minlength="7"
+                           maxlength="12"
+                           title="Entre 7 y 12 caracteres">
+                    <small class="input-help">Deja vacío para mantener la contraseña actual</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="editConfirmPassword">
+                        <i class="fas fa-lock"></i>
+                        Confirmar Nueva Contraseña
+                    </label>
+                    <input type="password" 
+                           id="editConfirmPassword" 
+                           name="confirmPassword"
+                           placeholder="Confirma la nueva contraseña"
+                           minlength="7"
+                           maxlength="12">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="cerrarModal()">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i>
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/usuarios.js"></script>
+</body>
+</html>

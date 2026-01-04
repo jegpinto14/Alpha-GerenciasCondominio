@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes de Pagos - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/reportes.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Diseño completamente renovado con mejor UX y estructura moderna -->
+    <div class="dashboard-container">
+        <header class="navbar">
+            <div class="navbar-content">
+                <h1><i class="fas fa-building"></i> Gerencias De Condominio</h1>
+                <div class="housing-selector">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="housing-selector-text">
+                        <span class="housing-selector-label">Vivienda activa</span>
+                        <span class="housing-selector-value" id="reportHousingDisplay">Sin vivienda seleccionada</span>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <span id="userName">Usuario</span>
+                    <button onclick="goBack()" class="logout-btn">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Hero Section -->
+            <div class="page-hero">
+                <div class="hero-content">
+                    <div class="hero-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h2>Reportes de Pagos</h2>
+                    <p>Genera reportes detallados de tu historial de pagos por rango de fechas</p>
+                </div>
+            </div>
+
+            <!-- Panel de Filtros Mejorado -->
+            <div class="filters-panel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-filter"></i> Configurar Reporte</h3>
+                    <p>Selecciona el año para generar tu reporte personalizado</p>
+                </div>
+                <div class="filters-content">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="yearSelect">
+                                <i class="fas fa-calendar-alt"></i>
+                                Año del Reporte
+                            </label>
+                            <select id="yearSelect" name="yearSelect" required>
+                                <option value="">Seleccionar Año</option>
+                                <option value="2025" selected>2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button onclick="generateReport()" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                            <span>Generar Reporte</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resultados del Reporte -->
+            <div id="reportResults" class="report-results" style="display: none;">
+                <div class="panel-header">
+                    <h3><i class="fas fa-file-alt"></i> Resultados del Reporte</h3>
+                </div>
+                <div class="results-content">
+                    <div id="reportContent" class="report-data"></div>
+                </div>
+                <div class="form-actions">
+                    <button onclick="downloadReport()" class="btn btn-success">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Descargar PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+          
+        </div>
+    </div>
+
+    <!-- Date Picker Modal -->
+    <div id="datePickerModal" class="date-picker-modal" style="display: none;">
+        <div class="date-picker-content">
+            <div class="date-picker-header">
+                <h3>Seleccionar Fecha</h3>
+                <button type="button" class="close-btn" onclick="closeDatePicker()">&times;</button>
+            </div>
+            <div class="date-picker-body">
+                <div class="date-picker-nav">
+                    <button type="button" onclick="changeMonth(-1)">&lt;</button>
+                    <span id="currentMonthYear"></span>
+                    <button type="button" onclick="changeMonth(1)">&gt;</button>
+                </div>
+                <div class="date-picker-calendar">
+                    <div class="calendar-header">
+                        <div>Dom</div>
+                        <div>Lun</div>
+                        <div>Mar</div>
+                        <div>Mié</div>
+                        <div>Jue</div>
+                        <div>Vie</div>
+                        <div>Sáb</div>
+                    </div>
+                    <div id="calendarDays" class="calendar-days"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/navigation-protection.js"></script>
+    <script src="../../assets/js/reportes.js"></script>
+</body>
+</html>

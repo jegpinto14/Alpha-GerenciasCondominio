@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Pagos - Arcorui</title>
+    <link rel="stylesheet" href="../css/pagos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                <a href="../html/index.html" class="breadcrumb-link">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-current">Registro de Pagos</span>
+            </div>
+            <div class="header-actions">
+                <button id="volverDashboard" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1><i class="fas fa-money-bill-wave"></i> Registro de Pagos Mensuales</h1>
+                <p>Registre los pagos mensuales de las viviendas de la comunidad</p>
+            </div>
+
+            <!-- Formulario de Pago -->
+            <div class="payment-form">
+                <form id="paymentForm" enctype="multipart/form-data">
+                    <!-- Selección de Propietario/Inmueble -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-home"></i> Seleccionar Vivienda</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="propietarioSelect">Propietario:</label>
+                                <select id="propietarioSelect" name="propietario_id" required>
+                                    <option value="">Seleccione un propietario...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="inmuebleSelect">Inmueble:</label>
+                                <select id="inmuebleSelect" name="inmueble_id" required>
+                                    <option value="">Seleccione un inmueble...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="periodoSelect">Período:</label>
+                                <select id="periodoSelect" name="periodo_id" required>
+                                    <option value="">Seleccione un período...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información del Pago -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-credit-card"></i> Información del Pago</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="metodoPagoSelect">Método de Pago:</label>
+                                <select id="metodoPagoSelect" name="metodo_id" required>
+                                    <option value="">Seleccione método de pago...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="montoUSD">Monto USD:</label>
+                                <input type="number" id="montoUSD" name="monto_usd" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tasaCambio">Tasa de Cambio:</label>
+                                <select id="tasaCambio" name="tasa_id" required>
+                                    <option value="">Seleccione tasa...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="montoBs">Monto Bs:</label>
+                                <input type="number" id="montoBs" name="monto_bs" step="0.01" min="0" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="montoPagado">Monto Pagado (Bs):</label>
+                                <input type="number" id="montoPagado" name="monto_pagado" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bancoEmisor">Banco Emisor:</label>
+                                <select id="bancoEmisor" name="banco_emisor_id">
+                                    <option value="">Seleccione banco emisor...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bancoReceptor">Banco Receptor:</label>
+                                <select id="bancoReceptor" name="banco_receptor_id">
+                                    <option value="">Seleccione banco receptor...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="comprobante">Comprobante:</label>
+                                <input type="file" id="comprobante" name="comprobante" accept="image/*,.pdf">
+                            </div>
+                            <div class="form-group">
+                                <label for="estadoPago">Estado:</label>
+                                <select id="estadoPago" name="estado" required>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Confirmado">Confirmado</option>
+                                    <option value="Rechazado">Rechazado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Registrar Pago
+                        </button>
+                        <button type="reset" class="btn-secondary">
+                            <i class="fas fa-times"></i> Limpiar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Estado del Pago -->
+            <div class="payment-status" id="paymentStatus" style="display: none;">
+                <h3>Estado del Pago Registrado</h3>
+                <div id="statusContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+    <script src="pagos.js"></script>
+</body>
+</html>

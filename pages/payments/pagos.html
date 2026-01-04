@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagar Mensualidades - Gerencias De Condominio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/pagos.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay active">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Cargando información de pagos...</p>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <h1><i class="fas fa-building"></i> Gerencias De Condominio</h1>
+                <div class="housing-selector">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="housing-selector-text">
+                        <span class="housing-selector-label">Vivienda activa</span>
+                        <span class="housing-selector-value" id="paymentsHousingDisplay">Sin vivienda
+                            seleccionada</span>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <span id="userName">Usuario</span>
+                    <button class="logout-btn" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h2>Pagar Mensualidades</h2>
+                <p>Selecciona los meses que deseas pagar de manera fácil y segura.</p>
+            </div>
+
+            <!-- Payment Content -->
+            <div class="payment-content">
+                <!-- Payment Options -->
+                <div class="payment-options">
+                    <div class="payment-option active" onclick="selectPaymentType('mensualidad')">
+                        <h4><i class="fas fa-calendar"></i> Mensualidades</h4>
+                        <p>Pagar meses pendientes</p>
+                    </div>
+                    <div class="payment-option" onclick="selectPaymentType('deuda_acumulada')">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Deuda Acumulada</h4>
+                        <p>Pagar deuda de años anteriores</p>
+                    </div>
+                </div>
+
+                <!-- Formulario de Mensualidades -->
+                <div id="mensualidadForm" style="display: block;">
+                    <!-- Selector de Año -->
+                    <div class="year-selector-card">
+                        <div class="year-selector">
+                            <label for="yearSelect">Año:</label>
+                            <select id="yearSelect" onchange="filterByYear()">
+                                <option value="2025">2025</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Grid de Meses -->
+                    <div class="months-container">
+                        <div id="monthsGrid" class="months-grid" style="display: none;"></div>
+                    </div>
+
+                </div>
+
+                <!-- Formulario de Deuda Acumulada -->
+                <div id="deudaAcumuladaForm" style="display: none;">
+                    <div class="deuda-info-card">
+                        <div class="deuda-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Deuda Acumulada</h3>
+                            <p>Pago de deudas pendientes de años anteriores</p>
+                        </div>
+
+                        <div class="deuda-details">
+                            <div class="deuda-amount">
+                                <div class="amount-item">
+                                    <span class="amount-label">Total en Bolívares:</span>
+                                    <span id="deudaTotalBs" class="amount-value">0 Bs</span>
+                                </div>
+                                <div class="amount-item">
+                                    <span class="amount-label">Total en Dólares:</span>
+                                    <span id="deudaTotalUsd" class="amount-value">$0 USD</span>
+                                </div>
+                            </div>
+
+                            <div class="deuda-description">
+                                <p><i class="fas fa-info-circle"></i> Esta deuda incluye todos los meses impagos de años
+                                    anteriores.</p>
+                            </div>
+
+                            <!-- Formulario de Pago Personalizado -->
+                            <div class="custom-payment-form">
+
+
+                                <div class="deuda-actions"
+                                    style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+                                    <button id="payCustomDebtBtn" class="btn-premium btn-premium-red"
+                                        onclick="payCustomDebt()" style="
+                                    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+                                    color: white;
+                                    border: none;
+                                    padding: 18px 35px;
+                                    font-size: 1.2rem;
+                                    font-weight: bold;
+                                    border-radius: 12px;
+                                    cursor: pointer;
+                                    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5);
+                                    transition: all 0.3s ease;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 12px;
+                                    min-width: 200px;
+                                    justify-content: center;
+                                " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 25px rgba(220, 53, 69, 0.6)'"
+                                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 6px 20px rgba(220, 53, 69, 0.5)'">
+                                        <i class="fas fa-credit-card"></i> PAGAR
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Botones de Navegación -->
+            <div class="page-actions">
+                <button id="nextButton" class="btn-premium" onclick="proceedToPaymentProcessing()">
+                    <i class="fas fa-arrow-right"></i> Pagar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Monto Personalizado -->
+    <div id="customAmountModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-dollar-sign"></i> Ingresa el Monto a Pagar</h3>
+                <button class="close-btn" onclick="closeCustomAmountModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="custom-amount-container">
+                    <div class="amount-info">
+                        <p class="info-text">
+                            <i class="fas fa-info-circle"></i>
+                            Monto total calculado basado en los meses seleccionados
+                        </p>
+                        <div class="calculated-total">
+                            <span class="label">Monto Sugerido:</span>
+                            <span id="suggestedAmount" class="amount">0 Bs</span>
+                        </div>
+                    </div>
+
+                    <div class="custom-input-section">
+                        <label for="customPaymentAmount">Ingresa el monto que deseas pagar:</label>
+                        <div class="amount-input-wrapper">
+                            <input type="number" id="customPaymentAmount" placeholder="0.00" min="0" step="0.01">
+                            <span id="currencyLabel" class="currency">Bs</span>
+                        </div>
+                        <small class="help-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Puedes pagar el monto completo o un monto parcial
+                        </small>
+                        <div class="partial-payment-example">
+                            <strong>Ejemplo de pago parcial:</strong>
+                            <p>Si seleccionaste Enero y Febrero (100 Bs) pero solo pagas 80 Bs:</p>
+                            <p>✅ Enero se pagará completo (50 Bs)</p>
+                            <p>⚠️ Febrero se pagará parcial (30 Bs de 50 Bs)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button onclick="closeCustomAmountModal()" class="btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button onclick="confirmCustomAmount()" class="btn-primary">
+                        <i class="fas fa-check"></i> Continuar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Resumen de Selección -->
+    <div id="summaryModal" class="modal" style="display: inline-block;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-list"></i> Resumen de Selección</h3>
+                <span class="close" onclick="closeSummaryModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="summary-content">
+                    <div class="selected-months">
+                        <h4>Meses Seleccionados</h4>
+                        <div id="selectedMonthsList" class="selected-list"></div>
+                    </div>
+                    <div class="payment-method">
+                        <label for="summaryPaymentMethod">Método de Pago</label>
+                        <select id="summaryPaymentMethod" name="paymentMethod">
+                            <option value="bs">Bolívares (Bs)</option>
+                        </select>
+                    </div>
+                    <div class="total-section">
+                        <div class="total-amount">
+                            <span class="total-label">Total a Pagar:</span>
+                            <span id="summaryTotalAmount" class="total-value">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="summary-actions">
+                    <button onclick="showPaymentMethods()" class="btn-summary-action btn-summary-process"
+                        id="summaryProcessBtn" disabled>
+                        <i class="fas fa-credit-card"></i> Procesar Pago
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Selección de Método de Pago -->
+    <div id="paymentMethodModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-credit-card"></i> Seleccionar Método de Pago</h3>
+                <button class="close-btn" onclick="closePaymentMethodModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="paymentMethodsGrid" class="payment-methods-grid">
+                    <!-- Los métodos de pago se cargarán dinámicamente aquí -->
+                    <div class="loading-methods">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando métodos de pago...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Información de Pago -->
+    <div id="paymentInfoModal" class="modal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> Información de Pago</h3>
+                <button class="close-btn" onclick="closePaymentInfoModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-info-section">
+                    <div class="payment-details">
+                        <h4>Datos para el Pago</h4>
+                        <div id="paymentDetails" class="payment-details-content">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                    <div class="total-info">
+                        <h4>Monto Total</h4>
+                        <div class="total-display">
+                            <span id="modalTotalAmount" class="total-amount">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button onclick="showPaymentForm()" class="btn-primary">
+                        <i class="fas fa-arrow-right"></i> Continuar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Formulario de Registro de Pago -->
+    <div id="paymentFormModal" class="modal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Registrar Pago</h3>
+                <button class="close-btn" onclick="closePaymentFormModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentRegistrationForm" class="payment-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phoneNumber">Número de Teléfono *</label>
+                            <input type="tel" id="phoneNumber" name="phoneNumber" required
+                                placeholder="Ej: 0412-1234567">
+                        </div>
+                        <div class="form-group">
+                            <label for="cedula">Cédula *</label>
+                            <input type="text" id="cedula" name="cedula" required placeholder="Ej: V-12345678">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="banco">Banco *</label>
+                            <select id="banco" name="banco" required>
+                                <option value="">Cargando bancos...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="referencia">Número de Referencia *</label>
+                            <input type="text" id="referencia" name="referencia" required
+                                placeholder="Número de referencia del pago">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="comprobante">Foto del Comprobante *</label>
+                        <div class="file-upload-container">
+                            <input type="file" id="comprobante" name="comprobante" accept="image/*" required>
+                            <div class="file-upload-display">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Haz clic para seleccionar una imagen</span>
+                            </div>
+                        </div>
+                        <div id="imagePreview" class="image-preview" style="display: none;">
+                            <img id="previewImg" src="" alt="Vista previa">
+                            <button type="button" onclick="removeImage()" class="remove-image-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" onclick="closePaymentFormModal()" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-check"></i> Registrar Pago
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Verificando -->
+    <div id="verifyingModal" class="modal" style="display: none;">
+        <div class="modal-content success">
+            <div class="success-content">
+                <div class="verifying-icon">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <h3>Verificando Pago...</h3>
+                <p>Tu pago está siendo procesado. Por favor espera un momento.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content success">
+            <div class="success-content">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>¡Pago Registrado!</h3>
+                <p>Tu pago ha sido registrado correctamente.</p>
+                <button onclick="closeSuccessModal()" class="btn-success-continue">
+                    <i class="fas fa-check"></i> Continuar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/navigation-protection.js"></script>
+
+    <script src="../../assets/js/pagos.js"></script>
+</body>
+
+</html>

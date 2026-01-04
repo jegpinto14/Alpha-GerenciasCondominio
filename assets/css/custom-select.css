@@ -1,0 +1,104 @@
+:root {
+  color-scheme: light;
+  --color-primary: #1A3A4A;
+  --color-secondary: #B8C2C8;
+  --color-accent: #C4A98B;
+  --color-background: #F8F9FA;
+  --color-text-body: #1A3A4A;
+  --color-text-inverse: #F8F9FA;
+  --white: #FFFFFF;
+  --border-color: rgba(26, 58, 74, 0.3);
+  --border-color-cards: 1px solid rgba(26, 58, 74, 0.1);
+}
+
+select,
+::picker(select) {
+  appearance: base-select;
+}
+/* estilos para el select */
+select {
+  background-color: var(--color-background);
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(26, 58, 74, 0.1);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  /* min-width: 17rem; */
+}
+/* estilos para el arrow */
+
+select::picker-icon {
+  content: '';
+  background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='%231A3A4A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  transition: 0.4s transform;
+}
+
+select:hover {
+  border-color: var(--border-color);
+}
+
+select:open {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(26, 58, 74, 0.1);
+}
+
+select:open::picker-icon {
+  transform: rotate(180deg);
+}
+
+/* estilos para el picker */
+::picker(select) {
+margin-top: 0.5rem;
+max-height: 250px;
+box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+border-radius: 8px;
+border: var(--border-color-cards);
+opacity: 0;
+transition: all 0.4s allow-discrete;
+top: calc(anchor(bottom) + 1px);
+}
+
+select option {
+  padding: 0.875rem 1rem;
+  font-size: 0.9375rem;
+  transition: all 0.15s ease;
+}
+
+select option:hover {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  padding-left: 1.25rem;
+}
+
+select option:checked {
+    color: var(--color-primary);
+    font-weight: 600;
+    background-color: var(--color-secondary);
+}
+
+select option::checkmark {
+  content: "";
+}
+
+option:not(:last-of-type) {
+  border-bottom: 1px solid rgba(26, 58, 74, 0.05);
+}
+
+/* Animating the picker using popover states */
+
+::picker(select):popover-open {
+  opacity: 1;
+}
+
+@starting-style {
+  ::picker(select):popover-open {
+    opacity: 0;
+  }
+}

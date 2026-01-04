@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gerencias De Condominio</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/tienda.css">
+    <link rel="stylesheet" href="../../assets/css/gastos_extraordinarios.css">
+    <link rel="stylesheet" href="../../assets/css/modal-confirm.css">
+    
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="icon" type="image/png" href="../../assets/images/favicon/favicon.ico">
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay active">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Cargando información de vivienda...</p>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <h1><i class="fas fa-building"></i> Gerencias De Condominio</h1>
+                <div class="housing-selector" id="headerHousingSelectorWrapper">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="housing-selector-text">
+                        <span class="housing-selector-label">Vivienda activa</span>
+                        <span class="housing-selector-value" id="headerHousingDisplay">Cargando vivienda...</span>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <span id="userName">Usuario</span>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h2>Bienvenido al Sistema de Gestión de Pagos</h2>
+                <p>Gestiona tus pagos de mensualidades y contribuciones de manera fácil y segura.</p>
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="cards-grid">
+                <!-- Registro de Vivienda -->
+                <div class="card">
+                    <h3><i class="fas fa-home"></i> Mi Vivienda</h3>
+                    <p>Registra o actualiza la información de tu vivienda en la comunidad.</p>
+                    <button class="btn-dashboard" onclick="openHousingModal()">
+                        <i class="fas fa-edit"></i> Gestionar Vivienda
+                    </button>
+                </div>
+
+                <!-- Pagos -->
+                <div class="card">
+                    <h3><i class="fas fa-credit-card"></i> Pagos</h3>
+                    <p>Realiza pagos de mensualidades y contribuciones.</p>
+                    <button class="btn-dashboard" onclick="window.location.href='../payments/pagos.html'">
+                        <i class="fas fa-credit-card"></i> Realizar Pago
+                    </button>
+                </div>
+
+                <!-- Recibos -->
+                <div class="card">
+                    <h3><i class="fas fa-file-invoice"></i> Recibos</h3>
+                    <p>Visualiza y descarga todos tus recibos de pago.</p>
+                    <button class="btn-dashboard" onclick="openRecibosModal()">
+                        <i class="fas fa-download"></i> Ver Recibos
+                    </button>
+                </div>
+
+                <!-- Reportes -->
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> Reportes</h3>
+                    <p>Consulta tu historial de pagos por rango de fechas.</p>
+                    <button class="btn-dashboard" onclick="openReportsModal()">
+                        <i class="fas fa-chart-line"></i> Ver Reportes
+                    </button>
+                </div>
+
+                <!-- Configuración -->
+                <div class="card">
+                    <h3><i class="fas fa-cog"></i> Configuración</h3>
+                    <p>Administra tu información personal y cambia tu contraseña.</p>
+                    <button class="btn-dashboard" onclick="goToConfig()">
+                        <i class="fas fa-user-edit"></i> Configurar Cuenta
+                    </button>
+                </div>
+
+                <!-- Gestión de Trámites y Solicitudes -->
+                <div class="card">
+                    <h3><i class="fas fa-clipboard-list"></i> Gestión de Trámites</h3>
+                    <p>Solicita cartas de residencia y registra reclamos de la comunidad.</p>
+                    <button class="btn-dashboard" onclick="openTramitesModal()">
+                        <i class="fas fa-file-alt"></i> Gestionar Trámites
+                    </button>
+                </div>
+
+                <!-- Tienda de Artículos -->
+                <div class="card">
+                    <h3><i class="fas fa-store"></i> Tienda</h3>
+                    <p>Compra artículos disponibles para la comunidad.</p>
+                    <button class="btn-dashboard" onclick="abrirTienda()">
+                        <i class="fas fa-shopping-cart"></i> Ver Tienda
+                    </button>
+                </div>
+
+                <!-- Gastos Extraordinarios -->
+                <div class="card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Gastos Extraordinarios</h3>
+                    <p>Paga gastos extraordinarios.</p>
+                    <button class="btn-dashboard" onclick="abrirGastosExtraordinarios()">
+                        <i class="fas fa-file-invoice-dollar"></i> Ver Gastos
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Housing Status -->
+            <div id="housingStatus" class="card" style="display: none;">
+                <h3><i class="fas fa-info-circle"></i> Estado de tu Vivienda</h3>
+                <div id="housingInfo"></div>
+            </div>
+
+            <!-- Payment Summary -->
+            <div id="paymentSummary" class="card" style="display: none;">
+                <h3><i class="fas fa-wallet"></i> Resumen de Pagos</h3>
+                <div id="paymentInfo"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Pagos -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Realizar Pago</h3>
+                <span class="close" onclick="closeModal('paymentModal')">&times;</span>
+            </div>
+            <div class="payment-options">
+                <div class="payment-option" onclick="selectPaymentType('mensualidad')">
+                    <h4><i class="fas fa-calendar"></i> Mensualidades</h4>
+                    <p>Pagar meses pendientes</p>
+                </div>
+                <div class="payment-option" onclick="selectPaymentType('contribucion')">
+                    <h4><i class="fas fa-plus"></i> Contribuciones</h4>
+                    <p>Realizar contribución adicional</p>
+                </div>
+            </div>
+
+            <!-- Formulario de Mensualidades -->
+            <div id="mensualidadForm" style="display: none;">
+                <h4>Seleccionar Meses a Pagar</h4>
+                <div class="year-selector">
+                    <label for="yearSelect">Seleccionar Año:</label>
+                    <select id="yearSelect" onchange="filterByYear()">
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+                <div id="monthsGrid" class="months-grid"></div>
+                <div class="form-group">
+                    <label for="paymentMethod">Método de Pago</label>
+                    <select id="paymentMethod" name="paymentMethod">
+                        <option value="bs">Bolívares (Bs)</option>
+                        <option value="dolares">Dólares ($)</option>
+                    </select>
+                </div>
+                <div id="totalAmount" class="alert alert-info" style="display: none;">
+                    <strong>Total a Pagar: <span id="totalValue">0</span></strong>
+                </div>
+                <button type="button" class="btn-primary" onclick="processPayment()">
+                    <i class="fas fa-credit-card"></i> Procesar Pago
+                </button>
+            </div>
+
+            <!-- Formulario de Contribuciones -->
+            <div id="contribucionForm" style="display: none;">
+                <div class="form-group">
+                    <label for="contribucionAmount">Monto de la Contribución</label>
+                    <input type="number" id="contribucionAmount" name="contribucionAmount" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="contribucionMethod">Método de Pago</label>
+                    <select id="contribucionMethod" name="contribucionMethod">
+                        <option value="bs">Bolívares (Bs)</option>
+                        <option value="dolares">Dólares ($)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="contribucionDescription">Descripción (Opcional)</label>
+                    <textarea id="contribucionDescription" name="contribucionDescription"
+                        placeholder="Descripción de la contribución..."></textarea>
+                </div>
+                <button type="button" class="btn-primary" onclick="processContribution()">
+                    <i class="fas fa-plus"></i> Procesar Contribución
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Reportes -->
+    <div id="reportsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reportes de Pagos</h3>
+                <span class="close" onclick="closeModal('reportsModal')">&times;</span>
+            </div>
+            <div class="report-filters">
+                <h3>Filtros de Búsqueda</h3>
+                <div class="filter-row">
+                    <div class="form-group">
+                        <label for="startDate">Fecha Inicio</label>
+                        <input type="date" id="startDate" name="startDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">Fecha Fin</label>
+                        <input type="date" id="endDate" name="endDate">
+                    </div>
+                    <button class="btn-primary" onclick="generateReport()">
+                        <i class="fas fa-search"></i> Generar Reporte
+                    </button>
+                </div>
+            </div>
+            <div id="reportResults" class="report-results" style="display: none;">
+                <h3>Resultados del Reporte</h3>
+                <div id="reportContent"></div>
+                <button class="btn-secondary" onclick="downloadReport()">
+                    <i class="fas fa-download"></i> Descargar Reporte
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal de Recibos -->
+    <div id="recibosModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-invoice"></i> Mis Recibos de Pago</h3>
+                <span class="close" onclick="closeModal('recibosModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="recibos-container">
+                    <div class="recibos-header">
+                        <p>Aquí puedes ver y descargar todos tus recibos de pago aprobados.</p>
+                    </div>
+
+                    <div id="recibosList" class="recibos-list">
+                        <div class="loading-message">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Cargando recibos...</p>
+                        </div>
+                    </div>
+
+                    <div id="noRecibosMessage" class="no-recibos-message" style="display: none;">
+                        <i class="fas fa-file-invoice"></i>
+                        <h4>No tienes recibos aún</h4>
+                        <p>Los recibos aparecerán aquí una vez que tus pagos sean aprobados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Registro de Vivienda (Primera vez) -->
+    <div id="housingRegistrationModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-home"></i> Registro de Vivienda</h2>
+                <p>Es la primera vez que ingresas. Por favor, completa la información de tu vivienda.</p>
+                <span class="close" onclick="closeHousingRegistrationModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="housingForm">
+                    <!-- Información del Propietario -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombrePropietario">Nombre del Propietario *</label>
+                            <input type="text" id="nombrePropietario" name="nombrePropietario" required maxlength="30"
+                                pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+" title="Solo se permiten letras y espacios"
+                                oninput="validateLetters(this)">
+                            <div class="validation-message" id="nombre-validation"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="apellidoPropietario">Apellido del Propietario *</label>
+                            <input type="text" id="apellidoPropietario" name="apellidoPropietario" required
+                                maxlength="30" pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+"
+                                title="Solo se permiten letras y espacios" oninput="validateLetters(this)">
+                            <div class="validation-message" id="apellido-validation"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cedula">Cédula *</label>
+                            <input type="number" id="cedula" name="cedula" required min="100000" max="99999999"
+                                title="Solo números, entre 6 y 8 dígitos" placeholder="12345678">
+                            <div class="validation-message" id="cedula-validation"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono">Teléfono *</label>
+                            <input type="tel" id="telefono" name="telefono" required maxlength="11"
+                                pattern="[0-9]{10,11}" title="Solo números, entre 10 y 11 dígitos"
+                                placeholder="04121234567" oninput="validatePhone(this)">
+                            <div class="validation-message" id="telefono-validation"></div>
+                        </div>
+                    </div>
+
+                    <!-- Campo Gmail -->
+                    <div class="form-group">
+                        <label for="gmail">Gmail *</label>
+                        <input type="email" id="gmail" name="gmail" required placeholder="ejemplo@gmail.com"
+                            title="Ingresa tu dirección de correo electrónico">
+                        <div class="validation-message" id="gmail-validation"></div>
+                    </div>
+
+                    <!-- Tipo de Vivienda -->
+                    <div class="form-group">
+                        <label for="housingType">Tipo de Vivienda *</label>
+                        <select id="housingType" name="housingType" required onchange="toggleHousingFields()">
+                            <option value="">Selecciona el tipo</option>
+                        </select>
+                    </div>
+
+                    <!-- Campos dinámicos según el tipo de vivienda -->
+                    <div id="dynamicFields" style="display: none;">
+
+                        <!-- Campos específicos para Apartamento -->
+                        <div id="apartamentoFields" style="display: none;">
+                            <div class="form-group">
+                                <label for="edificio">Edificio *</label>
+                                <select id="edificio" name="edificio" required>
+                                    <option value="">Selecciona un edificio</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="piso">Piso *</label>
+                                <select id="piso" name="piso" required>
+                                    <option value="">Selecciona un piso</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="apartamento">Apartamento *</label>
+                                <select id="apartamento" name="apartamento" required>
+                                    <option value="">Selecciona un apartamento</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!-- Fecha de Adquisición -->
+                    <div class="form-group">
+                        <label for="fechaAdquirido">Fecha de Adquisición del Inmueble *</label>
+                        <input type="text" id="fechaAdquirido" name="fechaAdquirido" required placeholder="dd/mm/yyyy"
+                            title="Selecciona la fecha cuando adquiriste el inmueble" readonly>
+                        <small class="form-text">Esta fecha se usará para calcular automáticamente los años de
+                            antigüedad</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary" onclick="saveHousingData()">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Gestión de Vivienda -->
+    <div id="housingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-home"></i> Gestionar Mi Vivienda</h3>
+                <span class="close" onclick="closeModal('housingModal')">&times;</span>
+            </div>
+
+            <!-- Pestañas -->
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="openTab(event, 'selectHousingTab')">
+                        <i class="fas fa-list"></i> Seleccionar Vivienda
+                    </button>
+                    <button id="newHousingButton" class="tab-button" onclick="openTab(event, 'registerHousingTab')">
+                        <i class="fas fa-plus"></i> Agregar Vivienda
+                    </button>
+                </div>
+
+                <!-- Pestaña: Seleccionar Vivienda -->
+                <div id="selectHousingTab" class="tab-content active">
+                    <div class="tab-header">
+                        <h4><i class="fas fa-list"></i> Mis Viviendas Registradas</h4>
+                        <p>Selecciona una vivienda para ver sus detalles o editarla</p>
+                    </div>
+                    <div id="housingListContainer">
+                        <!-- La lista de viviendas se cargará aquí dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Pestaña: Registrar Nueva Vivienda -->
+                <div id="registerHousingTab" class="tab-content">
+                    <div class="tab-header">
+                        <h4><i class="fas fa-plus"></i> Registrar Nueva Vivienda</h4>
+                        <p>Agrega una nueva vivienda a tu perfil</p>
+                    </div>
+                    <form id="newHousingForm">
+                        <!-- Tipo de Vivienda -->
+                        <div class="form-group">
+                            <label for="newHousingType">Tipo de Vivienda *</label>
+                            <select id="newHousingType" name="housingType" required onchange="newToggleHousingFields()">
+                                <option value="">Selecciona el tipo</option>
+                            </select>
+                        </div>
+
+                        <!-- Campos dinámicos según el tipo de vivienda -->
+                        <div id="newDynamicFields" style="display: none;">
+
+                            <!-- Campos específicos para Apartamento -->
+                            <div id="newApartamentoFields" style="display: none;">
+                                <div class="form-group">
+                                    <label for="newEdificio">Edificio *</label>
+                                    <select id="newEdificio" name="edificio" required>
+                                        <option value="">Selecciona un edificio</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPiso">Piso *</label>
+                                    <select id="newPiso" name="piso" required>
+                                        <option value="">Selecciona un piso</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newApartamento">Apartamento *</label>
+                                    <select id="newApartamento" name="apartamento" required>
+                                        <option value="">Selecciona un apartamento</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Fecha de Adquisición -->
+                        <div class="form-group">
+                            <label for="newFechaAdquirido">Fecha de Adquisición del Inmueble *</label>
+                            <input type="text" id="newFechaAdquirido" name="fechaAdquirido" required
+                                placeholder="dd/mm/yyyy" title="Selecciona la fecha cuando adquiriste el inmueble"
+                                readonly>
+                            <small class="form-text">Esta fecha se usará para calcular automáticamente los años de
+                                antigüedad</small>
+                        </div>
+
+                        <div class="form-actions">
+                            <button id="newSaveHousingButton" type="button" class="btn btn-primary"
+                                onclick="newSaveHousingData()">
+                                <i class="fas fa-save"></i> Guardar
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Información de Vivienda -->
+    <div id="housingInfoModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> Información de Vivienda</h3>
+                <span class="close" onclick="closeModal('housingInfoModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="housingInfoContent">
+                    <!-- El contenido se carga dinámicamente aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Gestión de Trámites y Solicitudes -->
+    <div id="tramitesModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-clipboard-list"></i> Gestión de Trámites y Solicitudes</h3>
+                <span class="close" onclick="closeModal('tramitesModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Tabs Navigation -->
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" onclick="switchTab('cartasTab')">
+                            <i class="fas fa-file-certificate"></i> Cartas de Residencia
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('reclamosTab')">
+                            <i class="fas fa-exclamation-triangle"></i> Reclamos o sugerencias
+                        </button>
+                    </div>
+
+                    <!-- Tab Content: Cartas de Residencia -->
+                    <div id="cartasTab" class="tab-content active">
+                        <div class="tab-header">
+                            <h4><i class="fas fa-file-certificate"></i> Solicitudes de Cartas de Residencia</h4>
+                            <button class="btn-primary" onclick="openNuevaCartaForm()">
+                                <i class="fas fa-plus"></i> Nueva Solicitud
+                            </button>
+                        </div>
+
+                        <!-- Formulario Nueva Carta (oculto por defecto) -->
+                        <div id="nuevaCartaForm" class="form-section" style="display: none;">
+                            <div class="form-card">
+                                <h5><i class="fas fa-edit"></i> Nueva Solicitud de Carta de Residencia</h5>
+
+                                <!-- Información del inmueble -->
+                                <div class="inmueble-info-box" id="cartaInmuebleInfo">
+                                    <div class="info-header">
+                                        <i class="fas fa-home"></i>
+                                        <span>Inmueble para el cual se generará la carta</span>
+                                    </div>
+                                    <div class="info-content" id="cartaInmuebleDetails">
+                                        <!-- Se llenará dinámicamente -->
+                                    </div>
+                                </div>
+
+                                <form id="cartaForm">
+                                    <div class="form-group">
+                                        <label for="cartaMotivo">
+                                            <i class="fas fa-align-left"></i> Motivo de la solicitud
+                                        </label>
+                                        <textarea id="cartaMotivo" name="motivo" rows="4" maxlength="1250"
+                                            placeholder="Describe el motivo de tu solicitud..." required></textarea>
+                                        <div class="char-counter" id="cartaMotivoCounter">0 / 1250</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="cartaTipo">
+                                            <i class="fas fa-tag"></i> Tipo de carta
+                                        </label>
+                                        <select id="cartaTipo" name="tipo" required>
+                                            <option value="">Cargando...</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group" id="cartaPrecioGroup" style="display: none;">
+                                        <label>
+                                            <i class="fas fa-dollar-sign"></i> Precio
+                                        </label>
+                                        <div class="precio-display">
+                                            <span id="cartaPrecio" class="precio-value">$0.00</span>
+                                            <small>USD</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-secondary" onclick="cancelarNuevaCarta()">
+                                            <i class="fas fa-times"></i> Cancelar
+                                        </button>
+                                        <button type="submit" class="btn-primary">
+                                            <i class="fas fa-paper-plane"></i> Enviar Solicitud
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Lista de Solicitudes de Cartas -->
+                        <div class="solicitudes-list">
+                            <div class="list-header">
+                                <h5><i class="fas fa-list"></i> Mis Solicitudes</h5>
+                                <!-- <div class="filter-group">
+                                    <select id="cartasFilter" onchange="filterCartas()">
+                                        <option value="todas">Todas</option>
+                                        <option value="pendiente">Pendientes</option>
+                                        <option value="aprobada">Aprobadas</option>
+                                        <option value="rechazada">Rechazadas</option>
+                                    </select>
+                                </div> -->
+                            </div>
+
+                            <div id="cartasList" class="items-grid">
+                                <!-- Las cartas se cargarán dinámicamente aquí -->
+                                <div class="empty-state">
+                                    <i class="fas fa-inbox"></i>
+                                    <p>No tienes solicitudes de cartas registradas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Reclamos o sugerencias -->
+                    <div id="reclamosTab" class="tab-content">
+                        <div class="tab-header">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Reclamos o sugerencias de la Comunidad</h4>
+                            <button class="btn-primary" onclick="openNuevoReclamoForm()">
+                                <i class="fas fa-plus"></i> Nuevo Reclamo o sugerencia
+                            </button>
+                        </div>
+
+                        <!-- Formulario Nuevo Reclamo o sugerencia (oculto por defecto) -->
+                        <div id="nuevoReclamoForm" class="form-section" style="display: none;">
+                            <div class="form-card">
+                                <h5><i class="fas fa-edit"></i> Nuevo Reclamo o sugerencia</h5>
+                                <form id="reclamoForm">
+                                    <div class="form-group">
+                                        <label for="reclamoTitulo">
+                                            <i class="fas fa-heading"></i> Título del reclamo o sugerencia
+                                        </label>
+                                        <input type="text" id="reclamoTitulo" name="titulo"
+                                            placeholder="Ej: Problema con iluminación en área común" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="reclamoCategoria">
+                                            <i class="fas fa-folder"></i> Categoría
+                                        </label>
+                                        <select id="reclamoCategoria" name="categoria" required>
+                                            <option value="">Selecciona una categoría</option>
+                                            <option value="mantenimiento">Mantenimiento</option>
+                                            <option value="seguridad">Seguridad</option>
+                                            <option value="limpieza">Limpieza</option>
+                                            <option value="ruido">Ruido</option>
+                                            <option value="estacionamiento">Estacionamiento</option>
+                                            <option value="otro">Otro</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="reclamoDescripcion">
+                                            <i class="fas fa-align-left"></i> Descripción detallada
+                                        </label>
+                                        <textarea id="reclamoDescripcion" name="descripcion" rows="5"
+                                            placeholder="Describe el problema con el mayor detalle posible..."
+                                            required></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="reclamoPrioridad">
+                                            <i class="fas fa-flag"></i> Prioridad
+                                        </label>
+                                        <select id="reclamoPrioridad" name="prioridad" required>
+                                            <option value="baja">Baja</option>
+                                            <option value="media" selected>Media</option>
+                                            <option value="alta">Alta</option>
+                                            <option value="urgente">Urgente</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-secondary" onclick="cancelarNuevoReclamo()">
+                                            <i class="fas fa-times"></i> Cancelar
+                                        </button>
+                                        <button type="submit" class="btn-primary">
+                                            <i class="fas fa-paper-plane"></i> Enviar Reclamo o sugerencia
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Lista de Reclamos o sugerencias -->
+                        <div class="solicitudes-list">
+                            <div class="list-header">
+                                <h5><i class="fas fa-list"></i> Mis Reclamos o sugerencias</h5>
+                                <!-- <div class="filter-group">
+                                    <select id="reclamosFilter" onchange="filterReclamos()">
+                                        <option value="todos">Todos</option>
+                                        <option value="pendiente">Pendientes</option>
+                                        <option value="en_proceso">En Proceso</option>
+                                        <option value="resuelto">Resueltos</option>
+                                        <option value="cerrado">Cerrados</option>
+                                    </select>
+                                </div> -->
+                            </div>
+
+                            <div id="reclamosList" class="items-grid">
+                                <!-- Los reclamos o sugerencias se cargarán dinámicamente aquí -->
+                                <div class="empty-state">
+                                    <i class="fas fa-inbox"></i>
+                                    <p>No tienes reclamos o sugerencias registrados</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Tienda -->
+    <div id="tiendaModal" class="modal">
+        <div class="tienda-modal-content">
+            <div class="tienda-modal-header">
+                <h3><i class="fas fa-store"></i> Tienda de Artículos</h3>
+                <span class="tienda-close" onclick="cerrarTienda()">&times;</span>
+            </div>
+            <div class="tienda-modal-body">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <p style="margin: 0; color: #666;">
+                        <i class="fas fa-info-circle"></i>
+                        Selecciona un artículo para comprarlo
+                    </p>
+                    <button class="btn btn-secondary" onclick="recargarTienda()" style="padding: 8px 16px;">
+                        <i class="fas fa-sync-alt"></i> Recargar
+                    </button>
+                </div>
+                <div id="articulosContainer">
+                    <div class="alert alert-info">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Cargando artículos...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Gastos Extraordinarios -->
+    <div id="gastosModal" class="modal">
+        <div class="tienda-modal-content">
+            <div class="tienda-modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Gastos Extraordinarios</h3>
+                <span class="tienda-close" onclick="cerrarGastosExtraordinarios()">&times;</span>
+            </div>
+            <div class="tienda-modal-body">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <p style="margin: 0; color: #666;">
+                        <i class="fas fa-info-circle"></i>
+                        Selecciona un gasto para pagarlo
+                    </p>
+                    <button class="btn btn-secondary" onclick="recargarGastosExtraordinarios()"
+                        style="padding: 8px 16px;">
+                        <i class="fas fa-sync-alt"></i> Recargar
+                    </button>
+                </div>
+                <div id="gastosContainer">
+                    <div class="alert alert-info">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Cargando gastos extraordinarios...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para ocultar modal inmediatamente -->
+    <script>
+        // Ejecutar inmediatamente, antes de que se cargue el DOM
+        (function () {
+            const modal = document.getElementById('housingRegistrationModal');
+            if (modal) {
+                modal.style.display = 'none';
+                console.log("🚫 Modal ocultado con script inmediato");
+            }
+        })();
+    </script>
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+
+    <script>
+        // Inicializar Flatpickr para los campos de fecha
+        document.addEventListener('DOMContentLoaded', function () {
+            // Configuración para fecha de adquisición (nueva vivienda)
+            flatpickr("#newFechaAdquirido", {
+                locale: "es",
+                dateFormat: "d/m/Y",
+                maxDate: "today",
+                allowInput: false,
+                clickOpens: true,
+                placeholder: "dd/mm/yyyy"
+            });
+
+            // Configuración para fecha de adquisición (primera vez)
+            flatpickr("#fechaAdquirido", {
+                locale: "es",
+                dateFormat: "d/m/Y",
+                maxDate: "today",
+                allowInput: false,
+                clickOpens: true,
+                placeholder: "dd/mm/yyyy"
+            });
+        });
+    </script>
+
+    <script src="../../assets/js/navigation-protection.js"></script>
+    <script src="../../assets/js/modal-confirm.js"></script>
+    <script src="../../assets/js/newHousingRegistrationModal.js"></script>
+    <script src="../../assets/js/dashboard.js"></script>
+    <script src="../../assets/js/recibosModal_custom.js"></script>
+</body>
+
+</html>

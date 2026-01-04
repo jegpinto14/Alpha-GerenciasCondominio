@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de Pagos - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/estado-pagos.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-building"></i>
+                <span>Gerencias De Condominio</span>
+            </div>
+            <div class="user-section">
+                <span class="user-name"></span>
+                <button class="volver-btn" onclick="volverDashboard()">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="index.html" class="breadcrumb-link">
+                <i class="fas fa-building"></i>
+                Dashboard
+            </a>
+            <i class="fas fa-chevron-right"></i>
+            <span class="breadcrumb-current">Estado de Pagos</span>
+        </nav>
+
+        <!-- Page Title -->
+        <section class="page-header">
+            <h1>Estado de Pagos</h1>
+            <p>Consulta el estado de pagos de cada vivienda por cédula del propietario</p>
+        </section>
+
+        <section class="estado-busqueda">
+            <div class="estado-card">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Consultar estado de pagos</h2>
+                <form id="estadoForm" class="estado-form">
+                    <div class="estado-control">
+                        <label for="estadoCedula">Número de cédula</label>
+                        <input type="text" id="estadoCedula" name="cedula" placeholder="Ingresa la cédula (solo números)" maxlength="8" minlength="7" pattern="[0-9]{7,8}" required>
+                        <small>Debe contener entre 7 y 8 dígitos.</small>
+                    </div>
+                    <div class="estado-control">
+                        <label for="estadoAnio">Año de consulta</label>
+                        <select id="estadoAnio" name="anio" required>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-consultar">
+                        <i class="fas fa-search"></i>
+                        Buscar propietario
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section class="estado-mensaje" id="estadoMensaje" hidden>
+            <div class="estado-mensaje-card">
+                <i class="fas fa-info-circle"></i>
+                <span id="estadoMensajeTexto"></span>
+            </div>
+        </section>
+
+        <section class="estado-resultados" id="estadoResultados" hidden>
+            <div class="estado-acciones">
+                <button type="button" class="btn-imprimir" id="btnImprimirPDF" onclick="generarPDF()">
+                    <i class="fas fa-file-pdf"></i>
+                    Imprimir PDF
+                </button>
+            </div>
+            <div class="estado-resumen">
+                <div>
+                    <p class="resumen-label">Propietario</p>
+                    <h3 id="resumenNombre">—</h3>
+                </div>
+                <div>
+                    <p class="resumen-label">Cédula</p>
+                    <span id="resumenCedula">—</span>
+                </div>
+                <div>
+                    <p class="resumen-label">Teléfono</p>
+                    <span id="resumenTelefono">—</span>
+                </div>
+                <div>
+                    <p class="resumen-label">Correo</p>
+                    <span id="resumenCorreo">—</span>
+                </div>
+            </div>
+            <div class="estado-detalle">
+                <div>
+                    <p class="detalle-label">Vivienda</p>
+                    <h4 id="detalleVivienda">—</h4>
+                </div>
+                <div>
+                    <p class="detalle-label">Tipo</p>
+                    <span id="detalleTipo">—</span>
+                </div>
+                <div>
+                    <p class="detalle-label">Ubicación / referencia</p>
+                    <span id="detalleUbicacion">—</span>
+                </div>
+                <div>
+                    <p class="detalle-label">Deuda actual</p>
+                    <span id="detalleDeuda">—</span>
+                </div>
+            </div>
+            <div class="estado-tabla">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mes</th>
+                            <th>Año</th>
+                            <th>Estado</th>
+                            <th>Método de pago</th>
+                            <th>Monto</th>
+                            <th>Tasa (Bs)</th>
+                            <th>Fecha de pago</th>
+                        </tr>
+                    </thead>
+                    <tbody id="estadoTablaBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Selector de Vivienda -->
+    <div class="property-selector-modal" id="propertySelectorModal" aria-hidden="true" style="display: none;">
+        <div class="property-selector-backdrop" data-close="selector"></div>
+        <div class="property-selector-dialog" role="dialog" aria-modal="true">
+            <div class="property-selector-header">
+                <h3>
+                    <i class="fas fa-building"></i>
+                    Seleccionar vivienda
+                </h3>
+                <button id="closePropertySelector" class="selector-close-btn" type="button" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="property-selector-content" id="propertySelectorList">
+                <!-- Opciones de vivienda -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/estado-pagos.js"></script>
+</body>
+</html>

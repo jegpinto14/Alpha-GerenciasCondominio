@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes por Casa - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/reportes_casa.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="reportes-casa-page">
+    <div class="dashboard-container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <h1><i class="fas fa-building"></i> Gerencias De Condominio</h1>
+                <div class="user-info">
+                    <span id="userName">Usuario</span>
+                    <button class="logout-btn" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Elegant Header Section -->
+            <div class="elegant-header">
+                <div class="header-background">
+                    <div class="floating-shapes">
+                        <div class="shape shape-1"></div>
+                        <div class="shape shape-2"></div>
+                        <div class="shape shape-3"></div>
+                    </div>
+                </div>
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h1>Reportes de Pagos</h1>
+                    <p>Consulta el historial de pagos y estadísticas detalladas por casa y año</p>
+                    <div class="header-decoration"></div>
+                </div>
+            </div>
+
+            <!-- Main Content Container -->
+            <div class="main-content-wrapper">
+                <!-- Search Section -->
+                <div class="search-section">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <div class="header-icon-small">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Buscar Casa</h3>
+                                <p>Encuentra la casa específica para generar el reporte</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="search-wrapper">
+                                <div class="search-input-container">
+                                    <i class="fas fa-home search-icon"></i>
+                                    <input type="text" id="houseSearch" placeholder="Escribe el número o nombre de la casa...">
+                                    <div class="search-underline"></div>
+                                </div>
+                                <div id="searchResults" class="search-results"></div>
+                                <div class="search-hint">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>Deja en blanco para ver todas las casas</span>
+                                </div>
+                                <div id="selectedHouse" class="selected-house-card">
+                                    <div class="selected-content">
+                                        <div class="selected-icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="selected-info">
+                                            <span class="selected-label">Casa seleccionada:</span>
+                                            <span id="selectedHouseText" class="selected-value"></span>
+                                        </div>
+                                    </div>
+                                    <button class="remove-selection" onclick="clearSelectedHouse()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Year Selection Section -->
+                <div class="year-section">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <div class="header-icon-small">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Año del Reporte</h3>
+                                <p>Selecciona el año para analizar los pagos</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="year-selector">
+                                <div class="year-options">
+                                    <label class="year-option" for="year2023">
+                                        <input type="radio" name="year" id="year2023" value="2023">
+                                        <span class="year-label">2023</span>
+                                    </label>
+                                    <label class="year-option" for="year2024">
+                                        <input type="radio" name="year" id="year2024" value="2024">
+                                        <span class="year-label">2024</span>
+                                    </label>
+                                    <label class="year-option active" for="year2025">
+                                        <input type="radio" name="year" id="year2025" value="2025" checked>
+                                        <span class="year-label">2025</span>
+                                    </label>
+                                    <label class="year-option" for="year2026">
+                                        <input type="radio" name="year" id="year2026" value="2026">
+                                        <span class="year-label">2026</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <div class="generate-section">
+                    <button onclick="generateHouseReport()" class="elegant-generate-btn">
+                        <div class="btn-content">
+                            <div class="btn-icon-wrapper">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="btn-text-wrapper">
+                                <span class="btn-main-text">Generar Reporte</span>
+                                <span class="btn-sub-text">Ver estadísticas completas</span>
+                            </div>
+                            <div class="btn-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="btn-shine"></div>
+                    </button>
+                </div>
+
+                <!-- Navigation -->
+                <div class="navigation-section">
+                    <button onclick="goToSuperAdmin()" class="elegant-back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Volver al Dashboard</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Results -->
+            <div id="reportResults" class="card" style="display: none;">
+                <h3><i class="fas fa-chart-bar"></i> <span id="reportTitle">Reporte de Pagos</span></h3>
+                
+                <!-- Summary Statistics -->
+                <div class="report-summary">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Pagado (Bs):</span>
+                            <span class="stat-value" id="totalPaidBs">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Total Pagado (USD):</span>
+                            <span class="stat-value" id="totalPaidUsd">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Meses Pagados:</span>
+                            <span class="stat-value" id="paidMonthsCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Meses Sin Pagar:</span>
+                            <span class="stat-value" id="unpaidMonthsCount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Report Table -->
+                <div class="report-details">
+                    <h4><i class="fas fa-table"></i> Detalles por Mes</h4>
+                    <div class="table-container">
+                        <table id="reportTable" class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Vivienda</th>
+                                    <th>Propietario</th>
+                                    <th>Mes</th>
+                                    <th>Año</th>
+                                    <th>Estado</th>
+                                    <th>Monto</th>
+                                    <th>Moneda</th>
+                                    <th>Método de Pago</th>
+                                    <th>Fecha de Pago</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportTableBody">
+                                <!-- Se llenará dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="report-actions">
+                    <button onclick="downloadReportPDF()" class="btn-secondary">
+                        <i class="fas fa-download"></i> Descargar PDF
+                    </button>
+                    <button onclick="printReport()" class="btn-secondary">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                    <button onclick="exportToExcel()" class="btn-secondary">
+                        <i class="fas fa-file-excel"></i> Exportar Excel
+                    </button>
+                </div>
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResultsMessage" class="card" style="display: none;">
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h3>No se encontraron resultados</h3>
+                    <p>No hay pagos registrados para los filtros seleccionados.</p>
+                    <button onclick="location.reload()" class="btn-primary">
+                        <i class="fas fa-filter"></i> Cambiar Filtros
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="modal">
+        <div class="modal-content">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <h3>Generando Reporte...</h3>
+                <p>Por favor espera mientras procesamos la información.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../assets/js/navigation-protection.js"></script>
+    <script src="../../assets/js/reportes_casa.js"></script>
+</body>
+</html>

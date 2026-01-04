@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Solicitudes de Carta de Residencia - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/solicitudes-residencia.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-building"></i>
+                <span>Gerencias De Condominio</span>
+            </div>
+            <div class="user-section">
+                <span class="user-name"></span>
+                <button class="volver-btn" onclick="volverDashboard()">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="index.html" class="breadcrumb-link">
+                <i class="fas fa-building"></i>
+                Dashboard
+            </a>
+            <i class="fas fa-chevron-right"></i>
+            <span class="breadcrumb-current">Solicitudes carta de residencia</span>
+        </nav>
+
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1>Solicitudes de Carta de Residencia</h1>
+            <p>Gestiona las solicitudes de constancia de residencia recibidas desde el portal de propietarios.</p>
+        </section>
+
+        <!-- Summary Section -->
+        <section class="summary-section" id="summarySection">
+            <!-- Las tarjetas de resumen se generan dinámicamente -->
+        </section>
+
+        <!-- Filters -->
+        <section class="filters-section">
+            <div class="filters-card">
+                <div class="filter-group">
+                    <label for="estadoFiltro"><i class="fas fa-filter"></i> Estado</label>
+                    <select id="estadoFiltro">
+                        <option value="todos">Todas</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="busquedaTexto"><i class="fas fa-search"></i> Buscar</label>
+                    <input type="text" id="busquedaTexto" placeholder="Buscar por nombre, cédula o vivienda">
+                </div>
+            </div>
+        </section>
+
+        <!-- Requests List -->
+        <section class="requests-section">
+            <div class="requests-card">
+                <div class="requests-header">
+                    <h2><i class="fas fa-envelope"></i> Bandeja de solicitudes</h2>
+                    <span class="badge" id="badgeEstado">Mostrando todas</span>
+                </div>
+                <div class="requests-wrapper" id="solicitudesWrapper">
+                    <!-- Las solicitudes se renderizan dinámicamente -->
+                </div>
+                <div class="empty-state" id="emptyState" style="display:none;">
+                    <i class="fas fa-inbox"></i>
+                    <h3>No hay solicitudes</h3>
+                    <p>No se encontraron solicitudes con los filtros aplicados.</p>
+                </div>
+                <div class="pagination" id="paginationContainer" hidden>
+                    <button type="button" class="page-btn" id="prevPage" aria-label="Página anterior">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="page-info" id="paginationInfo">Página 1</div>
+                    <button type="button" class="page-btn" id="nextPage" aria-label="Página siguiente">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Detalle Solicitud -->
+    <div class="modal" id="detalleSolicitudModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close="modal"></div>
+        <div class="modal-dialog" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3><i class="fas fa-envelope-open"></i> Detalle de solicitud</h3>
+                <button class="modal-close" id="cerrarDetalleSolicitud" type="button" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="detalleSolicitudContenido">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalle Vivienda -->
+    <div class="modal" id="detalleViviendaModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close="modal"></div>
+        <div class="modal-dialog" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3><i class="fas fa-house-user"></i> Información de la vivienda</h3>
+                <button class="modal-close" id="cerrarDetalleVivienda" type="button" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="detalleViviendaContenido">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/solicitudes-residencia.js"></script>
+</body>
+</html>

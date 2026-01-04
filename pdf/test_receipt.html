@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probar Generación de Recibo PDF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .info-box h3 {
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .info-box ul {
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+
+        .info-box li {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-error {
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .alert-success {
+            background: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .recent-tests {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .recent-tests h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .test-item {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .test-item span {
+            color: #666;
+        }
+
+        .test-item button {
+            padding: 6px 12px;
+            font-size: 12px;
+            flex: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧾 Probar Recibo PDF</h1>
+        <p class="subtitle">Generador de comprobantes de pago</p>
+
+        <div id="alert" class="alert"></div>
+
+        <div class="info-box">
+            <h3>ℹ️ Información</h3>
+            <p>Esta página permite probar la generación de recibos PDF. Ingresa un ID de pago válido para generar el comprobante.</p>
+            <ul>
+                <li><strong>Archivo:</strong> download_receipt.php</li>
+                <li><strong>Librería:</strong> TCPDF</li>
+                <li><strong>Formato:</strong> A4 (210 x 297 mm)</li>
+            </ul>
+        </div>
+
+        <form id="receiptForm">
+            <div class="form-group">
+                <label for="paymentId">
+                    ID del Pago
+                    <span style="color: #e74c3c;">*</span>
+                </label>
+                <input 
+                    type="number" 
+                    id="paymentId" 
+                    name="paymentId" 
+                    placeholder="Ej: 1, 2, 3..." 
+                    required
+                    min="1"
+                    value="1"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="outputMode">Modo de Salida</label>
+                <select id="outputMode" name="outputMode">
+                    <option value="download">Descargar PDF</option>
+                    <option value="inline">Ver en navegador</option>
+                    <option value="newTab">Abrir en nueva pestaña</option>
+                </select>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn-primary">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Generar Recibo
+                </button>
+                <button type="button" class="btn-secondary" onclick="resetForm()">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Limpiar
+                </button>
+            </div>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #666;">Generando PDF...</p>
+        </div>
+
+        <div class="recent-tests" id="recentTests" style="display: none;">
+            <h3>📋 Pruebas Recientes</h3>
+            <div id="testList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Cargar pruebas recientes del localStorage
+        let recentTests = JSON.parse(localStorage.getItem('recentTests') || '[]');
+
+        // Mostrar alerta
+        function showAlert(message, type = 'error') {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Agregar prueba reciente
+        function addRecentTest(paymentId) {
+            const test = {
+                id: paymentId,
+                timestamp: new Date().toLocaleString('es-VE'),
+                date: Date.now()
+            };
+            
+            recentTests.unshift(test);
+            recentTests = recentTests.slice(0, 5); // Mantener solo las últimas 5
+            localStorage.setItem('recentTests', JSON.stringify(recentTests));
+            displayRecentTests();
+        }
+
+        // Mostrar pruebas recientes
+        function displayRecentTests() {
+            if (recentTests.length === 0) {
+                document.getElementById('recentTests').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('recentTests').style.display = 'block';
+            const testList = document.getElementById('testList');
+            testList.innerHTML = recentTests.map(test => `
+                <div class="test-item">
+                    <span>ID: ${test.id} - ${test.timestamp}</span>
+                    <button class="btn-primary" onclick="testAgain(${test.id})">
+                        Probar de nuevo
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Probar de nuevo
+        function testAgain(paymentId) {
+            document.getElementById('paymentId').value = paymentId;
+            document.getElementById('receiptForm').dispatchEvent(new Event('submit'));
+        }
+
+        // Resetear formulario
+        function resetForm() {
+            document.getElementById('receiptForm').reset();
+            document.getElementById('paymentId').value = '1';
+            document.getElementById('alert').style.display = 'none';
+        }
+
+        // Manejar envío del formulario
+        document.getElementById('receiptForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const paymentId = document.getElementById('paymentId').value;
+            const outputMode = document.getElementById('outputMode').value;
+            
+            if (!paymentId || paymentId < 1) {
+                showAlert('Por favor ingresa un ID de pago válido', 'error');
+                return;
+            }
+
+            // Mostrar loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('alert').style.display = 'none';
+
+            // Construir URL
+            const url = `download_receipt.php?payment_id=${paymentId}`;
+
+            // Agregar a pruebas recientes
+            addRecentTest(paymentId);
+
+            // Simular delay para mostrar loading
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+
+                if (outputMode === 'download') {
+                    // Descargar directamente
+                    window.location.href = url;
+                    showAlert('PDF generado exitosamente. Descargando...', 'success');
+                } else if (outputMode === 'inline') {
+                    // Abrir en iframe (modal)
+                    const iframe = document.createElement('iframe');
+                    iframe.src = url;
+                    iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;border:none;z-index:9999;';
+                    document.body.appendChild(iframe);
+                    
+                    // Botón para cerrar
+                    const closeBtn = document.createElement('button');
+                    closeBtn.textContent = '✕ Cerrar';
+                    closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;padding:10px 20px;background:#e74c3c;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold;';
+                    closeBtn.onclick = () => {
+                        document.body.removeChild(iframe);
+                        document.body.removeChild(closeBtn);
+                    };
+                    document.body.appendChild(closeBtn);
+                } else {
+                    // Abrir en nueva pestaña
+                    window.open(url, '_blank');
+                    showAlert('PDF abierto en nueva pestaña', 'success');
+                }
+            }, 500);
+        });
+
+        // Cargar pruebas recientes al iniciar
+        displayRecentTests();
+    </script>
+</body>
+</html>

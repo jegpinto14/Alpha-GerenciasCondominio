@@ -1,0 +1,495 @@
+:root {
+    --color-primary: #1A3A4A;
+    --color-secondary: #B8C2C8;
+    --color-accent: #C4A98B;
+    --color-danger: #ef4444;
+    --color-warning: #f97316;
+    --color-background: #F8F9FA;
+    --color-surface: #ffffff;
+    --color-gray-600: #1A3A4A;
+    --color-gray-500: #1A3A4A;
+    --color-gray-400: #B8C2C8;
+}
+
+.summary-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--color-surface);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--color-secondary);
+    box-shadow: 0 5px 20px rgba(26, 58, 74, 0.08);
+}
+
+.summary-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 0.85rem;
+    color: #fff;
+    font-size: 1.4rem;
+}
+
+.summary-icon.pending {
+    background: linear-gradient(135deg, #f97316, #fbbf24);
+}
+
+.summary-icon.received {
+    background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.summary-icon.total {
+    background: linear-gradient(135deg, #1A3A4A 0%, #2a5a6a 100%);
+}
+
+.summary-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-gray-500);
+}
+
+.summary-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1;
+}
+
+.filters-section {
+    margin-bottom: 2.5rem;
+}
+
+.filters-card {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    background: var(--color-surface);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--color-secondary);
+    box-shadow: 0 5px 20px rgba(26, 58, 74, 0.08);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: var(--color-gray-600);
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.65rem;
+    font-size: 1rem;
+    background: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1);
+}
+
+.reclamos-section {
+    margin-bottom: 3rem;
+}
+
+.reclamos-card {
+    background: var(--color-surface);
+    border-radius: 0.9rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+}
+
+.reclamos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.reclamos-header h2 {
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.badge {
+    background: rgba(30, 60, 114, 0.08);
+    color: var(--color-primary);
+    border-radius: 999px;
+    padding: 0.4rem 1.1rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.reclamos-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--color-background);
+}
+
+.reclamo-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    background: #fff;
+    border-radius: 0.8rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reclamo-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+}
+
+.reclamo-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.reclamo-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.reclamo-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.reclamo-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    color: var(--color-gray-500);
+    font-size: 0.92rem;
+}
+
+.reclamo-mensaje {
+    color: var(--color-gray-600);
+    line-height: 1.6;
+    font-size: 0.98rem;
+}
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-chip.pending {
+    background: rgba(249, 115, 22, 0.18);
+    color: #b45309;
+}
+
+.status-chip.received {
+    background: rgba(16, 185, 129, 0.18);
+    color: #047857;
+}
+
+.reclamo-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: flex-end;
+}
+
+.reclamo-actions button {
+    border: none;
+    border-radius: 0.65rem;
+    padding: 0.6rem 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.btn-secondary {
+    background: rgba(30, 60, 114, 0.08);
+    color: var(--color-primary);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(30, 60, 114, 0.15);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #cbd5f5;
+    color: var(--color-primary);
+}
+
+.btn-outline:hover {
+    background: rgba(30, 60, 114, 0.08);
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--color-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(30, 60, 114, 0.25);
+}
+
+.btn-success {
+    background: #0f766e;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: #158f86;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(15, 118, 110, 0.25);
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 3rem 1.5rem;
+    color: var(--color-gray-500);
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    color: var(--color-gray-400);
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.1rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    width: fit-content;
+    margin: 1.25rem auto 1.5rem;
+}
+
+.page-btn {
+    border: none;
+    background: rgba(30, 60, 114, 0.08);
+    color: var(--color-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(30, 60, 114, 0.25);
+    background: rgba(30, 60, 114, 0.15);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.page-info {
+    font-weight: 600;
+    color: var(--color-gray-600);
+    letter-spacing: 0.05em;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1400;
+}
+
+.modal[aria-hidden="false"] {
+    display: flex;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+}
+
+.modal-dialog {
+    position: relative;
+    background: var(--color-surface);
+    border-radius: 1rem;
+    width: min(620px, 90vw);
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.35rem 1.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h3 {
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--color-gray-500);
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: var(--color-primary);
+}
+
+.modal-body {
+    padding: 1.5rem 1.75rem;
+    overflow-y: auto;
+    display: grid;
+    gap: 1rem;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.detail-card {
+    background: var(--color-background);
+    border-radius: 0.75rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid #e2e8f0;
+}
+
+.detail-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-gray-500);
+    margin-bottom: 0.3rem;
+}
+
+.detail-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.reclamo-detalle-texto {
+    white-space: pre-line;
+    line-height: 1.6;
+    color: var(--color-gray-600);
+}
+
+.volver-btn {
+    background-color: #1e3c72;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(30, 60, 114, 0.2);
+}
+
+.volver-btn:hover {
+    background-color: #2a5298;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(30, 60, 114, 0.3);
+}
+
+.breadcrumb-link {
+    color: #1e3c72;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+    background-color: rgba(30, 60, 114, 0.1);
+    color: #2a5298;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .reclamo-item {
+        grid-template-columns: 1fr;
+    }
+
+    .reclamo-actions {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+}

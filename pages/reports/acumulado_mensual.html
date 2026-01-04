@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acumulado Mensual - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/acumulado_mensual.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="acumulado-mensual-page">
+    <div class="dashboard-container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <h1><i class="fas fa-building"></i> Gerencias De Condominio</h1>
+                <div class="user-info">
+                    <span id="userName">Usuario</span>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Elegant Header Section -->
+            <div class="elegant-header">
+                <div class="header-background">
+                    <div class="floating-shapes">
+                        <div class="shape shape-1"></div>
+                        <div class="shape shape-2"></div>
+                        <div class="shape shape-3"></div>
+                    </div>
+                </div>
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h1>Acumulado Mensual</h1>
+                    <p>Consulta el dinero acumulado en cada mes del año</p>
+                    <div class="header-decoration"></div>
+                </div>
+            </div>
+
+            <!-- Main Content Container -->
+            <div class="main-content-wrapper">
+                <!-- Year Selection Section -->
+                <div class="year-selection-section">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <div class="header-icon-small">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Seleccionar Año</h3>
+                                <p>Elige el año para consultar el acumulado mensual</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="year-selector">
+                                <div class="year-options">
+                                    <label class="year-option" for="year2023">
+                                        <input type="radio" name="year" id="year2023" value="2023">
+                                        <span class="year-label">2023</span>
+                                    </label>
+                                    <label class="year-option" for="year2024">
+                                        <input type="radio" name="year" id="year2024" value="2024">
+                                        <span class="year-label">2024</span>
+                                    </label>
+                                    <label class="year-option active" for="year2025">
+                                        <input type="radio" name="year" id="year2025" value="2025" checked>
+                                        <span class="year-label">2025</span>
+                                    </label>
+                                    <label class="year-option" for="year2026">
+                                        <input type="radio" name="year" id="year2026" value="2026">
+                                        <span class="year-label">2026</span>
+                                    </label>
+                                </div>
+                                <button onclick="loadMonthlyData()" class="load-data-btn">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>Cargar Datos</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="summary-section">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <div class="header-icon-small">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Resumen del Año</h3>
+                                <p>Estadísticas generales del año seleccionado</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="summary-stats">
+                                <div class="summary-item">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                    <div class="summary-content">
+                                        <span class="summary-value" id="totalYearBs">0 Bs</span>
+                                        <span class="summary-label">Total en Bolívares</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="summary-item">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-coins"></i>
+                                    </div>
+                                    <div class="summary-content">
+                                        <span class="summary-value" id="totalYearUsd">0 USD</span>
+                                        <span class="summary-label">Total en Dólares</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="summary-item">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="summary-content">
+                                        <span class="summary-value" id="monthsWithPayments">0</span>
+                                        <span class="summary-label">Meses con Pagos</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="summary-item">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-trophy"></i>
+                                    </div>
+                                    <div class="summary-content">
+                                        <span class="summary-value" id="bestMonth">-</span>
+                                        <span class="summary-label">Mejor Mes</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Chart Section -->
+                <div class="chart-section">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <div class="header-icon-small">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Gráfico Mensual</h3>
+                                <p>Visualización del acumulado por mes</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="monthlyChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Details Table -->
+                <div class="details-section">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <div class="header-icon-small">
+                                <i class="fas fa-table"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Detalles por Mes</h3>
+                                <p>Información detallada de cada mes del año</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="monthly-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Mes</th>
+                                            <th>Total Bs</th>
+                                            <th>Total USD</th>
+                                            <th>Pagos</th>
+                                            <th>Promedio Bs</th>
+                                            <th>Promedio USD</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="monthlyTableBody">
+                                        <tr class="loading-row">
+                                            <td colspan="7" class="loading-cell">
+                                                <div class="loading-spinner"></div>
+                                                <span>Selecciona un año para cargar los datos</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Section -->
+                <div class="export-section">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <div class="header-icon-small">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Exportar Datos</h3>
+                                <p>Descarga los datos en diferentes formatos</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="export-buttons">
+                                <button onclick="exportToPDF()" class="export-btn pdf-btn">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <span>Exportar PDF</span>
+                                </button>
+                                
+                                <button onclick="exportToExcel()" class="export-btn excel-btn">
+                                    <i class="fas fa-file-excel"></i>
+                                    <span>Exportar Excel</span>
+                                </button>
+                                
+                                <button onclick="printReport()" class="export-btn print-btn">
+                                    <i class="fas fa-print"></i>
+                                    <span>Imprimir</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="navigation-section">
+                    <button onclick="goToSuperAdmin()" class="elegant-back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Volver al Dashboard</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content loading-modal">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <p>Procesando datos...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/navigation-protection.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../assets/js/acumulado_mensual.js"></script>
+</body>
+</html>

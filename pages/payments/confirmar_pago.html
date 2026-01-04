@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Pago - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/pagos.css">
+    <link rel="stylesheet" href="../../assets/css/modal-confirm.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <h1><i class="fas fa-building"></i> Gerencias De Condominio</h1>
+                <div class="user-info">
+                    <span id="userName">Usuario</span>
+                    <button class="logout-btn" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h2>Confirmar Pago</h2>
+                <p>Revisa los detalles de tu pago y completa el registro.</p>
+            </div>
+
+            <!-- Payment Confirmation Content -->
+            <div class="confirmation-content">
+                <!-- Resumen del Pago -->
+                <div class="payment-summary-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-list"></i> Resumen del Pago</h3>
+                        <p>Detalles de los meses y montos a pagar</p>
+                    </div>
+
+                    <div class="summary-details">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="label">Meses a Pagar:</span>
+                                <span id="confirmationMonths" class="value">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Método de Pago:</span>
+                                <span id="confirmationMethod" class="value">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Monto a Pagar:</span>
+                                <span id="confirmationAmount" class="value">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Fecha de Pago:</span>
+                                <span id="confirmationDate" class="value">-</span>
+                            </div>
+                        </div>
+
+                        <div class="selected-months-display">
+                            <h4>Meses Seleccionados:</h4>
+                            <div id="selectedMonthsList" class="months-tags">
+                                <!-- Se llenará dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de Pago -->
+                <div class="payment-info-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-info-circle"></i> Información de Pago</h3>
+                        <p>Datos necesarios para procesar tu pago</p>
+                    </div>
+
+                    <div class="payment-details">
+                        <div id="paymentDetails" class="payment-details-content">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Registro -->
+                <div class="payment-form-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-edit"></i> Registrar Pago</h3>
+                        <p>Completa los datos requeridos para finalizar el pago</p>
+                    </div>
+
+                    <form id="paymentRegistrationForm" class="payment-form">
+                        <!-- Campo oculto para la tasa del dólar -->
+                        <input type="hidden" id="tasa_dolar" name="tasa_dolar" value="">
+
+                        <div class="form-section" id="datos-personales-section">
+                            <h4>Datos Personales</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="phoneNumber">Número de Teléfono *</label>
+                                    <input type="text" id="phoneNumber" name="phoneNumber" required
+                                        placeholder="Ej: 04121234567" maxlength="11" pattern="[0-9]{11}"
+                                        inputmode="numeric">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cedula">Cédula *</label>
+                                    <input type="text" id="cedula" name="cedula" required placeholder="Ej: 12345678"
+                                        maxlength="8" pattern="[0-9]{1,8}" inputmode="numeric">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tipo_documento">Tipo de Documento *</label>
+                                    <select id="tipo_documento" name="tipo_documento" required>
+                                        <option value="V">V - Venezolano</option>
+                                        <option value="E">E - Extranjero</option>
+                                        <option value="J">J - Jurídico</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section" id="datos-pago-section">
+                            <h4>Datos del Pago</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="banco">Banco *</label>
+                                    <select id="banco" name="banco" required>
+                                        <option value="">Cargando bancos...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="referencia">Número de Referencia *</label>
+                                    <input type="text" id="referencia" name="referencia" required
+                                        placeholder="Número de referencia del pago">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4>Comprobante de Pago</h4>
+                            <div class="comprobante-upload" id="comprobanteUpload">
+                                <input type="file" id="comprobante" name="comprobante" accept="image/*,.pdf"
+                                    style="display: none;">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <p><strong>Haga clic para seleccionar el comprobante</strong></p>
+                                <p style="font-size: 0.85rem; color: #6b7280;">Formatos: JPG, PNG, PDF (Máx. 5MB)</p>
+                                <div class="file-info">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span id="fileName"></span>
+                                </div>
+                            </div>
+                            <a href="#" id="viewComprobanteBtn" class="btn-view-comprobante" target="_blank"
+                                style="display: none;">
+                                <i class="fas fa-eye"></i> Ver Comprobante
+                            </a>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" onclick="goBack()" class="btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Volver
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-check"></i> Registrar Pago
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Verificando -->
+    <div id="verifyingModal" class="modal" style="display: none;">
+        <div class="modal-content success">
+            <div class="success-content">
+                <div class="verifying-icon">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <h3>Verificando Pago...</h3>
+                <p>Tu pago está siendo procesado. Por favor espera un momento.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content success">
+            <div class="success-content">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>¡Pago Registrado!</h3>
+                <p>Tu pago ha sido registrado correctamente.</p>
+                <button onclick="closeSuccessModal()" class="btn-success-continue">
+                    <i class="fas fa-check"></i> Continuar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/navigation-protection.js"></script>
+    <script src="../../assets/js/modal-confirm.js"></script>
+    <script src="../../assets/js/confirmar_pago.js"></script>
+</body>
+
+</html>

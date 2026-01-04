@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo-section">
+                <i class="fas fa-user-plus"></i>
+                <h1>Registro</h1>
+                <p>Crear nueva cuenta</p>
+            </div>
+
+            <form id="registerForm" class="login-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="reg_username">Usuario</label>
+                    <input type="text" id="reg_username" name="username" required>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="reg_password">Contraseña</label>
+                    <div class="password-input-container">
+                        <input type="password" id="reg_password" name="password" required>
+                        <span class="password-toggle" onclick="togglePasswordVisibility('reg_password')">
+                            <i class="fas fa-eye" id="reg_password-eye"></i>
+                        </span>
+                    </div>
+                    <div class="password-requirements">
+                        <div class="requirement" id="req-length">
+                            <i class="fas fa-circle"></i>
+                            <span>Mínimo 7 caracteres, máximo 20</span>
+                        </div>
+                        <div class="requirement" id="req-special">
+                            <i class="fas fa-circle"></i>
+                            <span>Al menos un carácter especial</span>
+                        </div>
+                        <div class="requirement" id="req-uppercase">
+                            <i class="fas fa-circle"></i>
+                            <span>Al menos una letra mayúscula</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg_confirm_password">Confirmar Contraseña</label>
+                    <div class="password-input-container">
+                        <input type="password" id="reg_confirm_password" name="confirm_password" required>
+                        <span class="password-toggle" onclick="togglePasswordVisibility('reg_confirm_password')">
+                            <i class="fas fa-eye" id="reg_confirm_password-eye"></i>
+                        </span>
+                    </div>
+                    <div class="validation-message" id="password-match"></div>
+                </div>
+
+                <button type="submit" class="btn-register">
+                    <i class="fas fa-user-plus"></i>
+                    Registrarse
+                </button>
+            </form>
+
+            <div class="register-link">
+                <p>¿Ya tienes cuenta? <a href="index.html">Inicia sesión aquí</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/register-validation.js"></script>
+</body>
+
+</html>

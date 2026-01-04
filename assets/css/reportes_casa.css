@@ -1,0 +1,773 @@
+/* Estilos específicos para reportes_casa.html */
+
+/* Reset y base */
+.reportes-casa-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Asegurar que todos los elementos se muestren */
+.reportes-casa-page * {
+    box-sizing: border-box;
+}
+
+.reportes-casa-page .elegant-header,
+.reportes-casa-page .main-content-wrapper,
+.reportes-casa-page .search-section,
+.reportes-casa-page .year-section,
+.reportes-casa-page .generate-section,
+.reportes-casa-page .navigation-section {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.reportes-casa-page .main-content {
+    background: #f8f9fa;
+    padding: 2rem 0;
+    width: 100%;
+    display: block;
+}
+
+/* Elegant Header Section */
+.elegant-header {
+    position: relative;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+    color: white;
+    padding: 4rem 2rem;
+    margin-bottom: 3rem;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 
+        0 20px 60px rgba(30, 60, 114, 0.4),
+        0 8px 25px rgba(30, 60, 114, 0.2);
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.header-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.floating-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 80px;
+    height: 80px;
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 120px;
+    height: 120px;
+    top: 60%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.shape-3 {
+    width: 60px;
+    height: 60px;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.header-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem auto;
+    font-size: 2rem;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content p {
+    margin: 0 0 2rem 0;
+    font-size: 1.2rem;
+    opacity: 0.9;
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+.header-decoration {
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    margin: 0 auto;
+    border-radius: 2px;
+}
+
+/* Main Content Wrapper */
+.main-content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    width: 100%;
+    display: block;
+}
+
+/* Section Cards */
+.section-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.08),
+        0 4px 16px rgba(0, 0, 0, 0.04);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.section-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.12),
+        0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.header-icon-small {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+}
+
+.header-text h3 {
+    margin: 0 0 0.25rem 0;
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.header-text p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+/* Elegant Search Styles */
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    display: block;
+}
+
+.search-input-container {
+    position: relative;
+    margin-bottom: 1rem;
+    width: 100%;
+    display: block;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #1e3c72;
+    font-size: 1.1rem;
+    z-index: 2;
+}
+
+.search-input-container input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    color: #333;
+    box-sizing: border-box;
+    display: block;
+}
+
+.search-input-container input:focus {
+    outline: none;
+    border-color: #1e3c72;
+    box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1);
+    transform: translateY(-1px);
+}
+
+.search-underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background: linear-gradient(90deg, #1e3c72, #2a5298);
+    border-radius: 1px;
+    transition: width 0.3s ease;
+}
+
+.search-input-container input:focus + .search-underline {
+    width: 100%;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #1e3c72;
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+}
+
+.search-result-item {
+    padding: 1.25rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f3f4;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-result-item:hover {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    transform: translateX(6px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 14px 14px;
+}
+
+.search-result-item .house-info {
+    flex: 1;
+}
+
+.search-result-item .house-number {
+    font-weight: 700;
+    color: #1e3c72;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.search-result-item .house-owner {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.search-result-item .house-type {
+    font-size: 0.8rem;
+    color: white;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(30, 60, 114, 0.3);
+}
+
+.search-hint {
+    margin-top: 1rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    padding: 0.75rem;
+    background: rgba(30, 60, 114, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid #1e3c72;
+}
+
+.search-hint i {
+    color: #1e3c72;
+}
+
+/* Selected House Card */
+.selected-house-card {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-top: 1rem;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 8px 25px rgba(30, 60, 114, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.selected-house-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.selected-house-card:hover::before {
+    left: 100%;
+}
+
+.selected-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.selected-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.selected-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.selected-label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    font-weight: 400;
+}
+
+.selected-value {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.remove-selection {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.75rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.remove-selection:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Year Selector */
+.year-selector {
+    margin-top: 1rem;
+}
+
+.year-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.year-option {
+    position: relative;
+    cursor: pointer;
+}
+
+.year-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.year-label {
+    display: block;
+    padding: 1rem;
+    text-align: center;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    background: white;
+    color: #666;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.year-option input[type="radio"]:checked + .year-label {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    border-color: #1e3c72;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(30, 60, 114, 0.3);
+}
+
+.year-option:hover .year-label {
+    border-color: #1e3c72;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(30, 60, 114, 0.2);
+}
+
+.year-option.active .year-label {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    border-color: #1e3c72;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(30, 60, 114, 0.3);
+}
+
+/* Elegant Generate Button */
+.elegant-generate-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    border: none;
+    border-radius: 20px;
+    padding: 0;
+    color: white;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 10px 40px rgba(30, 60, 114, 0.3);
+    position: relative;
+    overflow: hidden;
+    margin: 2rem 0;
+    display: block;
+    box-sizing: border-box;
+}
+
+.elegant-generate-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(30, 60, 114, 0.4);
+}
+
+.elegant-generate-btn:active {
+    transform: translateY(-1px);
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.btn-text-wrapper {
+    flex: 1;
+    text-align: left;
+}
+
+.btn-main-text {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.btn-sub-text {
+    display: block;
+    opacity: 0.9;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.btn-arrow {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.elegant-generate-btn:hover .btn-arrow {
+    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.elegant-generate-btn:hover .btn-shine {
+    left: 100%;
+}
+
+/* Navigation Section */
+.navigation-section {
+    text-align: center;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+
+.elegant-back-btn {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.elegant-back-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.elegant-back-btn:hover::before {
+    left: 100%;
+}
+
+.elegant-back-btn:hover {
+    background: linear-gradient(135deg, #5a6268, #495057);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(108, 117, 125, 0.4);
+}
+
+.elegant-back-btn:active {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .elegant-header {
+        padding: 3rem 1rem;
+        margin: 0 1rem 2rem 1rem;
+        border-radius: 20px;
+    }
+    
+    .header-content h1 {
+        font-size: 2.2rem;
+    }
+    
+    .header-content p {
+        font-size: 1rem;
+    }
+    
+    .header-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .main-content-wrapper {
+        padding: 0 1rem;
+    }
+    
+    .section-card {
+        border-radius: 16px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-header {
+        padding: 1.25rem 1.5rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .year-options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .year-label {
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+    
+    .elegant-generate-btn {
+        margin: 1.5rem 0;
+    }
+    
+    .btn-content {
+        padding: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .btn-text-wrapper {
+        text-align: center;
+    }
+    
+    .btn-icon-wrapper {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .btn-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .search-result-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+    
+    .search-result-item:hover {
+        transform: translateY(-2px);
+    }
+    
+    .selected-house-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .selected-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .navigation-section {
+        margin: 2rem 1rem;
+    }
+    
+    .shape {
+        display: none;
+    }
+}

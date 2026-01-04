@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas de Ingresos - GGerencias De Condominio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/ingresos.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-building"></i> 
+                <span>GGerencias De Condominio</span>
+            </div>
+            <div class="user-section">
+                <span class="user-name"></span>
+                <button class="volver-btn" onclick="volverDashboard()">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb">
+                <a href="index.html" class="breadcrumb-link">Dashboard</a>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-current">Estadísticas de Ingresos</span>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-chart-bar"></i> Estadísticas de Ingresos</h1>
+                <p>Consulta estadísticas detalladas de pagos, métodos de pago y totales acumulados</p>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <form id="filtersForm" class="filters-form">
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label for="fechaInicio">
+                                <i class="fas fa-calendar-alt"></i>
+                                Fecha Inicio
+                            </label>
+                            <div class="date-input-container">
+                                <input type="text" 
+                                       id="fechaInicio" 
+                                       name="fechaInicio"
+                                       required>
+                                <button type="button" class="calendar-btn" onclick="abrirCalendario('fechaInicio')">
+                                   
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="fechaFin">
+                                <i class="fas fa-calendar-alt"></i>
+                                Fecha Fin
+                            </label>
+                            <div class="date-input-container">
+                                <input type="text" 
+                                       id="fechaFin" 
+                                       name="fechaFin"
+                                       required>
+                                <button type="button" class="calendar-btn" onclick="abrirCalendario('fechaFin')">
+                                    
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="tipoReporte">
+                                <i class="fas fa-filter"></i>
+                                Tipo de Reporte
+                            </label>
+                            <select id="tipoReporte" name="tipoReporte" required>
+                                <option value="mensual">Mensual</option>
+                                <option value="trimestral">Trimestral</option>
+                                <option value="anual">Anual</option>
+                                <option value="personalizado">Personalizado</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="metodoPago">
+                                <i class="fas fa-credit-card"></i>
+                                Método de Pago
+                            </label>
+                            <select id="metodoPago" name="metodoPago">
+                                <option value="">Todos los métodos</option>
+                                <!-- Los métodos se cargarán dinámicamente -->
+                            </select>
+                        </div>
+                        
+                        <div class="filter-actions">
+                            <button type="submit" class="filter-btn">
+                                <i class="fas fa-search"></i>
+                                Generar Estadísticas
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Loading -->
+            <div id="loadingSection" class="loading-section" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Generando estadísticas...</p>
+            </div>
+
+            <!-- Balance Resumen -->
+            <section class="balances-panel" id="balancesPanel">
+                <div class="balance-card">
+                    <div class="balance-icon usd">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div>
+                        <h3>Efectivo USD</h3>
+                        <p id="balanceEfectivoUsd">$0.00</p>
+                    </div>
+                </div>
+                <div class="balance-card">
+                    <div class="balance-icon bs">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div>
+                        <h3>Efectivo Bs</h3>
+                        <p id="balanceEfectivoBs">Bs 0.00</p>
+                    </div>
+                </div>
+                <div class="balance-card">
+                    <div class="balance-icon bank">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div>
+                        <h3>Banco</h3>
+                        <p id="balanceBanco">$0.00</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <div id="statisticsSection" class="statistics-section" style="display: none;">
+                <!-- Summary Cards -->
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Total Viviendas</h3>
+                            <span class="summary-value" id="totalViviendas">-</span>
+                            <p class="summary-label">Viviendas registradas</p>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Viviendas Pagaron</h3>
+                            <span class="summary-value" id="viviendasPagaron">-</span>
+                            <p class="summary-label">En el período seleccionado</p>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Total Personas</h3>
+                            <span class="summary-value" id="totalPersonas">-</span>
+                            <p class="summary-label">Que realizaron pagos</p>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Total USD</h3>
+                            <span class="summary-value" id="totalAcumuladoUsd">-</span>
+                            <p class="summary-label">Acumulado en dólares</p>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="summary-content">
+                            <h3>Total Bs</h3>
+                            <span class="summary-value" id="totalAcumuladoBs">-</span>
+                            <p class="summary-label">Acumulado en bolívares</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-container">
+                        <h3><i class="fas fa-chart-pie"></i> Distribución por Métodos de Pago</h3>
+                        <canvas id="metodosPagoChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h3><i class="fas fa-chart-line"></i> Pagos por Mes</h3>
+                        <canvas id="pagosPorMesChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Detailed Tables -->
+                <div class="tables-section">
+                    <div class="table-container">
+                        <h3><i class="fas fa-table"></i> Detalle por Método de Pago</h3>
+                        <div class="table-responsive">
+                            <table class="stats-table">
+                                <thead>
+                                    <tr>
+                                        <th>Método de Pago</th>
+                                        <th>Cantidad de Pagos</th>
+                                        <th>Total USD</th>
+                                        <th>Total Bs</th>
+                                        <th>Porcentaje</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="metodosPagoTableBody">
+                                    <!-- Los datos se cargarán dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <h3><i class="fas fa-calendar-week"></i> Pagos por Mes</h3>
+                        <div class="table-responsive">
+                            <table class="stats-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mes</th>
+                                        <th>Viviendas Pagaron</th>
+                                        <th>Total Pagos</th>
+                                        <th>Total USD</th>
+                                        <th>Total Bs</th>
+                                        <th>Promedio por Vivienda</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pagosPorMesTableBody">
+                                    <!-- Los datos se cargarán dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Section -->
+                <div class="export-section">
+                    <h3><i class="fas fa-download"></i> Exportar Reporte</h3>
+                    <div class="export-buttons">
+                        <button class="export-btn" onclick="exportarExcel()">
+                            <i class="fas fa-file-excel"></i>
+                            Exportar Excel
+                        </button>
+                        <button class="export-btn" onclick="exportarPDF()">
+                            <i class="fas fa-file-pdf"></i>
+                            Exportar PDF
+                        </button>
+                        <button class="export-btn" onclick="imprimirReporte()">
+                            <i class="fas fa-print"></i>
+                            Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script src="../js/main.js?v=3.0"></script>
+    <script src="../js/ingresos.js?v=4.1"></script>
+</body>
+</html>

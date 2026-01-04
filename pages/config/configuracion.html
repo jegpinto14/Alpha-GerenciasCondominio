@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="autocomplete" content="off">
+    <meta name="password-manager" content="off">
+    <title>Configuración - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/globals.css">
+    <link rel="stylesheet" href="../../assets/css/configuracion.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <h1><i class="fas fa-building"></i> Gerencias De Condominio</h1>
+                <div class="user-info">
+                    <span id="userName">Identificando usuario...</span>
+                    <button class="logout-btn" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h2>Configuración de Cuenta</h2>
+                <p>Administra tu información personal y cambia tu contraseña de manera segura.</p>
+            </div>
+
+            <!-- Configuración con Tabs -->
+            <div class="config-container">
+                <!-- Tab Navigation -->
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="personal">
+                            <i class="fas fa-user-edit"></i> Información Personal
+                        </button>
+                        <button class="tab-button" data-tab="password">
+                            <i class="fas fa-lock"></i> Cambiar Contraseña
+                        </button>
+                        <button class="tab-button" data-tab="username">
+                            <i class="fas fa-user-cog"></i> Cambio de Usuario
+                        </button>
+                    </div>
+                    
+                    <!-- Tab Content -->
+                    <div class="tab-content active" id="tab-personal">
+                        <div class="tab-inner">
+                            <div class="tab-header">
+                                <h4><i class="fas fa-user-edit"></i> Información Personal</h4>
+                                <p>Actualiza tu nombre, apellido, número de documento, Gmail y teléfono.</p>
+                            </div>
+                            <form id="userInfoForm">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="editName"><i class="fas fa-user"></i> Nombre</label>
+                                            <input type="text" id="editName" name="name" placeholder="Tu nombre" minlength="2" maxlength="50" pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+" title="Solo letras y espacios">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editApellido"><i class="fas fa-user"></i> Apellido</label>
+                                            <input type="text" id="editApellido" name="apellido" placeholder="Tu apellido" minlength="2" maxlength="50" pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+" title="Solo letras y espacios">
+                                        </div>
+                                    </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="editCedula"><i class="fas fa-id-card"></i> Número de Documento</label>
+                                        <input type="text" id="editCedula" name="cedula" placeholder="12345678" maxlength="8" minlength="7" pattern="[0-9]+" title="Solo números, entre 7 y 8 dígitos">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editEmail"><i class="fas fa-envelope"></i> Gmail</label>
+                                        <input type="email" id="editEmail" name="email" placeholder="tu.gmail@gmail.com" maxlength="100" pattern="[a-zA-Z0-9._%+\-]+@gmail\.com$" title="Debe ser una dirección de Gmail válida">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="editTelefono"><i class="fas fa-phone"></i> Teléfono</label>
+                                        <input type="tel" id="editTelefono" name="telefono" placeholder="04123456789" maxlength="11" minlength="10" pattern="0[0-9]{9,10}" title="Número venezolano válido (ej: 04123456789)">
+                                    </div>
+                                    <div class="form-group">
+                                        <!-- Campo vacío para mantener el layout -->
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-dashboard">
+                                        <i class="fas fa-save"></i> Guardar Cambios
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-password">
+                        <div class="tab-inner">
+                            <div class="tab-header">
+                                <h4><i class="fas fa-lock"></i> Cambiar Contraseña</h4>
+                                <p>Actualiza tu contraseña por una nueva más segura.</p>
+                            </div>
+                            <form id="passwordForm" autocomplete="off" data-form-type="other">
+                              
+                                        <div class="form-group">
+                                            <label for="currentPassword"><i class="fas fa-key"></i> Contraseña Actual</label>
+                                            <div class="password-input-container">
+                                                <input type="password" id="currentPassword" name="currentPassword" placeholder="Tu contraseña actual" maxlength="20" autocomplete="off">
+                                                <span class="password-toggle" onclick="togglePasswordVisibility('currentPassword')">
+                                                    <i class="fas fa-eye" id="currentPassword-eye"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="newPassword"><i class="fas fa-lock"></i> Nueva Contraseña</label>
+                                        <div class="password-input-container">
+                                            <input type="password" id="newPassword" name="newPassword" placeholder="Nueva contraseña segura" maxlength="20" autocomplete="off">
+                                            <span class="password-toggle" onclick="togglePasswordVisibility('newPassword')">
+                                                <i class="fas fa-eye" id="newPassword-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="confirmPassword"><i class="fas fa-check"></i> Confirmar Nueva Contraseña</label>
+                                        <div class="password-input-container">
+                                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repite la nueva contraseña" maxlength="20" autocomplete="off">
+                                            <span class="password-toggle" onclick="togglePasswordVisibility('confirmPassword')">
+                                                <i class="fas fa-eye" id="confirmPassword-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Indicadores de seguridad -->
+                                    <div class="password-requirements">
+                                        <div id="req-length" class="requirement-item">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Entre 6 y 20 caracteres</span>
+                                        </div>
+                                        <div id="req-match" class="requirement-item">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Las contraseñas coinciden</span>
+                                        </div>
+                                        <div id="req-current" class="requirement-item">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Diferente a la contraseña actual</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn-dashboard">
+                                            <i class="fas fa-save"></i> Cambiar Contraseña
+                                        </button>
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tab-username">
+                        <div class="tab-inner">
+                            <div class="tab-header">
+                                <h4><i class="fas fa-user-cog"></i> Cambio de Usuario</h4>
+                                <p>Modifica tu nombre de usuario y datos relacionados.</p>
+                            </div>
+                            
+                            <form id="usernameForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="editUsername"><i class="fas fa-user"></i> Nombre de Usuario Actual</label>
+                                        <input type="text" id="editUsername" name="currentUsername" placeholder="Usuario actual" autocomplete="username" maxlength="50">
+                                    </div>
+                                        <div class="form-group">
+                                            <label for="newUsername"><i class="fas fa-user-plus"></i> Nuevo Nombre de Usuario</label>
+                                            <input type="text" id="newUsername" name="newUsername" placeholder="Nuevo usuario" minlength="3" maxlength="8">
+                                        </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="confirmUsername"><i class="fas fa-check"></i> Confirmar Nuevo Usuario</label>
+                                            <input type="text" id="confirmUsername" name="confirmUsername" placeholder="Repite el nuevo usuario" maxlength="8">
+                                        </div>
+                                    <div class="form-group">
+                                        <label for="usernamePassword"><i class="fas fa-key"></i> Contraseña Actual</label>
+                                        <div class="password-input-container">
+                                            <input type="password" id="usernamePassword" name="password" placeholder="Tu contraseña actual" maxlength="20">
+                                            <span class="password-toggle" onclick="togglePasswordVisibility('usernamePassword')">
+                                                <i class="fas fa-eye" id="usernamePassword-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Validaciones de usuario -->
+                                <div class="username-requirements">
+                                    <div id="req-user-length" class="requirement-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Entre 3 y 8 caracteres</span>
+                                    </div>
+                                    <div id="req-user-match" class="requirement-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Los usuarios coinciden</span>
+                                    </div>
+                                    <div id="req-user-different" class="requirement-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Diferente al usuario actual</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-dashboard">
+                                        <i class="fas fa-save"></i> Cambiar Usuario
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- JavaScript -->
+        <script src="../../assets/js/navigation-protection.js"></script>
+        <script src="../../assets/js/configuracion.js"></script>
+    <script>
+        // Solo deshabilitar autocompletado, sin interferir con funcionalidad
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('input[type="password"]').forEach(input => {
+                input.setAttribute('autocomplete', 'off');
+            });
+        });
+        
+        // Cargar directamente los formularios de configuración
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 Página de configuración cargada');
+            // Cargar datos del usuario directamente
+            loadUserData();
+            
+            // Configurar navegación de tabs
+            setupTabNavigation();
+            
+            // Asegurar que el campo de usuario sea editable
+            ensureUsernameFieldEditable();
+            
+            // Mostrar información del usuario actual DESPUÉS de cargar datos
+            setTimeout(() => {
+                showCurrentUserInfo();
+            }, 3000); // Aumentar tiempo para asegurar que loadUserData() termine
+            
+            // Debug para verificar el resultado final
+            setTimeout(() => {
+                const userNameSpan = document.getElementById('userName');
+                console.log('🎯 RESULTADO FINAL - Usuario mostrado:', userNameSpan.textContent);
+                console.log('🎯 Datos del usuario actual:', originalUserData);
+                
+                // Si no se cargó correctamente, intentar cargar datos nuevamente
+                if (userNameSpan.textContent === 'Identificando usuario...' || userNameSpan.textContent === 'Usuario Desconocido') {
+                    console.log('🔄 Reintentando cargar datos del usuario...');
+                    loadUserData();
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

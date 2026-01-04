@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Bandeja de Sugerencias y/o Reclamos - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/reclamos.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-building"></i>
+                <span>Gerencias De Condominio</span>
+            </div>
+            <div class="user-section">
+                <span class="user-name"></span>
+                <button class="volver-btn" onclick="volverDashboard()">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="index.html" class="breadcrumb-link">
+                <i class="fas fa-building"></i>
+                Dashboard
+            </a>
+            <i class="fas fa-chevron-right"></i>
+            <span class="breadcrumb-current">Sugerencias y/o Reclamos</span>
+        </nav>
+
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1>Bandeja de Sugerencias y/o Reclamos</h1>
+            <p>Revisa y gestiona los reclamos enviados por los vecinos para dar una respuesta oportuna.</p>
+        </section>
+
+        <!-- Summary -->
+        <section class="summary-section">
+            <div class="summary-card">
+                <div class="summary-icon pending">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div>
+                    <p class="summary-label">Pendientes</p>
+                    <p class="summary-value" id="reclamosPendientes">0</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon received">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div>
+                    <p class="summary-label">Recibidos</p>
+                    <p class="summary-value" id="reclamosRecibidos">0</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon total">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div>
+                    <p class="summary-label">Total</p>
+                    <p class="summary-value" id="reclamosTotal">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters -->
+        <section class="filters-section">
+            <div class="filters-card">
+                <div class="filter-group">
+                    <label for="reclamoEstadoFiltro"><i class="fas fa-filter"></i> Estado</label>
+                    <select id="reclamoEstadoFiltro">
+                        <option value="todos">Todos</option>
+                        <option value="pendiente">Pendientes</option>
+                        <option value="recibido">Recibidos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="reclamoBusqueda"><i class="fas fa-search"></i> Buscar</label>
+                    <input type="text" id="reclamoBusqueda" placeholder="Buscar por vecino, cédula o vivienda">
+                </div>
+            </div>
+        </section>
+
+        <!-- Reclamos List -->
+        <section class="reclamos-section">
+            <div class="reclamos-card">
+                <div class="reclamos-header">
+                    <h2><i class="fas fa-inbox"></i> Bandeja de reclamos</h2>
+                    <span class="badge" id="reclamosBadge">Mostrando todos</span>
+                </div>
+                <div class="reclamos-wrapper" id="reclamosWrapper">
+                    <!-- Items renderizados dinámicamente -->
+                </div>
+                <div class="empty-state" id="reclamosEmptyState" style="display:none;">
+                    <i class="fas fa-inbox"></i>
+                    <h3>No hay reclamos</h3>
+                    <p>No se encontraron reclamos con los filtros aplicados.</p>
+                </div>
+                <div class="pagination" id="reclamosPagination" hidden>
+                    <button type="button" class="page-btn" id="reclamosPrev" aria-label="Página anterior">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="page-info" id="reclamosPaginationInfo">Página 1</div>
+                    <button type="button" class="page-btn" id="reclamosNext" aria-label="Página siguiente">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Detalle Reclamo -->
+    <div class="modal" id="detalleReclamoModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close="modal"></div>
+        <div class="modal-dialog" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3><i class="fas fa-comment-alt"></i> Detalle del reclamo</h3>
+                <button class="modal-close" id="cerrarDetalleReclamo" type="button" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="detalleReclamoContenido">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalle Vecino -->
+    <div class="modal" id="detalleVecinoModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close="modal"></div>
+        <div class="modal-dialog" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> Información del vecino</h3>
+                <button class="modal-close" id="cerrarDetalleVecino" type="button" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="detalleVecinoContenido">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/reclamos.js"></script>
+</body>
+</html>

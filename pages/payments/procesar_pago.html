@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procesar Pago - Gerencias De Condominio</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/pagos.css">
+    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <h1><i class="fas fa-building"></i> Gerencias De Condominio</h1>
+                <div class="user-info">
+                    <span id="userName">Usuario</span>
+                    <button class="logout-btn" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h2>Procesar Pago</h2>
+                <p>Ingresa el monto que deseas pagar y selecciona tu método de pago preferido.</p>
+            </div>
+
+            <!-- Payment Processing Content -->
+            <div class="payment-processing-content">
+                <!-- Fecha del Pago -->
+                <div class="payment-date-card">
+                    <div class="card-header">
+                        <h3><i class="far fa-calendar-alt"></i> Fecha del Pago</h3>
+                        <p>Selecciona la fecha en que realizaste el pago</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="paymentDate"><i class="far fa-calendar-alt"></i> Fecha del Pago</label>
+                            <input type="text" id="paymentDate" class="form-control" placeholder="dd/mm/yyyy" required
+                                readonly>
+                            <small class="form-text text-muted">Selecciona la fecha en que realizaste el pago</small>
+                        </div>
+                        <div id="dollarRateInfo" class="alert alert-info mt-3" role="alert">
+                            <i class="fas fa-info-circle"></i> Tasa del día:
+                            <span id="dollarRateValue">Cargando...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de la deuda -->
+                <div class="debt-info-card">
+                    <div class="debt-header">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Información de la Deuda</h3>
+                        <p>Detalles de los meses pendientes de pago</p>
+                    </div>
+
+                    <div class="debt-details">
+                        <div class="debt-summary">
+                            <div class="summary-item">
+                                <span class="label">Meses Seleccionados:</span>
+                                <span id="selectedMonthsCount" class="value">0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Monto Total Sugerido:</span>
+                                <span id="suggestedTotal" class="value">0 Bs</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Monto Sugerido (USD):</span>
+                                <span id="suggestedTotalUsd" class="value">0 USD</span>
+                            </div>
+                        </div>
+
+                        <div class="selected-months-list" id="selectedMonthsList">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selección de Método de Pago -->
+                <div class="payment-method-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-credit-card"></i> Método de Pago</h3>
+                        <p>Selecciona cómo deseas realizar el pago</p>
+                    </div>
+
+                    <div class="payment-methods-grid">
+                        <div class="payment-method-option" onclick="selectPaymentMethod('pago_movil')"
+                            data-method="pago_movil">
+                            <div class="method-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h4>Pago Móvil</h4>
+                            <p>Pago a través de banca móvil</p>
+                        </div>
+                        <div class="payment-method-option" onclick="selectPaymentMethod('transferencia')"
+                            data-method="transferencia">
+                            <div class="method-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <h4>Transferencia</h4>
+                            <p>Transferencia bancaria</p>
+                        </div>
+                        <div class="payment-method-option" onclick="selectPaymentMethod('efectivo_bs')"
+                            data-method="efectivo_bs">
+                            <div class="method-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <h4>Efectivo Bs</h4>
+                            <p>Pago en efectivo bolívares</p>
+                        </div>
+                        <div class="payment-method-option" onclick="selectPaymentMethod('efectivo_divisa')"
+                            data-method="efectivo_divisa">
+                            <div class="method-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <h4>Efectivo USD</h4>
+                            <p>Pago en efectivo dólares</p>
+                        </div>
+                        <!-- <div class="payment-method-option" onclick="selectPaymentMethod('donaciones')"
+                            data-method="donaciones">
+                            <div class="method-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <h4>Donaciones</h4>
+                            <p>Pago por donaciones</p>
+                        </div> 
+                        <div class="payment-method-option" onclick="selectPaymentMethod('punto_venta_debito')"
+                            data-method="punto_venta_debito">
+                            <div class="method-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <h4>Punto de Venta Débito</h4>
+                            <p>Pago con tarjeta de débito</p>
+                        </div>
+                        <div class="payment-method-option" onclick="selectPaymentMethod('punto_venta_credito')"
+                            data-method="punto_venta_credito">
+                            <div class="method-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <h4>Punto de Venta Crédito</h4>
+                            <p>Pago con tarjeta de crédito</p>
+                        </div>-->
+                    </div>
+                </div>
+
+                <!-- Formulario de Monto Personalizado -->
+                <div class="custom-amount-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-edit"></i> Monto a Pagar</h3>
+                        <p>Puedes pagar el monto completo o un monto parcial</p>
+                    </div>
+
+                    <div class="amount-form">
+                        <div class="amount-input-section">
+                            <label for="customAmount"></label>
+                            <div class="amount-input-wrapper">
+                                <input type="number" id="customAmount" placeholder="0.00" min="0" step="0.01" required>
+                                <span class="currency-label">Bs</span>
+                            </div>
+                            <div class="amount-suggestions">
+                                <button type="button" onclick="setAmountPercentage(25)"
+                                    class="suggestion-btn">25%</button>
+                                <button type="button" onclick="setAmountPercentage(50)"
+                                    class="suggestion-btn">50%</button>
+                                <button type="button" onclick="setAmountPercentage(75)"
+                                    class="suggestion-btn">75%</button>
+                                <button type="button" onclick="setAmountPercentage(100)"
+                                    class="suggestion-btn">100%</button>
+                            </div>
+                        </div>
+
+                        <div class="amount-summary">
+                            <div class="summary-row">
+                                <span class="label">Monto a Pagar:</span>
+                                <span id="paymentAmount" class="amount">0 Bs</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="label">Monto a Pagar (USD):</span>
+                                <span id="paymentAmountUsd" class="amount">0 USD</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="label">Monto Restante:</span>
+                                <span id="remainingAmount" class="amount">0 Bs</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="label">Monto Restante (USD):</span>
+                                <span id="remainingAmountUsd" class="amount">0 USD</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón de Continuar -->
+                <div class="continue-section">
+                    <button id="continueBtn" class="btn-premium" onclick="proceedToPayment()" disabled>
+                        <i class="fas fa-arrow-right"></i> Continuar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal de Verificando -->
+    <div id="verifyingModal" class="modal" style="display: none;">
+        <div class="modal-content success">
+            <div class="success-content">
+                <div class="verifying-icon">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <h3>Verificando Pago...</h3>
+                <p>Tu pago está siendo procesado. Por favor espera un momento.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content success">
+            <div class="success-content">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>¡Pago Registrado!</h3>
+                <p>Tu pago ha sido registrado correctamente.</p>
+                <button onclick="closeSuccessModal()" class="btn-success-continue">
+                    <i class="fas fa-check"></i> Continuar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script src="../../assets/js/navigation-protection.js"></script>
+
+    <script src="../../assets/js/procesar_pago.js"></script>
+</body>
+
+</html>
