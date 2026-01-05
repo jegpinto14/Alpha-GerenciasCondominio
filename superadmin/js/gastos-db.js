@@ -928,12 +928,20 @@ function renderizarTablaObligacionesVencidas() {
 
   // Filtrar obligaciones vencidas
   const hoy = new Date();
-  const vencidas = state.obligaciones.filter((obl) => {
-    const fechaVenc = new Date(obl.fecha_vencimiento + "T00:00:00");
-    return (
-      fechaVenc < hoy && (obl.saldo_pendiente_usd || obl.monto_total_usd) > 0
-    );
-  });
+  const vencidas = state.obligaciones
+    .map((obl) => {
+      const saldoPendiente = parseFloat(
+        obl.saldo_pendiente_usd ?? obl.monto_total_usd ?? 0
+      );
+      return {
+        ...obl,
+        saldo_calculado: Number.isFinite(saldoPendiente) ? saldoPendiente : 0,
+      };
+    })
+    .filter((obl) => {
+      const fechaVenc = new Date(obl.fecha_vencimiento + "T00:00:00");
+      return fechaVenc < hoy && obl.saldo_calculado > 0;
+    });
 
   if (vencidas.length === 0) {
     card.style.display = "none";
@@ -945,7 +953,7 @@ function renderizarTablaObligacionesVencidas() {
 
   // Calcular totales
   const totalAdeudado = vencidas.reduce(
-    (sum, obl) => sum + (obl.saldo_pendiente_usd || obl.monto_total_usd),
+    (sum, obl) => sum + obl.saldo_calculado,
     0
   );
 
@@ -965,11 +973,9 @@ function renderizarTablaObligacionesVencidas() {
                 <td>${obl.concepto}</td>
                 <td>${formatearFecha(obl.fecha_vencimiento)}</td>
                 <td><span class="cxp-status cxp-status--danger">${diasVencidos} días</span></td>
-                <td>${formatearMoneda(obl.monto_total_usd)}</td>
-                <td>${formatearMoneda(obl.monto_pagado_usd || 0)}</td>
-                <td><strong>${formatearMoneda(
-        obl.saldo_pendiente_usd || obl.monto_total_usd
-      )}</strong></td>
+                <td>${formatearMoneda(parseFloat(obl.monto_total_usd) || 0)}</td>
+                <td>${formatearMoneda(parseFloat(obl.monto_pagado_usd) || 0)}</td>
+                <td><strong>${formatearMoneda(obl.saldo_calculado)}</strong></td>
                 <td><span class="cxp-status" data-status="vencida">Vencida</span></td>
                 <td>
                     <button type="button" class="btn btn-sm btn-danger" onclick="abrirModalPagoParaObligacion(${obl.obligacion_id
