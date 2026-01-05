@@ -6,7 +6,7 @@ let currentYear = new Date().getFullYear();
 let activeHousingSummary = null;
 
 // Inicializar página
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     hydrateActiveHousingFromStorage();
     checkSession();
     setDefaultDates();
@@ -32,7 +32,7 @@ async function checkSession() {
     try {
         const response = await fetch('../../api/check_session.php');
         const data = await response.json();
-        
+
         if (data.success) {
             currentUser = data.user;
             document.getElementById('userName').textContent = data.user.username;
@@ -52,7 +52,7 @@ async function logout() {
             method: 'POST'
         });
         const data = await response.json();
-        
+
         if (data.success) {
             window.location.href = '/pages/auth/index.html';
         }
@@ -79,38 +79,38 @@ function formatDateToVenezuelan(date) {
 // Convertir fecha venezolana a formato ISO (YYYY-MM-DD)
 function convertVenezuelanToISO(dateString) {
     if (!dateString) return '';
-    
+
     const parts = dateString.split('/');
     if (parts.length !== 3) return '';
-    
+
     const day = parts[0];
     const month = parts[1];
     const year = parts[2];
-    
+
     // Validar formato
     if (day.length !== 2 || month.length !== 2 || year.length !== 4) return '';
-    
+
     return `${year}-${month}-${day}`;
 }
 
 // Agregar máscara de entrada para fechas
 function addDateMask(inputId) {
     const input = document.getElementById(inputId);
-    
-    input.addEventListener('input', function(e) {
+
+    input.addEventListener('input', function (e) {
         let value = e.target.value.replace(/\D/g, ''); // Solo números
-        
+
         if (value.length >= 2) {
             value = value.substring(0, 2) + '/' + value.substring(2);
         }
         if (value.length >= 5) {
             value = value.substring(0, 5) + '/' + value.substring(5, 9);
         }
-        
+
         e.target.value = value;
     });
-    
-    input.addEventListener('blur', function(e) {
+
+    input.addEventListener('blur', function (e) {
         validateDate(e.target);
     });
 }
@@ -120,29 +120,29 @@ function validateDate(input) {
     const value = input.value;
     const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
     const match = value.match(dateRegex);
-    
+
     if (!match) {
         input.style.borderColor = '#ef4444';
         return false;
     }
-    
+
     const day = parseInt(match[1]);
     const month = parseInt(match[2]);
     const year = parseInt(match[3]);
-    
+
     // Validar rango de fechas
     if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100) {
         input.style.borderColor = '#ef4444';
         return false;
     }
-    
+
     // Validar fecha real
     const date = new Date(year, month - 1, day);
     if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
         input.style.borderColor = '#ef4444';
         return false;
     }
-    
+
     input.style.borderColor = '#10b981';
     return true;
 }
@@ -150,12 +150,12 @@ function validateDate(input) {
 // Generar reporte
 async function generateReport() {
     const year = document.getElementById('yearSelect').value;
-    
+
     if (!year) {
         alert('Por favor selecciona un año');
         return;
     }
-    
+
     try {
         const response = await fetch('../../api/generate_report.php', {
             method: 'POST',
@@ -166,10 +166,10 @@ async function generateReport() {
                 year: year
             })
         });
-        
+
         const data = await response.json();
         console.log('📡 Respuesta de la API:', data);
-        
+
         if (data.success) {
             displayReport(data);
         } else {
@@ -185,22 +185,22 @@ async function generateReport() {
 // Mostrar reporte
 function displayReport(data) {
     console.log('🔍 Datos recibidos del servidor:', data);
-    
+
     const resultsDiv = document.getElementById('reportResults');
     const contentDiv = document.getElementById('reportContent');
-    
+
     resultsDiv.style.display = 'block';
-    
+
     // Usar los datos que vienen del servidor
     const allMonths = data.all_months || [];
     console.log('📅 Meses recibidos:', allMonths);
-    
+
     const paidCount = allMonths.filter(m => m.estado === 'Pagado').length;
     const partialCount = allMonths.filter(m => m.estado === 'Pago Parcial').length;
     const unpaidCount = allMonths.filter(m => m.estado === 'No Pagado').length;
-    
+
     console.log(`📊 Resumen: ${paidCount} pagados, ${partialCount} parciales, ${unpaidCount} no pagados`);
-    
+
     let html = `
         <div class="report-header">
             <h3>Reporte de Pagos - Año ${data.year}</h3>
@@ -224,12 +224,12 @@ function displayReport(data) {
                 </div>
                 <div class="summary-card">
                     <h4>Total Pagado (USD)</h4>
-                    <span class="summary-number">$${data.total_usd ? parseFloat(data.total_usd).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00'}</span>
+                    <span class="summary-number">$${data.total_usd ? parseFloat(data.total_usd).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</span>
                 </div>
             </div>
         </div>
     `;
-    
+
     // Mostrar tabla de meses
     html += `
         <div class="report-section">
@@ -248,7 +248,7 @@ function displayReport(data) {
                     </thead>
                     <tbody>
     `;
-    
+
     allMonths.forEach(month => {
         const status = month.estado;
         let statusClass = 'status-unpaid';
@@ -257,22 +257,22 @@ function displayReport(data) {
         } else if (status === 'Pago Parcial') {
             statusClass = 'status-partial';
         }
-        
+
         // Método de pago (ya viene "Mixto" desde el backend si hay más de un método)
         const method = month.metodo_pago || 'N/A';
-        
+
         // Monto siempre en USD (sumatoria de pago_detalles.monto_usd)
         let amount = 'N/A';
         if (month.estado === 'Pagado' || month.estado === 'Pago Parcial') {
-            amount = `$${parseFloat(month.monto_usd_total).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            amount = `$${parseFloat(month.monto_usd_total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
-        
+
         // Fecha Pago: solo si el estado es Pagado, mostrar la fecha del último pago
         let date = 'N/A';
         if (month.estado === 'Pagado' && month.fecha_pago_formatted) {
             date = month.fecha_pago_formatted;
         }
-        
+
         html += `
             <tr>
                 <td>${month.mes_nombre}</td>
@@ -284,14 +284,14 @@ function displayReport(data) {
             </tr>
         `;
     });
-    
+
     html += `
                     </tbody>
                 </table>
             </div>
         </div>
     `;
-    
+
     if (allMonths.length === 0) {
         html += `
             <div class="no-data">
@@ -300,7 +300,7 @@ function displayReport(data) {
             </div>
         `;
     }
-    
+
     contentDiv.innerHTML = html;
 }
 
@@ -309,36 +309,36 @@ function generateMonthsInRange(startDate, endDate) {
     const months = [];
     const start = new Date(startDate);
     const end = new Date(endDate);
-    
+
     const monthNames = [
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
     ];
-    
+
     let current = new Date(start.getFullYear(), start.getMonth(), 1);
-    
+
     while (current <= end) {
         months.push({
             name: monthNames[current.getMonth()],
             number: current.getMonth() + 1,
             year: current.getFullYear()
         });
-        
+
         current.setMonth(current.getMonth() + 1);
     }
-    
+
     return months;
 }
 
 // Descargar reporte PDF
 async function downloadReport() {
     const year = document.getElementById('yearSelect').value;
-    
+
     if (!year) {
         alert('Por favor selecciona un año');
         return;
     }
-    
+
     try {
         const response = await fetch('../../api/generate_pdf_report.php', {
             method: 'POST',
@@ -349,7 +349,7 @@ async function downloadReport() {
                 year: year
             })
         });
-        
+
         if (response.ok) {
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
@@ -378,7 +378,7 @@ function printReport() {
         printWindow.document.write(`
             <html>
                 <head>
-                    <title>Reporte de Pagos - Arcorui</title>
+                    <title>Reporte de Pagos - Gerencias De Condominio</title>
                     <style>
                         body { font-family: Arial, sans-serif; margin: 20px; }
                         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -391,7 +391,7 @@ function printReport() {
                     </style>
                 </head>
                 <body>
-                    <h1>Reporte de Pagos - Arcorui</h1>
+                    <h1>Reporte de Pagos - Gerencias De Condominio</h1>
                     <p>Año: ${document.getElementById('yearSelect').value}</p>
                     ${reportContent.innerHTML}
                 </body>
@@ -412,12 +412,12 @@ function openDatePicker(inputId) {
     currentDatePicker = inputId;
     const modal = document.getElementById('datePickerModal');
     modal.style.display = 'flex';
-    
+
     // Establecer mes y año actual
     const today = new Date();
     currentMonth = today.getMonth();
     currentYear = today.getFullYear();
-    
+
     renderCalendar();
 }
 
@@ -429,7 +429,7 @@ function closeDatePicker() {
 
 function changeMonth(direction) {
     currentMonth += direction;
-    
+
     if (currentMonth < 0) {
         currentMonth = 11;
         currentYear--;
@@ -437,7 +437,7 @@ function changeMonth(direction) {
         currentMonth = 0;
         currentYear++;
     }
-    
+
     renderCalendar();
 }
 
@@ -446,37 +446,37 @@ function renderCalendar() {
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
     ];
-    
+
     // Actualizar header
-    document.getElementById('currentMonthYear').textContent = 
+    document.getElementById('currentMonthYear').textContent =
         `${monthNames[currentMonth]} ${currentYear}`;
-    
+
     // Obtener primer día del mes y cuántos días tiene
     const firstDay = new Date(currentYear, currentMonth, 1);
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
     const daysInMonth = lastDay.getDate();
     const startingDayOfWeek = firstDay.getDay();
-    
+
     // Limpiar calendario
     const calendarDays = document.getElementById('calendarDays');
     calendarDays.innerHTML = '';
-    
+
     // Agregar días del mes anterior
     const prevMonth = new Date(currentYear, currentMonth - 1, 0);
     const daysInPrevMonth = prevMonth.getDate();
-    
+
     for (let i = startingDayOfWeek - 1; i >= 0; i--) {
         const day = daysInPrevMonth - i;
         const dayElement = createDayElement(day, true);
         calendarDays.appendChild(dayElement);
     }
-    
+
     // Agregar días del mes actual
     for (let day = 1; day <= daysInMonth; day++) {
         const dayElement = createDayElement(day, false);
         calendarDays.appendChild(dayElement);
     }
-    
+
     // Agregar días del mes siguiente para completar la grilla
     const remainingDays = 42 - (startingDayOfWeek + daysInMonth);
     for (let day = 1; day <= remainingDays; day++) {
@@ -489,40 +489,40 @@ function createDayElement(day, isOtherMonth) {
     const dayElement = document.createElement('div');
     dayElement.className = 'calendar-day';
     dayElement.textContent = day;
-    
+
     if (isOtherMonth) {
         dayElement.classList.add('other-month');
     } else {
         // Verificar si es hoy
         const today = new Date();
-        if (currentYear === today.getFullYear() && 
-            currentMonth === today.getMonth() && 
+        if (currentYear === today.getFullYear() &&
+            currentMonth === today.getMonth() &&
             day === today.getDate()) {
             dayElement.classList.add('today');
         }
-        
+
         // Agregar evento de click
-        dayElement.addEventListener('click', function() {
+        dayElement.addEventListener('click', function () {
             selectDate(day);
         });
     }
-    
+
     return dayElement;
 }
 
 function selectDate(day) {
     const selectedDate = new Date(currentYear, currentMonth, day);
     const formattedDate = formatDateToVenezuelan(selectedDate);
-    
+
     // Actualizar el input correspondiente
     document.getElementById(currentDatePicker).value = formattedDate;
-    
+
     // Cerrar el date picker
     closeDatePicker();
 }
 
 // Cerrar date picker al hacer click fuera
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     const modal = document.getElementById('datePickerModal');
     if (event.target === modal) {
         closeDatePicker();

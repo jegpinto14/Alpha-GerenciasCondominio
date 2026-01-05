@@ -23,13 +23,13 @@
 /* Elegant Header Section */
 .elegant-header {
     position: relative;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2a5a6a 50%, var(--color-primary) 100%);
     color: white;
     padding: 4rem 2rem;
     margin-bottom: 3rem;
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 
+    box-shadow:
         0 20px 60px rgba(30, 60, 114, 0.4),
         0 8px 25px rgba(30, 60, 114, 0.2);
     width: 100%;
@@ -86,8 +86,15 @@
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(180deg); }
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
 }
 
 .header-content {
@@ -150,7 +157,7 @@
 .section-card {
     background: white;
     border-radius: 20px;
-    box-shadow: 
+    box-shadow:
         0 10px 40px rgba(0, 0, 0, 0.08),
         0 4px 16px rgba(0, 0, 0, 0.04);
     margin-bottom: 2rem;
@@ -164,7 +171,7 @@
 
 .section-card:hover {
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.12),
         0 8px 24px rgba(0, 0, 0, 0.06);
 }
@@ -181,7 +188,7 @@
 .header-icon-small {
     width: 50px;
     height: 50px;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, var(--color-primary), #2a5a6a);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -248,12 +255,12 @@
     overflow: hidden;
 }
 
-.year-option input[type="radio"]:checked + .year-label {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+.year-option input[type="radio"]:checked+.year-label {
+    background: linear-gradient(135deg, var(--color-primary), #2a5a6a);
     color: white;
-    border-color: #1e3c72;
+    border-color: var(--color-primary);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(30, 60, 114, 0.3);
+    box-shadow: 0 8px 25px rgba(26, 58, 74, 0.3);
 }
 
 .year-option:hover .year-label {
@@ -271,7 +278,7 @@
 }
 
 .load-data-btn {
-    background: linear-gradient(135deg, #28a745, #20c997);
+    background: linear-gradient(135deg, var(--color-accent), #d4b99b);
     color: white;
     border: none;
     padding: 1rem 2rem;
@@ -284,7 +291,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 6px 20px rgba(196, 169, 139, 0.3);
     align-self: center;
     max-width: 200px;
 }
@@ -321,7 +328,7 @@
 .summary-icon {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, var(--color-primary), #2a5a6a);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -407,7 +414,7 @@
 
 .month-name {
     font-weight: 600;
-    color: #1e3c72;
+    color: var(--color-primary);
 }
 
 .currency-amount {
@@ -559,8 +566,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Modals */
@@ -592,6 +604,7 @@
         opacity: 0;
         transform: translateY(-50px) scale(0.9);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -669,92 +682,92 @@
         margin: 0 1rem 2rem 1rem;
         border-radius: 20px;
     }
-    
+
     .header-content h1 {
         font-size: 2.2rem;
     }
-    
+
     .header-content p {
         font-size: 1rem;
     }
-    
+
     .header-icon {
         width: 60px;
         height: 60px;
         font-size: 1.5rem;
     }
-    
+
     .main-content-wrapper {
         padding: 0 1rem;
     }
-    
+
     .section-card {
         border-radius: 16px;
         margin-bottom: 1.5rem;
     }
-    
+
     .card-header {
         padding: 1.25rem 1.5rem;
         flex-direction: column;
         text-align: center;
         gap: 0.75rem;
     }
-    
+
     .card-body {
         padding: 1.5rem;
     }
-    
+
     .year-options {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.75rem;
     }
-    
+
     .year-label {
         padding: 0.75rem;
         font-size: 1rem;
     }
-    
+
     .summary-stats {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
-    
+
     .summary-item {
         padding: 1rem;
     }
-    
+
     .summary-icon {
         width: 50px;
         height: 50px;
         font-size: 1.2rem;
     }
-    
+
     .summary-value {
         font-size: 1.5rem;
     }
-    
+
     .export-buttons {
         grid-template-columns: 1fr;
     }
-    
+
     .monthly-table {
         font-size: 0.8rem;
     }
-    
+
     .monthly-table th,
     .monthly-table td {
         padding: 0.75rem 0.5rem;
     }
-    
+
     .modal-content {
         width: 95%;
         margin: 1rem;
     }
-    
+
     .navigation-section {
         margin: 2rem 1rem;
     }
-    
+
     .shape {
         display: none;
     }

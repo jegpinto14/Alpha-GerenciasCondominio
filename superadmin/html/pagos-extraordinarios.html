@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <title>Pagos Extraordinarios - Gerencias De Condominio</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/pagos-extraordinarios.css">
@@ -11,6 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -143,7 +146,14 @@
                         </div>
                         <div class="form-group">
                             <label for="productoFecha">Fecha</label>
-                            <input type="text" id="productoFecha" lang="es-VE" placeholder="dd/mm/aaaa" required autocomplete="off">
+                            <input type="text" id="productoFecha" lang="es-VE" placeholder="dd/mm/aaaa" required
+                                autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="productoCategoria">Categoría</label>
+                            <select id="productoCategoria" required>
+                                <!-- Opciones cargadas dinámicamente -->
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="productoImagen">Imagen del producto</label>
@@ -162,14 +172,18 @@
                             </div>
                             <div class="upload-hint">Formatos aceptados: JPG, PNG, WEBP (máx. 2 MB)</div>
                         </div>
+                        <div class="form-group">
+                            <label for="productoPrecio">Precio (USD)</label>
+                            <input type="number" id="productoPrecio" step="0.01" min="0" required>
+                        </div>
                         <div class="form-group preview-only" id="productoPreview" hidden>
                             <div class="preview-content solo-imagen">
                                 <img src="" alt="Imagen seleccionada" id="productoPreviewImg">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="productoPrecio">Precio (USD)</label>
-                            <input type="number" id="productoPrecio" step="0.01" min="0" required>
+                            <label for="productoStock">Stock</label>
+                            <input type="number" id="productoStock" min="0" value="0" required>
                         </div>
                         <div class="form-group">
                             <label for="productoEstado">Estado</label>
@@ -181,7 +195,8 @@
                     </div>
                     <div class="form-group">
                         <label for="productoDescripcion">Descripción</label>
-                        <textarea id="productoDescripcion" rows="4" placeholder="Describe el pago extraordinario y su finalidad"></textarea>
+                        <textarea id="productoDescripcion" rows="4"
+                            placeholder="Describe el pago extraordinario y su finalidad"></textarea>
                     </div>
                     <div class="modal-actions">
                         <button type="button" class="btn-secondary" id="cancelarProducto">
@@ -229,4 +244,5 @@
     <script src="../js/main.js"></script>
     <script src="../js/pagos-extraordinarios.js"></script>
 </body>
+
 </html>

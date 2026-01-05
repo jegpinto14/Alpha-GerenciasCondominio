@@ -209,14 +209,25 @@ try {
         
         // Para otros métodos sin tasa, obtener tasa del día
         if (empty($tasa_id)) {
-            $stmt = $pdo->prepare("SELECT tasa_id FROM tasa_bcv WHERE fecha = ? ORDER BY tasa_id DESC LIMIT 1");
-            $stmt->execute([$fecha_pago]);
+            // Buscar tasa para el día específico
+            $startOfDay = $fecha_pago . ' 00:00:00';
+            $endOfDay = $fecha_pago . ' 23:59:59';
+            
+            $stmt = $pdo->prepare("SELECT tasa_id FROM tasas WHERE fecha BETWEEN ? AND ? ORDER BY fecha DESC LIMIT 1");
+            $stmt->execute([$startOfDay, $endOfDay]);
             $tasa_result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$tasa_result) {
+                // Fallback: buscar la tasa más reciente anterior o igual a la fecha
+                $stmt = $pdo->prepare("SELECT tasa_id FROM tasas WHERE fecha <= ? ORDER BY fecha DESC LIMIT 1");
+                $stmt->execute([$endOfDay]);
+                $tasa_result = $stmt->fetch(PDO::FETCH_ASSOC);
+            }
             
             if ($tasa_result) {
                 $tasa_id = $tasa_result['tasa_id'];
             } else {
-                throw new Exception('No se encontró tasa BCV para la fecha seleccionada.');
+                throw new Exception('No se encontró ninguna tasa registrada en el sistema.');
             }
         }
 

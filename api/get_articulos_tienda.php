@@ -5,7 +5,7 @@ header('Access-Control-Allow-Origin: *');
 require_once __DIR__ . '/../includes/database.php';
 
 try {
-    // Obtener items de categoría 1 (Artículos de tienda) con stock disponible
+    // Obtener items de categoría 5 (Artículos de tienda) con stock disponible
     $stmt = $pdo->prepare("
         SELECT 
             i.item_id,
@@ -18,7 +18,7 @@ try {
             c.nombre_categoria
         FROM items i
         INNER JOIN categoria_items c ON i.categoria_id = c.categoria_id
-        WHERE i.categoria_id = 1 
+        WHERE i.categoria_id = 5 
         AND i.activo = 1
         AND i.stock > 0
         ORDER BY i.nombre_item ASC

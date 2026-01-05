@@ -2,11 +2,11 @@
 
 /* Selector de año elegante */
 .year-selector-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2a5a6a 100%);
     border-radius: 20px;
     padding: 2.5rem;
     margin-bottom: 2rem;
-    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 15px 35px rgba(26, 58, 74, 0.3);
     position: relative;
     overflow: hidden;
 }
@@ -18,7 +18,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
     pointer-events: none;
 }
 
@@ -39,7 +39,7 @@
     color: white;
     font-weight: 700;
     font-size: 1.3rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .year-selector-card .year-selector select {
@@ -49,15 +49,15 @@
     padding: 1rem 1.5rem;
     font-size: 1.1rem;
     font-weight: 700;
-    color: #667eea;
+    color: var(--color-primary);
     min-width: 180px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
 }
 
 .year-selector-card .year-selector select:focus {
     outline: none;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     transform: translateY(-2px);
 }
 
@@ -78,7 +78,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
     border-radius: 25px;
     pointer-events: none;
 }
@@ -115,7 +115,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(90deg, var(--color-primary) 0%, #2a5a6a 100%);
     transform: scaleX(0);
     transition: transform 0.3s ease;
 }
@@ -161,7 +161,7 @@
 
 .status-icon {
     font-size: 2.2rem;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .month-details {
@@ -181,7 +181,7 @@
     display: inline-block;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .month-calendar-card.paid .status {
@@ -207,7 +207,7 @@
     color: #374151;
     margin: 0.4rem 0;
     font-weight: 700;
-    background: rgba(0,0,0,0.05);
+    background: rgba(0, 0, 0, 0.05);
     padding: 0.5rem;
     border-radius: 10px;
 }
@@ -256,7 +256,7 @@
 
 .legend-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .legend-color {
@@ -264,7 +264,7 @@
     height: 24px;
     border-radius: 50%;
     border: 3px solid;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .legend-color.paid {
@@ -300,17 +300,17 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem;
     }
-    
+
     .legend {
         flex-direction: column;
         gap: 1.5rem;
         text-align: center;
     }
-    
+
     .year-selector-card {
         padding: 2rem;
     }
-    
+
     .calendar-container {
         padding: 2rem;
     }
@@ -320,7 +320,7 @@
     .calendar-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .month-calendar-card {
         min-height: 180px;
         padding: 1.5rem;

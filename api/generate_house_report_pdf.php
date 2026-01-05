@@ -194,17 +194,17 @@ function generatePDFHTML($months, $total_bs, $total_usd, $year, $house_id = null
         <title>Reporte de Pagos - ' . $house_title . ' - Año ' . $year . '</title>
         <style>
             body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1e3c72; padding-bottom: 20px; }
-            .header h1 { color: #1e3c72; margin: 0; font-size: 24px; }
+            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1A3A4A; padding-bottom: 20px; }
+            .header h1 { color: #1A3A4A; margin: 0; font-size: 24px; }
             .header p { color: #666; margin: 5px 0 0 0; }
             .summary { margin-bottom: 30px; }
             .summary-grid { display: table; width: 100%; margin-bottom: 20px; }
             .summary-item { display: table-cell; width: 25%; text-align: center; padding: 15px; background: #f8f9fa; border: 1px solid #ddd; }
-            .summary-item h3 { margin: 0; color: #1e3c72; font-size: 18px; }
+            .summary-item h3 { margin: 0; color: #1A3A4A; font-size: 18px; }
             .summary-item p { margin: 5px 0 0 0; color: #666; font-size: 12px; }
             table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 10px; }
             th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
-            th { background-color: #1e3c72; color: white; font-weight: bold; }
+            th { background-color: #1A3A4A; color: white; font-weight: bold; }
             .status-paid { color: #28a745; font-weight: bold; }
             .status-unpaid { color: #dc3545; font-weight: bold; }
             .footer { margin-top: 30px; text-align: center; color: #666; font-size: 10px; }
@@ -212,6 +212,7 @@ function generatePDFHTML($months, $total_bs, $total_usd, $year, $house_id = null
     </head>
     <body>
         <div class="header">
+            <img src="../assets/images/logo_gerencia_condominio.png" style="max-width: 150px; height: auto; margin-bottom: 10px;">
             <h1>Reporte de Pagos por Casa</h1>
             <p>' . $house_title . ' - Año ' . $year . '</p>
             <p>Generado el ' . date('d/m/Y H:i') . '</p>
@@ -286,7 +287,7 @@ function generatePDFHTML($months, $total_bs, $total_usd, $year, $house_id = null
         </table>
         
         <div class="footer">
-            <p>Reporte generado automáticamente por el Sistema Arcorui</p>
+            <p>Reporte generado automáticamente por el Sistema Gerencia Express</p>
         </div>
     </body>
     </html>';

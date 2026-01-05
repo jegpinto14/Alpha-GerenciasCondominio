@@ -4,6 +4,7 @@ const IMAGEN_PLACEHOLDER = 'https://images.unsplash.com/photo-1521540216272-a503
 const EXTRAORDINARIOS_API_URL = '../api/pago_extraordinario_guardar.php';
 
 let productos = [];
+let categorias = [];
 let filtroEstadoProductos = 'todos';
 let textoBusquedaProductos = '';
 let productoEnEdicion = null;
@@ -13,11 +14,30 @@ let productoFechaPicker = null;
 document.addEventListener('DOMContentLoaded', () => {
     configurarCalendarioProducto();
     inicializarPagosExtraordinarios();
+    cargarCategorias();
     cargarProductos();
 });
 
 function volverDashboard() {
     window.location.href = 'index.html';
+}
+
+async function cargarCategorias() {
+    try {
+        const respuesta = await fetch(`${EXTRAORDINARIOS_API_URL}?action=listar_categorias`);
+        const payload = await respuesta.json();
+        if (payload?.success && Array.isArray(payload.data)) {
+            categorias = payload.data;
+            const select = document.getElementById('productoCategoria');
+            if (select) {
+                select.innerHTML = categorias.map(cat => `
+                    <option value="${cat.categoria_id}">${cat.nombre_categoria}</option>
+                `).join('');
+            }
+        }
+    } catch (error) {
+        console.error('Error al cargar categorías:', error);
+    }
 }
 
 function configurarCalendarioProducto() {
@@ -103,7 +123,7 @@ function actualizarPreviewImagen() {
     }
 
     if (imagen) {
-        previewImg.src = imagen;
+        previewImg.src = imagen.startsWith('http') || imagen.startsWith('data:') ? imagen : '../' + imagen.replace(/^\.\.\//, '');
         preview.removeAttribute('hidden');
     } else {
         previewImg.src = '';
@@ -136,7 +156,6 @@ function inicializarPagosExtraordinarios() {
     const wrapper = document.getElementById('productosWrapper');
     const productoForm = document.getElementById('productoForm');
     const inputImagen = document.getElementById('productoImagen');
-    const btnQuitarImagen = document.getElementById('quitarImagen');
     const labelNombre = document.getElementById('productoImagenNombre');
 
     if (filtroSelect) {
@@ -168,15 +187,6 @@ function inicializarPagosExtraordinarios() {
 
     if (inputImagen) {
         inputImagen.addEventListener('change', manejarSeleccionImagen);
-    }
-
-    if (btnQuitarImagen) {
-        btnQuitarImagen.addEventListener('click', () => {
-            imagenTemporal = null;
-            if (inputImagen) inputImagen.value = '';
-            actualizarPreviewImagen();
-            if (labelNombre) labelNombre.textContent = 'Ningún archivo seleccionado';
-        });
     }
 
     configurarModal('productoModal', 'cerrarProductoModal', () => limpiarFormularioProducto());
@@ -260,24 +270,32 @@ function crearProductoMarkup(producto) {
     const imagen = (producto.imagen || '').trim();
     const imagenValida = imagen ? imagen : IMAGEN_PLACEHOLDER;
     const fechaLegible = formatearFechaCorta(producto.fecha);
+    const catNombre = producto.nombre_categoria || 'Extraordinario';
 
     return `
         <article class="producto-item" data-id="${producto.id}">
             <div class="producto-thumb">
                 ${imagenValida
-                    ? `<img src="${imagenValida}" alt="${producto.nombre}">`
-                    : '<i class="fas fa-image"></i>'}
+            ? `<img src="${imagenValida}" alt="${producto.nombre}">`
+            : '<i class="fas fa-image"></i>'}
             </div>
             <div class="producto-main">
                 <div class="producto-header">
                     <h3>${producto.nombre}</h3>
-                    <span class="status-chip ${estadoClass}">
-                        <i class="fas ${producto.estado === 'activo' ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
-                        ${estadoLabel}
-                    </span>
+                    <div class="tags-row">
+                        <span class="status-chip ${estadoClass}">
+                            <i class="fas ${producto.estado === 'activo' ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
+                            ${estadoLabel}
+                        </span>
+                        <span class="category-tag">
+                            <i class="fas fa-tag"></i>
+                            ${catNombre}
+                        </span>
+                    </div>
                 </div>
                 <div class="producto-meta">
                     <span><i class="fas fa-dollar-sign"></i> $${producto.precio.toFixed(2)}</span>
+                    <span><i class="fas fa-box"></i> Stock: ${producto.stock}</span>
                     <span><i class="fas fa-calendar"></i> ${fechaLegible}</span>
                 </div>
                 <p class="producto-descripcion">${producto.descripcion || 'Sin descripción registrada.'}</p>
@@ -296,8 +314,7 @@ function crearProductoMarkup(producto) {
                     Eliminar
                 </button>
             </div>
-        </article>
-    `;
+        </article>`;
 }
 
 function manejarAccionProducto(evento) {
@@ -332,7 +349,6 @@ function abrirModalProducto(producto = null) {
 
     const titulo = document.getElementById('productoModalTitulo');
     const form = document.getElementById('productoForm');
-    const inputImagen = document.getElementById('productoImagen');
 
     if (titulo) {
         titulo.innerHTML = producto
@@ -345,7 +361,9 @@ function abrirModalProducto(producto = null) {
         document.getElementById('productoId').value = producto ? producto.id : '';
         document.getElementById('productoNombre').value = producto ? producto.nombre : '';
         document.getElementById('productoPrecio').value = producto ? producto.precio : '';
+        document.getElementById('productoStock').value = producto ? producto.stock : '0';
         document.getElementById('productoEstado').value = producto ? producto.estado : 'activo';
+        document.getElementById('productoCategoria').value = producto ? producto.categoria_id : '3';
         document.getElementById('productoDescripcion').value = producto ? producto.descripcion : '';
         document.getElementById('productoImagenActual').value = producto ? producto.imagenRuta || '' : '';
     }
@@ -371,10 +389,8 @@ function abrirModalProducto(producto = null) {
             : 'Ningún archivo seleccionado';
     }
 
-    productoEnEdicion = producto ? { ...producto } : null;
     imagenTemporal = null;
     actualizarPreviewImagen();
-
     abrirModalPorId('productoModal');
 }
 
@@ -398,12 +414,13 @@ async function manejarSubmitProducto(evento) {
         nombre: form.productoNombre.value.trim(),
         fecha: form.productoFecha.value,
         precio: parseFloat(form.productoPrecio.value) || 0,
+        stock: parseInt(form.productoStock.value) || 0,
         estado: form.productoEstado.value,
-        descripcion: form.productoDescripcion.value.trim(),
-        compras: productoEnEdicion ? productoEnEdicion.compras : 0
+        categoria_id: form.productoCategoria.value,
+        descripcion: form.productoDescripcion.value.trim()
     };
 
-    if (!datos.nombre || !datos.fecha || datos.precio < 0 || !datos.descripcion) {
+    if (!datos.nombre || !datos.fecha || datos.precio < 0 || datos.stock < 0 || !datos.descripcion || !datos.categoria_id) {
         if (typeof mostrarNotificacion === 'function') {
             mostrarNotificacion('Completa correctamente los datos del producto', 'error');
         }
@@ -417,7 +434,9 @@ async function manejarSubmitProducto(evento) {
         formData.append('nombre', datos.nombre);
         formData.append('descripcion', datos.descripcion);
         formData.append('precio', datos.precio);
+        formData.append('stock', datos.stock);
         formData.append('estado', datos.estado);
+        formData.append('categoria_id', datos.categoria_id);
         formData.append('fecha', datos.fecha);
         formData.append('imagen_actual', form.productoImagenActual.value || '');
 
@@ -431,10 +450,6 @@ async function manejarSubmitProducto(evento) {
             body: formData
         });
 
-        if (!respuesta.ok) {
-            throw new Error(`HTTP ${respuesta.status}`);
-        }
-
         const payload = await respuesta.json();
         if (!payload?.success) {
             throw new Error(payload?.message || 'Error desconocido');
@@ -447,11 +462,48 @@ async function manejarSubmitProducto(evento) {
         cerrarModalPorId('productoModal', true);
         await cargarProductos();
     } catch (error) {
-        console.error('Error al guardar producto extraordinario:', error);
+        console.error('Error al guardar producto:', error);
         if (typeof mostrarNotificacion === 'function') {
             mostrarNotificacion('No se pudo guardar el producto. Intenta nuevamente.', 'error');
         }
     }
+}
+
+async function cargarProductos() {
+    try {
+        const respuesta = await fetch(`${EXTRAORDINARIOS_API_URL}?action=listar`);
+        const payload = await respuesta.json();
+        if (!payload?.success || !Array.isArray(payload.data)) {
+            throw new Error('Respuesta inválida');
+        }
+
+        productos = payload.data.map(normalizarProductoDesdeApi);
+        renderizarProductos();
+    } catch (error) {
+        console.error('Error al cargar productos extraordinarios:', error);
+        productos = [];
+        renderizarProductos();
+        if (typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion('No se pudieron cargar los productos extraordinarios', 'error');
+        }
+    }
+}
+
+function normalizarProductoDesdeApi(item) {
+    const foto = item?.foto || '';
+    return {
+        id: Number.parseInt(item?.id, 10) || 0,
+        nombre: item?.nombre || 'Producto',
+        descripcion: item?.descripcion || '',
+        precio: Number.parseFloat(item?.precio) || 0,
+        stock: Number.parseInt(item?.stock, 10) || 0,
+        estado: (item?.estado || 'activo').toLowerCase() === 'inactivo' ? 'inactivo' : 'activo',
+        imagen: foto,
+        imagenRuta: foto ? foto.replace(/^\.\.\//, '') : '',
+        fecha: item?.fecha || new Date().toISOString().slice(0, 10),
+        categoria_id: item?.categoria_id || 3,
+        nombre_categoria: item?.nombre_categoria || 'Extraordinario'
+    };
 }
 
 function toggleEstadoProducto(id) {
@@ -460,6 +512,36 @@ function toggleEstadoProducto(id) {
 
     const nuevoEstado = producto.estado === 'activo' ? 'inactivo' : 'activo';
     guardarCambioEstadoProducto(id, nuevoEstado);
+}
+
+async function guardarCambioEstadoProducto(id, estado) {
+    try {
+        const formData = new FormData();
+        formData.append('action', 'estado');
+        formData.append('id', id);
+        formData.append('estado', estado);
+
+        const respuesta = await fetch(EXTRAORDINARIOS_API_URL, {
+            method: 'POST',
+            body: formData
+        });
+
+        const payload = await respuesta.json();
+        if (!payload?.success) {
+            throw new Error(payload?.message || 'Error desconocido');
+        }
+
+        if (typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion('Estado actualizado', 'info');
+        }
+
+        await cargarProductos();
+    } catch (error) {
+        console.error('Error al actualizar el estado del producto:', error);
+        if (typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion('No se pudo cambiar el estado. Intenta nuevamente.', 'error');
+        }
+    }
 }
 
 let productoPendienteEliminar = null;
@@ -486,10 +568,6 @@ async function confirmarEliminacionProducto() {
             body: formData
         });
 
-        if (!respuesta.ok) {
-            throw new Error(`HTTP ${respuesta.status}`);
-        }
-
         const payload = await respuesta.json();
         if (!payload?.success) {
             throw new Error(payload?.message || 'Error desconocido');
@@ -502,7 +580,7 @@ async function confirmarEliminacionProducto() {
         cerrarModalPorId('eliminarProductoModal');
         await cargarProductos();
     } catch (error) {
-        console.error('Error al eliminar producto extraordinario:', error);
+        console.error('Error al eliminar producto:', error);
         if (typeof mostrarNotificacion === 'function') {
             mostrarNotificacion('No se pudo eliminar el producto. Intenta nuevamente.', 'error');
         }
@@ -517,12 +595,6 @@ function actualizarResumenProductos() {
     asignarTexto('productosActivos', activos);
     asignarTexto('productosInactivos', inactivos);
     asignarTexto('productosTotal', total);
-    asignarTexto('productosCompras', 0);
-}
-
-function abrirModal(modal) {
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('modal-open');
 }
 
 function cerrarModal(modal) {
@@ -554,108 +626,13 @@ function asignarTexto(id, valor) {
     if (nodo) nodo.textContent = valor;
 }
 
-// Export para pruebas
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        renderizarProductos,
-        crearProductoMarkup,
-        toggleEstadoProducto,
-        confirmarEliminacionProducto,
-        cargarProductos
-    };
-}
-
-async function cargarProductos() {
-    try {
-        const respuesta = await fetch(`${EXTRAORDINARIOS_API_URL}?action=listar`, {
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!respuesta.ok) {
-            throw new Error(`HTTP ${respuesta.status}`);
-        }
-
-        const payload = await respuesta.json();
-        if (!payload?.success || !Array.isArray(payload.data)) {
-            throw new Error('Respuesta inválida');
-        }
-
-        productos = payload.data.map(normalizarProductoDesdeApi);
-        renderizarProductos();
-    } catch (error) {
-        console.error('Error al cargar productos extraordinarios:', error);
-        productos = [];
-        renderizarProductos();
-        if (typeof mostrarNotificacion === 'function') {
-            mostrarNotificacion('No se pudieron cargar los productos extraordinarios', 'error');
-        }
-    }
-}
-
-function normalizarProductoDesdeApi(item) {
-    const foto = item?.foto || '';
-    return {
-        id: Number.parseInt(item?.id, 10) || 0,
-        nombre: item?.nombre || 'Producto extraordinario',
-        descripcion: item?.descripcion || '',
-        precio: Number.parseFloat(item?.precio) || 0,
-        estado: (item?.estado || 'activo').toLowerCase() === 'inactivo' ? 'inactivo' : 'activo',
-        imagen: foto,
-        imagenRuta: foto ? foto.replace(/^\.\.\//, '') : '',
-        fecha: item?.fecha || new Date().toISOString().slice(0, 10),
-        compras: Number.parseInt(item?.compras, 10) || 0
-    };
-}
-
 function formatearFechaCorta(fechaIso) {
-    if (!fechaIso) {
-        return 'Sin fecha';
-    }
-
+    if (!fechaIso) return 'Sin fecha';
     const fecha = new Date(fechaIso);
-    if (Number.isNaN(fecha.getTime())) {
-        return 'Sin fecha';
-    }
-
+    if (Number.isNaN(fecha.getTime())) return 'Sin fecha';
     return fecha.toLocaleDateString('es-VE', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
     });
-}
-
-async function guardarCambioEstadoProducto(id, estado) {
-    try {
-        const formData = new FormData();
-        formData.append('action', 'estado');
-        formData.append('id', id);
-        formData.append('estado', estado);
-
-        const respuesta = await fetch(EXTRAORDINARIOS_API_URL, {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!respuesta.ok) {
-            throw new Error(`HTTP ${respuesta.status}`);
-        }
-
-        const payload = await respuesta.json();
-        if (!payload?.success) {
-            throw new Error(payload?.message || 'Error desconocido');
-        }
-
-        if (typeof mostrarNotificacion === 'function') {
-            mostrarNotificacion('Estado actualizado', 'info');
-        }
-
-        await cargarProductos();
-    } catch (error) {
-        console.error('Error al actualizar el estado del producto:', error);
-        if (typeof mostrarNotificacion === 'function') {
-            mostrarNotificacion('No se pudo cambiar el estado. Intenta nuevamente.', 'error');
-        }
-    }
 }

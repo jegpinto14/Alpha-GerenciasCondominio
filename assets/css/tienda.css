@@ -33,8 +33,7 @@
 
 /* Header del modal */
 .tienda-modal-header {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2a5a6a 100%);
     padding: 20px 30px;
     border-radius: 12px 12px 0 0;
     display: flex;
@@ -101,20 +100,24 @@
 /* Imagen del artículo */
 .articulo-image-container {
     width: 100%;
-    height: 180px;
+    height: 140px;
     background: linear-gradient(135deg, #1e3c7215 0%, #2a529815 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     position: relative;
+    padding: 10px;
 }
 
 .articulo-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
     transition: transform 0.3s ease;
+    cursor: pointer;
 }
 
 .articulo-card:hover .articulo-image {
@@ -123,7 +126,7 @@
 
 .articulo-image-placeholder {
     font-size: 64px;
-    color: #2a5298;
+    color: var(--color-primary);
     opacity: 0.3;
 }
 
@@ -152,7 +155,7 @@
 }
 
 .articulo-nombre i {
-    color: #2a5298;
+    color: var(--color-primary);
     margin-right: 8px;
     font-size: 16px;
 }
@@ -228,7 +231,7 @@
 .precio-valor {
     font-size: 28px;
     font-weight: 800;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2a5a6a 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -236,7 +239,7 @@
 
 /* Botón de comprar */
 .btn-comprar {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(135deg, var(--color-accent) 0%, #d4b99b 100%);
     color: #ffffff;
     border: none;
     padding: 14px 32px;
@@ -249,7 +252,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: 0 8px 20px rgba(30, 60, 114, 0.25);
+    box-shadow: 0 8px 20px rgba(196, 169, 139, 0.25);
     text-transform: uppercase;
     letter-spacing: 0.4px;
     min-width: 150px;
@@ -257,8 +260,8 @@
 
 .btn-comprar:hover:not(:disabled) {
     transform: translateY(-4px);
-    box-shadow: 0 12px 25px rgba(30, 60, 114, 0.35);
-    background: linear-gradient(135deg, #2453a7 0%, #3b82f6 100%);
+    box-shadow: 0 12px 25px rgba(196, 169, 139, 0.35);
+    background: linear-gradient(135deg, #d4b99b 0%, #e4c9ab 100%);
 }
 
 .btn-comprar:active:not(:disabled) {
@@ -301,6 +304,7 @@
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -311,6 +315,7 @@
         transform: translateY(-50px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -330,55 +335,55 @@
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .tienda-modal-content {
         width: 95%;
         margin: 5% auto;
     }
-    
+
     .tienda-modal-header {
         padding: 15px 20px;
     }
-    
+
     .tienda-modal-header h3 {
         font-size: 20px;
     }
-    
+
     .tienda-modal-body {
         padding: 20px;
         max-height: 75vh;
     }
-    
+
     .articulo-image-container {
         height: 200px;
     }
-    
+
     .articulo-header {
         flex-direction: column;
         gap: 10px;
         align-items: flex-start;
     }
-    
+
     .articulo-stock {
         align-self: flex-end;
     }
-    
+
     .articulo-footer {
         flex-direction: column;
         gap: 15px;
         align-items: stretch;
     }
-    
+
     .articulo-precio {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
     }
-    
+
     .precio-valor {
         font-size: 26px;
     }
-    
+
     .btn-comprar {
         width: 100%;
         justify-content: center;
@@ -397,10 +402,10 @@
 }
 
 .tienda-modal-body::-webkit-scrollbar-thumb {
-    background: #2a5298;
+    background: var(--color-primary);
     border-radius: 10px;
 }
 
 .tienda-modal-body::-webkit-scrollbar-thumb:hover {
-    background: #1e3c72;
+    background: #1a3a4a;
 }

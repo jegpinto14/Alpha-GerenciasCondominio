@@ -104,7 +104,7 @@ try {
     $infoData = [
         'Total Productos' => number_format(count($productos)),
         'Filtros' => empty($filtrosTexto) ? 'Ninguno' : implode(', ', $filtrosTexto),
-        'Generado por' => 'Sistema MotoManía'
+        'Generado por' => 'Sistema Gerencia Express'
     ];
     $pdf->CreateInfoSection('INFORMACIÓN DEL REPORTE', $infoData);
 

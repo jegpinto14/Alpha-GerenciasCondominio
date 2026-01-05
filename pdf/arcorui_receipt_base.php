@@ -18,12 +18,14 @@ class ArcoruiReceiptPDF extends FPDF
     private function findLogo()
     {
         $possiblePaths = [
-            __DIR__ . '/../../assets/img/logo.png',
+            __DIR__ . '/../assets/images/Logo jesús.png',
+            __DIR__ . '/../assets/images/logo_gerencia_condominio_white.png',
+            __DIR__ . '/../../assets/images/Logo jesús.png',
+            __DIR__ . '/../../assets/images/logo_GerenciaExpress.png',
             __DIR__ . '/../../assets/img/logo.jpg',
             __DIR__ . '/../../assets/images/logo.png',
             __DIR__ . '/../../assets/images/logo.jpg',
-            __DIR__ . '/../../assets/images/arcorui.png',
-            __DIR__ . '/../../assets/images/arcorui.jpg'
+            __DIR__ . '/../../assets/images/arcorui.png'
         ];
 
         foreach ($possiblePaths as $path) {
@@ -54,18 +56,30 @@ class ArcoruiReceiptPDF extends FPDF
 
         $textY = $y + ($height / 2) - 3;
         $this->SetXY($x, $textY);
-        $this->Cell($width, 5, 'ARCORUI', 0, 0, 'C');
+        $this->Cell($width, 5, 'GERENCIA EXPRESS', 0, 0, 'C');
     }
 
     function Header()
     {
-        // Título principal
-        $this->SetTextColor(0, 0, 0);
-        $this->SetFont('Arial', 'B', 16);
-        $this->Cell(0, 8, 'ARCORUI', 0, 1, 'C');
-        
+        // Logo
+        if ($this->logoPath && file_exists($this->logoPath)) {
+            try {
+                // Logo centrado
+                $this->Image($this->logoPath, 62.5, 5, 85, 25, 'PNG');
+            } catch (Exception $e) {
+                // Si falla, continua sin imagen
+            }
+        } else {
+            // Título principal fallback
+            $this->SetTextColor(26, 58, 74);
+            $this->SetFont('Arial', 'B', 16);
+            $this->Cell(0, 8, 'GERENCIA EXPRESS', 0, 1, 'C');
+        }
+
+        $this->SetY(32);
+        $this->SetTextColor(26, 58, 74);
         $this->SetFont('Arial', '', 10);
-        $this->Cell(0, 5, 'Sistema de Gestión de Pagos', 0, 1, 'C');
+        $this->Cell(0, 5, 'Sistema de Gestion de Pagos', 0, 1, 'C');
         
         $this->SetFont('Arial', 'B', 12);
         $this->Cell(0, 6, 'Comprobante de Pago', 0, 1, 'C');
@@ -95,7 +109,7 @@ class ArcoruiReceiptPDF extends FPDF
         $this->Cell(0, 4, 'Este documento es válido como comprobante de pago oficial.', 0, 1, 'C');
         
         $this->SetFont('Arial', 'B', 9);
-        $this->Cell(0, 4, 'ARCORUI - Sistema de Gestión de Pagos', 0, 1, 'C');
+        $this->Cell(0, 4, 'Gerencia Express - Sistema de Gestión de Pagos', 0, 1, 'C');
         
         $this->SetFont('Arial', '', 8);
         $this->Cell(0, 4, 'Comprobante generado el: ' . date('d/m/Y H:i:s'), 0, 1, 'C');
@@ -104,8 +118,8 @@ class ArcoruiReceiptPDF extends FPDF
     function CreateInfoSection($title, $data)
     {
         // Título de la sección
-        $this->SetFillColor(240, 240, 240);
-        $this->SetTextColor(0, 0, 0);
+        $this->SetFillColor(26, 58, 74);
+        $this->SetTextColor(255, 255, 255);
         $this->SetFont('Arial', 'B', 10);
         $this->Cell(0, 6, $title, 1, 1, 'C', true);
         
@@ -133,6 +147,8 @@ class ArcoruiReceiptPDF extends FPDF
         $widths = [30, 60, 25, 25, 25, 20]; // Anchos de las columnas
         
         for ($i = 0; $i < count($headers); $i++) {
+            $this->SetFillColor(26, 58, 74);
+            $this->SetTextColor(255, 255, 255);
             $this->Cell($widths[$i], 6, $headers[$i], 1, 0, 'C', true);
         }
         $this->Ln(6);
@@ -151,8 +167,8 @@ class ArcoruiReceiptPDF extends FPDF
 
     function CreateTotalSection($total)
     {
-        $this->SetFillColor(240, 240, 240);
-        $this->SetTextColor(0, 0, 0);
+        $this->SetFillColor(26, 58, 74);
+        $this->SetTextColor(255, 255, 255);
         $this->SetFont('Arial', 'B', 10);
         $this->SetDrawColor(0, 0, 0);
         

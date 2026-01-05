@@ -36,27 +36,19 @@ function obtenerViviendaPorCedula($pdo, $cedula) {
             COALESCE(dp.monto_deuda_usd, 0) as monto_deuda_usd,
             -- Información específica según el tipo de entidad
             CASE 
-                WHEN i.tipo_entidad = 'casa' THEN c.nombre_casa
                 WHEN i.tipo_entidad = 'apartamento' THEN CONCAT(e.nombre_edificio, ' - Piso ', a.piso, ' - Apt ', a.apartamento)
-                WHEN i.tipo_entidad = 'centro_comercial' THEN CONCAT('CC - ', cc.nivel_id, ' - Local ', cc.local_id)
-                WHEN i.tipo_entidad = 'establecimientos' THEN est.nombre_establecimiento
-                ELSE 'Sin especificar'
+                ELSE 'Inmueble'
             END as nombre_inmueble,
             -- Información adicional según el tipo
             CASE 
-                WHEN i.tipo_entidad = 'casa' THEN av.nombre_avenida
                 WHEN i.tipo_entidad = 'apartamento' THEN e.abreviatura
                 ELSE NULL
             END as ubicacion_info
         FROM inmueble i
         INNER JOIN tipo_vivienda tv ON i.tipo_vivienda_id = tv.tipo_id
         LEFT JOIN deuda_propetario dp ON i.inmueble_id = dp.inmueble_id
-        LEFT JOIN casas c ON (i.tipo_entidad = 'casa' AND i.entidad_id = c.casa_id)
         LEFT JOIN apartamentos a ON (i.tipo_entidad = 'apartamento' AND i.entidad_id = a.apartamento_id)
         LEFT JOIN edificios e ON (i.tipo_entidad = 'apartamento' AND a.edificio_id = e.edificio_id)
-        LEFT JOIN centro_comercial cc ON (i.tipo_entidad = 'centro_comercial' AND i.entidad_id = cc.cc_id)
-        LEFT JOIN establecimientos est ON (i.tipo_entidad = 'establecimientos' AND i.entidad_id = est.establecimiento_id)
-        LEFT JOIN avenidas av ON (i.tipo_entidad = 'casa' AND c.avenida_id = av.id_avenida)
         WHERE i.propietario_id = :propietario_id
     ";
     

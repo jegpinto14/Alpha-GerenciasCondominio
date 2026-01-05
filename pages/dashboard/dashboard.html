@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Gerencias De Condominio</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
     <link rel="stylesheet" href="../../assets/css/style.css">
     <link rel="stylesheet" href="../../assets/css/tienda.css">
     <link rel="stylesheet" href="../../assets/css/gastos_extraordinarios.css">
     <link rel="stylesheet" href="../../assets/css/modal-confirm.css">
-    
+
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="icon" type="image/png" href="../../assets/images/favicon/favicon.ico">
@@ -756,6 +757,16 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- Modal para ver imagen en grande -->
+    <div id="imageZoomModal" class="modal" onclick="cerrarImagenGrande()"
+        style="display: none; background-color: rgba(0,0,0,0.9); z-index: 2000;">
+        <span class="close"
+            style="position: absolute; top: 20px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
+        <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+            <img id="zoomedImage"
+                style="max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.2);">
         </div>
     </div>
 

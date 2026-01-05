@@ -8,6 +8,10 @@
     --color-background: #F8F9FA;
     --color-text-body: #1A3A4A;
     --color-text-inverse: #F8F9FA;
+    --primary: var(--color-accent);
+    --primary-foreground: #ffffff;
+    --btn-primary-bg: var(--color-accent);
+    --btn-primary-hover: #b4997b;
 }
 
 /* Loading Overlay */
@@ -455,7 +459,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    
+
 }
 
 body {
@@ -586,7 +590,7 @@ body {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
+    box-shadow: 0 5px 15px rgba(196, 169, 139, 0.3);
 }
 
 .btn-primary i {
@@ -1627,7 +1631,7 @@ body #housingRegistrationModal.show {
 
 /* Botón específico para login */
 .btn-login {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #2a5a6a 100%);
+    background: linear-gradient(135deg, var(--color-accent) 0%, #d4b99b 100%);
     color: white;
     border: none;
     padding: 15px 30px;
@@ -1648,7 +1652,7 @@ body #housingRegistrationModal.show {
 }
 
 .btn-login:hover {
-    background: linear-gradient(135deg, #2a5a6a 0%, #3a6a7a 100%);
+    background: linear-gradient(135deg, #d4b99b 0%, var(--color-accent) 100%);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(26, 58, 74, 0.4);
 }
@@ -1781,7 +1785,7 @@ body #housingRegistrationModal.show {
 
 /* Botón específico para modal de éxito - NUEVA CLASE */
 .btn-success-modal {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #2a5a6a 100%);
+    background: linear-gradient(135deg, var(--color-accent) 0%, #d4b99b 100%);
     color: white;
     border: none;
     padding: 14px 28px;
@@ -1817,7 +1821,7 @@ body #housingRegistrationModal.show {
 }
 
 .btn-success-modal:hover {
-    background: linear-gradient(135deg, #2a5a6a 0%, #3a6a7a 100%);
+    background: linear-gradient(135deg, #d4b99b 0%, var(--color-accent) 100%);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(26, 58, 74, 0.4);
 }
@@ -1852,7 +1856,7 @@ body #housingRegistrationModal.show {
 
 /* Botones específicos para el dashboard */
 .btn-dashboard {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #2a5a6a 100%);
+    background: linear-gradient(135deg, var(--color-accent) 0%, #d4b99b 100%);
     color: white;
     border: none;
     padding: 12px 20px;
@@ -1874,7 +1878,7 @@ body #housingRegistrationModal.show {
 }
 
 .btn-dashboard:hover {
-    background: linear-gradient(135deg, #2a5a6a 0%, #3a6a7a 100%);
+    background: linear-gradient(135deg, #d4b99b 0%, var(--color-accent) 100%);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(26, 58, 74, 0.3);
 }
@@ -1992,7 +1996,7 @@ body #housingRegistrationModal.show {
 }
 
 .btn-download {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #2a5a6a 100%);
+    background: linear-gradient(135deg, var(--color-accent) 0%, #d4b99b 100%);
     color: white;
     border: none;
     border-radius: 6px;

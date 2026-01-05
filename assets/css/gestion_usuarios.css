@@ -23,15 +23,15 @@
 /* Elegant Header Section */
 .elegant-header {
     position: relative;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+    background: linear-gradient(135deg, #1a3a4a 0%, #2a5a6a 50%, #1a3a4a 100%);
     color: white;
     padding: 4rem 2rem;
     margin-bottom: 3rem;
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 
-        0 20px 60px rgba(30, 60, 114, 0.4),
-        0 8px 25px rgba(30, 60, 114, 0.2);
+    box-shadow:
+        0 20px 60px rgba(26, 58, 74, 0.4),
+        0 8px 25px rgba(26, 58, 74, 0.2);
     width: 100%;
     max-width: 1200px;
     margin-left: auto;
@@ -86,8 +86,15 @@
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(180deg); }
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
 }
 
 .header-content {
@@ -150,7 +157,7 @@
 .section-card {
     background: white;
     border-radius: 20px;
-    box-shadow: 
+    box-shadow:
         0 10px 40px rgba(0, 0, 0, 0.08),
         0 4px 16px rgba(0, 0, 0, 0.04);
     margin-bottom: 2rem;
@@ -164,7 +171,7 @@
 
 .section-card:hover {
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.12),
         0 8px 24px rgba(0, 0, 0, 0.06);
 }
@@ -181,14 +188,14 @@
 .header-icon-small {
     width: 50px;
     height: 50px;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, #1a3a4a, #2a5a6a);
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-size: 1.2rem;
-    box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    box-shadow: 0 4px 15px rgba(26, 58, 74, 0.3);
 }
 
 .header-text h3 {
@@ -394,15 +401,20 @@
     width: 40px;
     height: 40px;
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #1e3c72;
+    border-top: 4px solid #1a3a4a;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem auto;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Modals */
@@ -436,6 +448,7 @@
         opacity: 0;
         transform: translateY(-50px) scale(0.9);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -528,13 +541,13 @@
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #1e3c72;
-    box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+    border-color: #c4a98b;
+    box-shadow: 0 0 0 3px rgba(196, 169, 139, 0.1);
 }
 
 /* Buttons */
 .btn-primary {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, #c4a98b, #d4b99b);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -549,7 +562,7 @@
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(30, 60, 114, 0.3);
+    box-shadow: 0 8px 25px rgba(196, 169, 139, 0.3);
 }
 
 .btn-secondary {
@@ -641,84 +654,84 @@
         margin: 0 1rem 2rem 1rem;
         border-radius: 20px;
     }
-    
+
     .header-content h1 {
         font-size: 2.2rem;
     }
-    
+
     .header-content p {
         font-size: 1rem;
     }
-    
+
     .header-icon {
         width: 60px;
         height: 60px;
         font-size: 1.5rem;
     }
-    
+
     .main-content-wrapper {
         padding: 0 1rem;
     }
-    
+
     .section-card {
         border-radius: 16px;
         margin-bottom: 1.5rem;
     }
-    
+
     .card-header {
         padding: 1.25rem 1.5rem;
         flex-direction: column;
         text-align: center;
         gap: 0.75rem;
     }
-    
+
     .card-body {
         padding: 1.5rem;
     }
-    
+
     .action-buttons {
         grid-template-columns: 1fr;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+
     .users-table-container {
         font-size: 0.8rem;
     }
-    
+
     .users-table th,
     .users-table td {
         padding: 0.75rem 0.5rem;
     }
-    
+
     .user-actions {
         flex-direction: column;
         gap: 0.25rem;
     }
-    
+
     .action-icon {
         width: 28px;
         height: 28px;
         font-size: 0.8rem;
     }
-    
+
     .modal-content {
         width: 95%;
         margin: 1rem;
     }
-    
+
     .modal-header,
     .modal-body,
     .modal-footer {
         padding: 1rem;
     }
-    
+
     .navigation-section {
         margin: 2rem 1rem;
     }
-    
+
     .shape {
         display: none;
     }
@@ -753,10 +766,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.2), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
     transition: left 0.5s ease;
 }
 
@@ -812,10 +825,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.2), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
     transition: left 0.5s ease;
 }
 
@@ -871,10 +884,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.2), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
     transition: left 0.5s ease;
 }
 
@@ -904,6 +917,7 @@
 
 /* Responsive para botones de modal */
 @media (max-width: 768px) {
+
     .btn-modal-cancel,
     .btn-modal-create,
     .btn-modal-update {
@@ -911,7 +925,7 @@
         font-size: 0.9rem;
         min-width: 120px;
     }
-    
+
     .btn-modal-cancel i,
     .btn-modal-create i,
     .btn-modal-update i {
@@ -938,7 +952,7 @@
     position: relative;
     overflow: hidden;
     text-decoration: none;
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(220, 53, 69, 0.3),
         0 4px 12px rgba(220, 53, 69, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -954,10 +968,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
     transition: left 0.6s ease;
 }
 
@@ -986,7 +1000,7 @@
 .btn-create-user-cancel:hover {
     background: linear-gradient(135deg, #c82333 0%, #dc3545 100%);
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 12px 35px rgba(220, 53, 69, 0.4),
         0 6px 20px rgba(220, 53, 69, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -994,7 +1008,7 @@
 
 .btn-create-user-cancel:active {
     transform: translateY(-2px) scale(1.01);
-    box-shadow: 
+    box-shadow:
         0 6px 20px rgba(220, 53, 69, 0.3),
         0 3px 10px rgba(220, 53, 69, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -1030,7 +1044,7 @@
     position: relative;
     overflow: hidden;
     text-decoration: none;
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(40, 167, 69, 0.3),
         0 4px 12px rgba(40, 167, 69, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -1046,10 +1060,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
     transition: left 0.6s ease;
 }
 
@@ -1078,7 +1092,7 @@
 .btn-create-user-submit:hover {
     background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 12px 35px rgba(40, 167, 69, 0.4),
         0 6px 20px rgba(40, 167, 69, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -1086,7 +1100,7 @@
 
 .btn-create-user-submit:active {
     transform: translateY(-2px) scale(1.01);
-    box-shadow: 
+    box-shadow:
         0 6px 20px rgba(40, 167, 69, 0.3),
         0 3px 10px rgba(40, 167, 69, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -1123,7 +1137,7 @@
     position: relative;
     overflow: hidden;
     text-decoration: none;
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(108, 117, 125, 0.3),
         0 4px 12px rgba(108, 117, 125, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -1139,10 +1153,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
     transition: left 0.6s ease;
 }
 
@@ -1171,7 +1185,7 @@
 .btn-edit-user-cancel:hover {
     background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 12px 35px rgba(108, 117, 125, 0.4),
         0 6px 20px rgba(108, 117, 125, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -1179,7 +1193,7 @@
 
 .btn-edit-user-cancel:active {
     transform: translateY(-2px) scale(1.01);
-    box-shadow: 
+    box-shadow:
         0 6px 20px rgba(108, 117, 125, 0.3),
         0 3px 10px rgba(108, 117, 125, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -1215,7 +1229,7 @@
     position: relative;
     overflow: hidden;
     text-decoration: none;
-    box-shadow: 
+    box-shadow:
         0 8px 25px rgba(0, 123, 255, 0.3),
         0 4px 12px rgba(0, 123, 255, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -1231,10 +1245,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
     transition: left 0.6s ease;
 }
 
@@ -1263,7 +1277,7 @@
 .btn-edit-user-submit:hover {
     background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 12px 35px rgba(0, 123, 255, 0.4),
         0 6px 20px rgba(0, 123, 255, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -1271,7 +1285,7 @@
 
 .btn-edit-user-submit:active {
     transform: translateY(-2px) scale(1.01);
-    box-shadow: 
+    box-shadow:
         0 6px 20px rgba(0, 123, 255, 0.3),
         0 3px 10px rgba(0, 123, 255, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -1291,6 +1305,7 @@
 
 /* Responsive para las nuevas clases */
 @media (max-width: 768px) {
+
     .btn-create-user-cancel,
     .btn-create-user-submit,
     .btn-edit-user-cancel,
@@ -1299,7 +1314,7 @@
         font-size: 1rem;
         min-width: 140px;
     }
-    
+
     .btn-create-user-cancel i,
     .btn-create-user-submit i,
     .btn-edit-user-cancel i,
@@ -1309,6 +1324,7 @@
 }
 
 @media (max-width: 480px) {
+
     .btn-create-user-cancel,
     .btn-create-user-submit,
     .btn-edit-user-cancel,
@@ -1317,7 +1333,7 @@
         font-size: 0.9rem;
         min-width: 120px;
     }
-    
+
     .btn-create-user-cancel i,
     .btn-create-user-submit i,
     .btn-edit-user-cancel i,
@@ -1345,7 +1361,7 @@
     position: relative;
     overflow: hidden;
     text-decoration: none;
-    box-shadow: 
+    box-shadow:
         0 6px 20px rgba(0, 0, 0, 0.08),
         0 2px 8px rgba(0, 0, 0, 0.04),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -1361,10 +1377,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.4), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent);
     transition: left 0.6s ease;
 }
 
@@ -1394,7 +1410,7 @@
     background: linear-gradient(145deg, #e9ecef 0%, #dee2e6 100%);
     border-color: #adb5bd;
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 10px 30px rgba(0, 0, 0, 0.12),
         0 4px 15px rgba(0, 0, 0, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 0.9);
@@ -1403,7 +1419,7 @@
 
 .btn-modal-elegant-cancel:active {
     transform: translateY(-1px) scale(1.01);
-    box-shadow: 
+    box-shadow:
         0 6px 20px rgba(0, 0, 0, 0.08),
         0 2px 8px rgba(0, 0, 0, 0.04),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -1439,7 +1455,7 @@
     position: relative;
     overflow: hidden;
     text-decoration: none;
-    box-shadow: 
+    box-shadow:
         0 6px 20px rgba(40, 167, 69, 0.3),
         0 2px 8px rgba(40, 167, 69, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -1455,10 +1471,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
     transition: left 0.6s ease;
 }
 
@@ -1488,7 +1504,7 @@
     background: linear-gradient(145deg, #20c997 0%, #17a2b8 100%);
     border-color: #155724;
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 10px 30px rgba(40, 167, 69, 0.4),
         0 4px 15px rgba(40, 167, 69, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -1496,7 +1512,7 @@
 
 .btn-modal-elegant-create:active {
     transform: translateY(-1px) scale(1.01);
-    box-shadow: 
+    box-shadow:
         0 6px 20px rgba(40, 167, 69, 0.3),
         0 2px 8px rgba(40, 167, 69, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -1532,7 +1548,7 @@
     position: relative;
     overflow: hidden;
     text-decoration: none;
-    box-shadow: 
+    box-shadow:
         0 6px 20px rgba(0, 123, 255, 0.3),
         0 2px 8px rgba(0, 123, 255, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -1548,10 +1564,10 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
     transition: left 0.6s ease;
 }
 
@@ -1581,7 +1597,7 @@
     background: linear-gradient(145deg, #0056b3 0%, #004085 100%);
     border-color: #002752;
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 10px 30px rgba(0, 123, 255, 0.4),
         0 4px 15px rgba(0, 123, 255, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -1589,7 +1605,7 @@
 
 .btn-modal-elegant-update:active {
     transform: translateY(-1px) scale(1.01);
-    box-shadow: 
+    box-shadow:
         0 6px 20px rgba(0, 123, 255, 0.3),
         0 2px 8px rgba(0, 123, 255, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -1609,6 +1625,7 @@
 
 /* Responsive para las nuevas clases elegantes */
 @media (max-width: 768px) {
+
     .btn-modal-elegant-cancel,
     .btn-modal-elegant-create,
     .btn-modal-elegant-update {
@@ -1617,7 +1634,7 @@
         min-width: 140px;
         letter-spacing: 0.6px;
     }
-    
+
     .btn-modal-elegant-cancel i,
     .btn-modal-elegant-create i,
     .btn-modal-elegant-update i {
@@ -1626,6 +1643,7 @@
 }
 
 @media (max-width: 480px) {
+
     .btn-modal-elegant-cancel,
     .btn-modal-elegant-create,
     .btn-modal-elegant-update {
@@ -1634,7 +1652,7 @@
         min-width: 120px;
         letter-spacing: 0.4px;
     }
-    
+
     .btn-modal-elegant-cancel i,
     .btn-modal-elegant-create i,
     .btn-modal-elegant-update i {

@@ -65,9 +65,9 @@ try {
     $pdf = new FPDF('P', 'mm', 'A4');
     $pdf->AddPage();
     
-    // Título
+    $pdf->SetTextColor(26, 58, 74);
     $pdf->SetFont('Arial', 'B', 16);
-    $pdf->Cell(0, 10, 'ARCORUI', 0, 1, 'C');
+    $pdf->Cell(0, 10, 'Gerencia Express', 0, 1, 'C');
     $pdf->SetFont('Arial', '', 10);
     $pdf->Cell(0, 5, 'Sistema de Gestion de Pagos', 0, 1, 'C');
     $pdf->SetFont('Arial', 'B', 12);
@@ -78,6 +78,8 @@ try {
     $pdf->Ln(8);
     
     // Información del pago
+    $pdf->SetFillColor(26, 58, 74);
+    $pdf->SetTextColor(255, 255, 255);
     $pdf->SetFont('Arial', 'B', 10);
     $pdf->Cell(0, 6, 'INFORMACION DEL PAGO', 1, 1, 'C', true);
     
@@ -97,6 +99,8 @@ try {
     $pdf->Ln(3);
     
     // Información de la propiedad
+    $pdf->SetFillColor(26, 58, 74);
+    $pdf->SetTextColor(255, 255, 255);
     $pdf->SetFont('Arial', 'B', 10);
     $pdf->Cell(0, 6, 'INFORMACION DE LA PROPIEDAD', 1, 1, 'C', true);
     
@@ -116,6 +120,8 @@ try {
     $pdf->Ln(3);
     
     // Tabla de detalles
+    $pdf->SetFillColor(26, 58, 74);
+    $pdf->SetTextColor(255, 255, 255);
     $pdf->SetFont('Arial', 'B', 9);
     $pdf->Cell(30, 6, 'CONCEPTO', 1, 0, 'C', true);
     $pdf->Cell(60, 6, 'DESCRIPCION', 1, 0, 'C', true);
@@ -135,6 +141,8 @@ try {
     $pdf->Ln(3);
     
     // Total
+    $pdf->SetFillColor(26, 58, 74);
+    $pdf->SetTextColor(255, 255, 255);
     $pdf->SetFont('Arial', 'B', 10);
     $totalPagado = 'Bs ' . number_format($payment['monto_Bs'], 2, ',', '.');
     $pdf->Cell(0, 6, 'TOTAL PAGADO: ' . $totalPagado . ' (Bolivares)', 1, 1, 'C', true);
@@ -149,7 +157,7 @@ try {
     $pdf->Cell(0, 4, 'Este documento es valido como comprobante de pago oficial.', 0, 1, 'C');
     
     $pdf->SetFont('Arial', 'B', 9);
-    $pdf->Cell(0, 4, 'ARCORUI - Sistema de Gestion de Pagos', 0, 1, 'C');
+    $pdf->Cell(0, 4, 'Gerencia Express - Sistema de Gestion de Pagos', 0, 1, 'C');
     
     $pdf->SetFont('Arial', '', 8);
     $pdf->Cell(0, 4, 'Comprobante generado el: ' . date('d/m/Y H:i:s'), 0, 1, 'C');

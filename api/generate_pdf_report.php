@@ -192,20 +192,17 @@ try {
     // Configurar márgenes
     $pdf->SetMargins(15, 15, 15); // Izquierda, arriba, derecha
 
-    // Encabezado con fondo azul (más alto para acomodar el logo)
-    $pdf->SetFillColor(25, 118, 210); // Azul similar al de la imagen
-    $pdf->Rect(0, 0, 210, 45, 'F'); // Aumentado de 35mm a 45mm
+    // Encabezado blanco (sin fondo azul)
+    $pdf->SetFillColor(255, 255, 255);
+    $pdf->Rect(0, 0, 210, 45, 'F');
 
-    // Dibujar logo de ARCORUI (MUCHO MÁS ARRIBA)
-    $pdf->drawArcoruiLogo(105, -5, 1.5); // Posición Y=-5 (fuera del área normal)
+    // Dibujar logo de Gerencias De Condominio
+    $pdf->drawArcoruiLogo(105, 5, 1.5);
 
-    // Subtítulo (debajo del logo, en negrita)
-    $pdf->SetTextColor(255, 255, 255);
-    $pdf->SetFont('Arial', 'B', 12); // Negrita
-    $pdf->SetXY(0, 35); // Posición debajo del logo
-    $pdf->Cell(210, 8, utf8_decode('Sistema de Gestión de Pagos'), 0, 1, 'C');
+    // Espacio después del logo
+    $pdf->Ln(35);
 
-    $pdf->Ln(10);
+    $pdf->Ln(15);
 
     // Información del reporte (respetando márgenes)
     $pdf->SetTextColor(0, 0, 0);
@@ -216,8 +213,8 @@ try {
 
     $pdf->Ln(5);
 
-    // Estadísticas con fondo azul (centradas y con márgenes)
-    $pdf->SetFillColor(25, 118, 210);
+    // Estadísticas con fondo azul del sistema
+    $pdf->SetFillColor(26, 58, 74);
     $pdf->SetTextColor(255, 255, 255);
     $pdf->SetFont('Arial', 'B', 10);
 
@@ -275,8 +272,8 @@ try {
     $ancho_monto = 30;
     $ancho_fecha = 34;
 
-    // Encabezados de la tabla (con fondo azul y texto blanco)
-    $pdf->SetFillColor(25, 118, 210); // Fondo azul para encabezados
+    // Encabezados de la tabla (con fondo azul del sistema y texto blanco)
+    $pdf->SetFillColor(26, 58, 74); // Fondo azul para encabezados
     $pdf->Cell($ancho_mes, $altura_fila, utf8_decode('MES'), 1, 0, 'C', true);
     $pdf->Cell($ancho_ano, $altura_fila, utf8_decode('AÑO'), 1, 0, 'C', true);
     $pdf->Cell($ancho_estado, $altura_fila, utf8_decode('ESTADO'), 1, 0, 'C', true);
@@ -333,7 +330,7 @@ try {
 
     // Pie de página
     $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(0, 8, utf8_decode('Reporte generado automáticamente por el Sistema Arcorui'), 0, 1, 'C');
+    $pdf->Cell(0, 8, utf8_decode('Reporte generado automáticamente por Gerencias De Condominio'), 0, 1, 'C');
 
     // Fecha y hora de generación
     $fecha_generacion = date('d/m/Y H:i:s');
@@ -342,9 +339,9 @@ try {
     $pdf->Ln(5);
 
     // Barra inferior
-    $pdf->SetFillColor(128, 128, 128);
+    $pdf->SetFillColor(26, 58, 74);
     $pdf->SetTextColor(255, 255, 255);
-    $pdf->Cell(0, 8, utf8_decode('Condominio Arcorui - Sistema de Gestión de Pagos'), 0, 1, 'C', true);
+    $pdf->Cell(0, 8, utf8_decode('Gerencias De Condominio - Gestión de Propiedades'), 0, 1, 'C', true);
 
     // Limpiar output antes de enviar PDF
     while (ob_get_level()) {

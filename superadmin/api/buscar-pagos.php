@@ -152,10 +152,14 @@ function obtenerPagosPorPropietario($pdo, $propietario_id, $inmueble_id, $año) 
             pd.monto_usd,
             pd.monto_Bs,
             pd.Fecha as fecha_pago,
-            pd.estado as detalle_estado
+            pd.estado as detalle_estado,
+            mp.descripcion as metodo_pago,
+            t.tasa as tasa_valor
         FROM pagos p
         INNER JOIN periodos per ON p.periodo_id = per.periodo_id
         LEFT JOIN pago_detalles pd ON p.pago_id = pd.pago_id
+        LEFT JOIN metodos_pago mp ON pd.metodo_id = mp.metodo_id
+        LEFT JOIN tasas t ON pd.tasa_id = t.tasa_id
         WHERE p.propietario_id = :propietario_id 
         AND p.inmueble_id = :inmueble_id
         AND YEAR(per.fecha_periodo) = :anio_consulta
@@ -185,18 +189,16 @@ function obtenerPagosPorPropietario($pdo, $propietario_id, $inmueble_id, $año) 
             $estadoNormalizado = ucwords(strtolower($pago['estado']));
         }
 
-        $metodo_pago = 'N/A';
+        $metodo_pago = $pago['metodo_pago'] ?? 'N/A';
         $monto = 0;
         $moneda = 'USD';
 
         if ($pago['monto_usd'] && $pago['monto_usd'] > 0) {
             $monto = (float)$pago['monto_usd'];
             $moneda = 'USD';
-            $metodo_pago = 'Efectivo divisa';
         } elseif ($pago['monto_Bs'] && $pago['monto_Bs'] > 0) {
             $monto = (float)$pago['monto_Bs'];
             $moneda = 'Bs';
-            $metodo_pago = 'Transferencia Bs';
         }
 
         if ($estadoNormalizado === 'No Pagado') {
@@ -218,7 +220,7 @@ function obtenerPagosPorPropietario($pdo, $propietario_id, $inmueble_id, $año) 
             'metodo_pago' => $metodo_pago,
             'monto' => $monto,
             'moneda' => $moneda,
-            'tasa_bs' => $pago['monto_Bs'] > 0 ? '195.25' : '0',
+            'tasa_bs' => $pago['tasa_valor'] ?? '0',
             'fecha_pago' => $fechaPago,
             'created_at' => null
         ];

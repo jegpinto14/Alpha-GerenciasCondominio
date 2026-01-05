@@ -103,8 +103,8 @@ try {
     $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
     
     // Configurar documento
-    $pdf->SetCreator('ARCORUI');
-    $pdf->SetAuthor('Sistema ARCORUI');
+    $pdf->SetCreator('Gerencia Express');
+    $pdf->SetAuthor('Sistema Gerencia Express');
     $pdf->SetTitle('Comprobante de Pago');
     $pdf->SetSubject('Recibo de Pago Mensual');
     
@@ -122,31 +122,33 @@ try {
     // Agregar página
     $pdf->AddPage();
     
-    // Definir colores azules
-    $azulOscuro = [25, 55, 109];      // #19376D
-    $azulMedio = [25, 55, 109];       // #2162FF  
-    $azulClaro = [227, 242, 253];     // #E3F2FD
+    // Definir colores Gerencia Express (Azul Petróleo Profundo #1A3A4A)
+    $azulOscuro = [26, 58, 74];       // #1A3A4A
+    $azulMedio = [26, 58, 74];        // #1A3A4A  
+    $azulClaro = [240, 244, 248];     // Un gris azulado muy claro para contraste
     
-    // ENCABEZADO CON LOGO Y COLORES
-    $pdf->SetFillColor($azulOscuro[0], $azulOscuro[1], $azulOscuro[2]);
+    // ENCABEZADO CON LOGO Y COLORES (AZUL PETROLEO)
+    $pdf->SetFillColor(26, 58, 74); // #1A3A4A
     $pdf->Rect(0, 0, 210, 45, 'F');
     
-    // Logo
-    $logoPath = __DIR__ . '/../assets/images/logo_2.jpg';
-    if (file_exists($logoPath)) {
-        $pdf->Image($logoPath, 75, 7, 60, 24, 'JPG');
+    // Logo Blanco (PNG Transparente)
+    $logoPath = realpath(__DIR__ . '/../assets/images/Logo jesús.png');
+    
+    if ($logoPath && file_exists($logoPath)) {
+        // Usar Image con detección automática de tipo y parámetros de escalado
+        $pdf->Image($logoPath, 62.5, 5, 85, 25, '', '', '', true, 300, 'C');
     } else {
         // Fallback si no hay logo
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('helvetica', 'B', 18);
-        $pdf->SetY(8);
-        $pdf->Cell(0, 8, 'ARCORUI', 0, 1, 'C', 0, '', 0);
+        $pdf->SetY(12);
+        $pdf->Cell(0, 8, 'Gerencia Express', 0, 1, 'C', 0, '', 0);
         $pdf->SetFont('helvetica', '', 9);
         $pdf->Cell(0, 4, 'Sistema de Gestion de Pagos', 0, 1, 'C', 0, '', 0);
     }
     
-    // Título del comprobante
-    $pdf->SetTextColor(255, 255, 255);
+    // Título del comprobante (ahora con color del sistema sobre fondo blanco)
+    $pdf->SetTextColor(26, 58, 74);
     $pdf->SetFont('helvetica', 'B', 14);
     $pdf->SetY(32);
     $pdf->Cell(0, 8, 'Comprobante de Pago', 0, 1, 'C', 0, '', 0);
@@ -285,7 +287,7 @@ try {
     
     $pdf->SetFont('helvetica', 'B', 10);
     $pdf->SetTextColor($azulOscuro[0], $azulOscuro[1], $azulOscuro[2]);
-    $pdf->Cell(0, 5, 'ARCORUI - Sistema de Gestion de Pagos', 0, 1, 'C', 0, '', 0);
+    $pdf->Cell(0, 5, 'Gerencia Express - Sistema de Gestion de Pagos', 0, 1, 'C', 0, '', 0);
     
     $pdf->SetFont('helvetica', '', 8);
     $pdf->SetTextColor(66, 66, 66);

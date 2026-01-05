@@ -139,28 +139,16 @@ try {
     // Crear PDF
     $pdf = new FPDF('P', 'mm', 'A4');
     $pdf->AddPage();
+    $pdf->SetMargins(15, 15, 15);
     
-    // Encabezado con fondo azul
-    $pdf->SetFillColor(25, 118, 210); // Azul similar al de la imagen
-    $pdf->Rect(0, 0, 210, 35, 'F');
-    
-    // Icono de interrogación (simulado con texto)
-    $pdf->SetTextColor(255, 255, 255);
-    $pdf->SetFont('Arial', 'B', 20);
-    $pdf->SetXY(95, 8);
-    $pdf->Cell(20, 10, '?', 0, 0, 'C');
-    
-    // Título principal
-    $pdf->SetFont('Arial', 'B', 18);
-    $pdf->SetXY(0, 15);
-    $pdf->Cell(210, 10, 'ARCORUI', 0, 1, 'C');
-    
-    // Subtítulo
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->SetXY(0, 22);
-    $pdf->Cell(210, 8, 'Sistema de Gestion de Pagos', 0, 1, 'C');
-    
-    $pdf->Ln(10);
+    // Logo
+    $logo_path = dirname(__DIR__) . '/assets/images/logo_gerencia_condominio.png';
+    if (file_exists($logo_path)) {
+        // Reducir tamaño: de 80x20 a 50x12
+        // Reposicionar: X=80 para que con ancho 50 esté centrado (80 + 50/2 = 105)
+        $pdf->Image($logo_path, 80, 10, 50, 12); 
+        $pdf->Ln(20);
+    }
     
     // Información del reporte
     $pdf->SetTextColor(0, 0, 0);
@@ -169,87 +157,81 @@ try {
     $pdf->Cell(0, 8, 'Ano: ' . $year, 0, 1);
     $pdf->Cell(0, 8, 'Fecha de generacion: ' . date('d/m/Y H:i:s'), 0, 1);
     
-    $pdf->Ln(5);
+    $pdf->Ln(10);
     
-    // Estadísticas con fondo azul
-    $pdf->SetFillColor(25, 118, 210);
+    // Estadísticas con fondo azul petróleo
+    $pdf->SetFillColor(26, 58, 74);
     $pdf->SetTextColor(255, 255, 255);
     $pdf->SetFont('Arial', 'B', 12);
     
     // Calcular estadísticas
     $meses_pagados = count($paid_months);
     $meses_no_pagados = 12 - $meses_pagados;
+    $pagos_parciales = 0; // Placeholder ya que no tenemos esta info discriminada aún
     
-    $pdf->Cell(52.5, 15, 'MESES PAGADOS', 1, 0, 'C', true);
-    $pdf->Cell(52.5, 15, 'MESES NO PAGADOS', 1, 0, 'C', true);
-    $pdf->Cell(52.5, 15, 'TOTAL PAGADO (BS)', 1, 0, 'C', true);
-    $pdf->Cell(52.5, 15, 'TOTAL PAGADO (USD)', 1, 1, 'C', true);
+    $column_width = 180 / 4;
+    $pdf->Cell($column_width, 15, 'MESES PAGADOS', 1, 0, 'C', true);
+    $pdf->Cell($column_width, 15, 'PAGOS PARCIALES', 1, 0, 'C', true);
+    $pdf->Cell($column_width, 15, 'MESES NO PAGADOS', 1, 0, 'C', true);
+    $pdf->Cell($column_width, 15, 'TOTAL PAGADO (USD)', 1, 1, 'C', true);
     
     $pdf->SetFont('Arial', 'B', 16);
-    $pdf->Cell(52.5, 15, $meses_pagados, 1, 0, 'C', true);
-    $pdf->Cell(52.5, 15, $meses_no_pagados, 1, 0, 'C', true);
-    $pdf->Cell(52.5, 15, number_format($total_bs, 2, ',', '.'), 1, 0, 'C', true);
-    $pdf->Cell(52.5, 15, '$' . number_format($total_usd, 2, ',', '.'), 1, 1, 'C', true);
+    $pdf->Cell($column_width, 15, $meses_pagados, 1, 0, 'C', true);
+    $pdf->Cell($column_width, 15, $pagos_parciales, 1, 0, 'C', true);
+    $pdf->Cell($column_width, 15, $meses_no_pagados, 1, 0, 'C', true);
+    $pdf->Cell($column_width, 15, '$' . number_format($total_usd, 2, ',', '.'), 1, 1, 'C', true);
     
-    $pdf->Ln(10);
+    $pdf->Ln(15);
     
     // Tabla de meses
-    $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetTextColor(255, 255, 255);
     $pdf->SetFont('Arial', 'B', 10);
     
-    // Encabezados de la tabla
-    $pdf->Cell(20, 8, 'MES', 1, 0, 'C', true);
-    $pdf->Cell(15, 8, 'ANO', 1, 0, 'C', true);
-    $pdf->Cell(20, 8, 'ESTADO', 1, 0, 'C', true);
-    $pdf->Cell(25, 8, 'METODO DE PAGO', 1, 0, 'C', true);
-    $pdf->Cell(20, 8, 'MONEDA', 1, 0, 'C', true);
-    $pdf->Cell(20, 8, 'MONTO', 1, 0, 'C', true);
-    $pdf->Cell(20, 8, 'TASA (BS)', 1, 0, 'C', true);
-    $pdf->Cell(25, 8, 'FECHA PAGO', 1, 1, 'C', true);
+    // Encabezados de la tabla (6 columnas según la imagen)
+    $w = [30, 20, 30, 35, 35, 30]; // Total 180
+    $pdf->Cell($w[0], 8, 'MES', 1, 0, 'C', true);
+    $pdf->Cell($w[1], 8, 'ANO', 1, 0, 'C', true);
+    $pdf->Cell($w[2], 8, 'ESTADO', 1, 0, 'C', true);
+    $pdf->Cell($w[3], 8, 'METODO PAGO', 1, 0, 'C', true);
+    $pdf->Cell($w[4], 8, 'MONTO (USD)', 1, 0, 'C', true);
+    $pdf->Cell($w[5], 8, 'FECHA PAGO', 1, 1, 'C', true);
     
     // Datos de la tabla
     $pdf->SetFont('Arial', '', 9);
     
     foreach ($all_months as $month) {
-        // Colores para estado
+        $pdf->SetTextColor(0, 0, 0);
+        
+        // Color para el mes según estado
         if ($month['estado'] === 'PAGADO') {
-            $pdf->SetTextColor(0, 150, 0); // Verde
+            $pdf->SetTextColor(0, 100, 0); // Verde oscuro
         } else {
             $pdf->SetTextColor(200, 0, 0); // Rojo
         }
+        $pdf->Cell($w[0], 8, $month['mes_nombre'], 1, 0, 'C');
         
-        $pdf->Cell(20, 8, $month['mes_nombre'], 1, 0, 'C');
         $pdf->SetTextColor(0, 0, 0);
-        $pdf->Cell(15, 8, $month['año'], 1, 0, 'C');
+        $pdf->Cell($w[1], 8, $month['año'], 1, 0, 'C');
         
         // Estado con color
         if ($month['estado'] === 'PAGADO') {
-            $pdf->SetTextColor(0, 150, 0);
+            $pdf->SetTextColor(0, 100, 0);
         } else {
             $pdf->SetTextColor(200, 0, 0);
         }
-        $pdf->Cell(20, 8, $month['estado'], 1, 0, 'C');
-        $pdf->SetTextColor(0, 0, 0);
+        $pdf->Cell($w[2], 8, ucwords(strtolower($month['estado'])), 1, 0, 'C');
         
-        $pdf->Cell(25, 8, $month['metodo_pago'], 1, 0, 'C');
-        $pdf->Cell(20, 8, $month['moneda'], 1, 0, 'C');
-        $pdf->Cell(20, 8, $month['monto_bs'] > 0 ? number_format($month['monto_bs'], 2, ',', '.') . ' Bs' : 'N/A', 1, 0, 'C');
-        $pdf->Cell(20, 8, $month['tasa_bs'] !== 'N/A' ? number_format($month['tasa_bs'], 2, ',', '.') : 'N/A', 1, 0, 'C');
-        $pdf->Cell(25, 8, $month['fecha_pago'], 1, 1, 'C');
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->Cell($w[3], 8, $month['metodo_pago'], 1, 0, 'C');
+        $pdf->Cell($w[4], 8, $month['monto_dolares'] > 0 ? '$' . number_format($month['monto_dolares'], 2, ',', '.') : 'N/A', 1, 0, 'C');
+        $pdf->Cell($w[5], 8, $month['fecha_pago'], 1, 1, 'C');
     }
     
     $pdf->Ln(10);
     
     // Pie de página
     $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell(0, 8, 'Reporte generado automaticamente por el Sistema Arcorui', 0, 1, 'C');
-    
-    $pdf->Ln(5);
-    
-    // Barra inferior
-    $pdf->SetFillColor(128, 128, 128);
-    $pdf->SetTextColor(255, 255, 255);
-    $pdf->Cell(0, 8, 'Condominio Arcorui - Sistema de Gestion de Pagos', 0, 1, 'C', true);
+    $pdf->Cell(0, 8, 'Reporte generado automaticamente por el Sistema Gerencia Express', 0, 1, 'C');
     
     // Configurar headers para descarga
     header('Content-Type: application/pdf');

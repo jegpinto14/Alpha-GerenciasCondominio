@@ -11,6 +11,10 @@
   --color-text-inverse: #f8f9fa !important;
 }
 
+.no-scroll {
+  overflow: hidden !important;
+}
+
 /* Reset y Base */
 * {
   margin: 0;
@@ -567,7 +571,7 @@ button.btn-secondary:hover {
 }
 
 .tienda-modal-header h3 {
-  color: #1a3a4a !important;
+  color: #e5e7eb !important;
 }
 
 .tienda-close {

@@ -17,7 +17,7 @@ if (!$fpdfLoaded) {
     throw new Exception("FPDF no encontrado. Instale FPDF en una de estas rutas: " . implode(', ', $fpdfPaths));
 }
 
-// Clase base personalizada para PDFs de MotoManía
+// Clase base personalizada para PDFs de Gerencia Express
 class MotoManiaPDF extends FPDF
 {
     private $logoPath;
@@ -35,10 +35,13 @@ class MotoManiaPDF extends FPDF
     private function findLogo()
     {
         $possiblePaths = [
-            __DIR__ . '/../../assets/img/logo.png',
-            __DIR__ . '/../../assets/img/logo.jpg',
-            __DIR__ . '/../../assets/img/motomania.png',
-            __DIR__ . '/../../assets/img/motomania.jpg'
+            __DIR__ . '/../assets/images/logo_gerencia_condominio.png',
+            __DIR__ . '/../assets/images/Logo jesús.png',
+            __DIR__ . '/../assets/images/logo_gerencia_condominio_white.png',
+            __DIR__ . '/../assets/images/logo_GerenciaExpress.png',
+            __DIR__ . '/../assets/img/logo.png',
+            __DIR__ . '/../assets/img/logo.jpg',
+            __DIR__ . '/../assets/images/logo.png'
         ];
 
         foreach ($possiblePaths as $path) {
@@ -60,19 +63,19 @@ class MotoManiaPDF extends FPDF
         $this->SetFillColor(255, 255, 255);
         $this->Rect($x, $y, $width, $height, 'F');
 
-        $this->SetDrawColor(220, 38, 38);
+        $this->SetDrawColor(26, 58, 74);
         $this->SetLineWidth(0.5);
         $this->Rect($x, $y, $width, $height, 'D');
 
-        $this->SetTextColor(220, 38, 38);
+        $this->SetTextColor(26, 58, 74);
         $this->SetFont('Arial', 'B', 8);
 
         $textY = $y + ($height / 2) - 2;
         $this->SetXY($x, $textY);
-        $this->Cell($width, 4, 'MOTO', 0, 0, 'C');
+        $this->Cell($width, 4, 'GERENCIA', 0, 0, 'C');
 
         $this->SetXY($x, $textY + 3);
-        $this->Cell($width, 4, 'MANIA', 0, 0, 'C');
+        $this->Cell($width, 4, 'EXPRESS', 0, 0, 'C');
     }
 
     function SetDocumentTitle($title, $subtitle = '')
@@ -83,17 +86,18 @@ class MotoManiaPDF extends FPDF
 
     function Header()
     {
-        $this->SetFillColor(220, 38, 38);
+        $this->SetFillColor(26, 58, 74);
         $this->Rect(0, 0, $this->GetPageWidth(), 20, 'F');
 
         if ($this->logoPath && file_exists($this->logoPath)) {
             try {
-                $this->Image($this->logoPath, 8, 3, 14, 14);
+                // Logo Blanco (PNG Transparente)
+                $this->Image($this->logoPath, 62.5, 5, 85, 25, 'PNG');
             } catch (Exception $e) {
-                $this->createLogoPlaceholder(8, 3, 14, 14);
+                $this->createLogoPlaceholder(62.5, 5, 85, 25);
             }
         } else {
-            $this->createLogoPlaceholder(8, 3, 14, 14);
+            $this->createLogoPlaceholder(62.5, 5, 85, 25);
         }
 
         $this->SetTextColor(255, 255, 255);
@@ -109,14 +113,14 @@ class MotoManiaPDF extends FPDF
 
         $this->SetFont('Arial', '', 7);
         $this->SetXY(25, 15);
-        $this->Cell(0, 3, 'MotoMania - Sistema de Gestion', 0, 1);
+        $this->Cell(0, 3, 'Gerencia Express - Sistema de Gestion', 0, 1);
 
         $this->SetXY(-50, 4);
         $this->Cell(40, 3, 'Fecha: ' . date('d/m/Y'), 0, 1, 'R');
         $this->SetXY(-50, 8);
         $this->Cell(40, 3, 'Hora: ' . date('H:i:s'), 0, 1, 'R');
 
-        $this->SetDrawColor(185, 28, 28);
+        $this->SetDrawColor(26, 58, 74);
         $this->SetLineWidth(0.2);
         $this->Line(8, 22, $this->GetPageWidth() - 8, 22);
 
@@ -126,20 +130,20 @@ class MotoManiaPDF extends FPDF
     function Footer()
     {
         $this->SetY(-12);
-        $this->SetDrawColor(220, 38, 38);
+        $this->SetDrawColor(26, 58, 74);
         $this->SetLineWidth(0.2);
         $this->Line(10, $this->GetY(), $this->GetPageWidth() - 10, $this->GetY());
 
         $this->SetTextColor(0, 0, 0);
         $this->SetFont('Arial', '', 7);
-        $this->Cell(0, 8, 'MotoMania - Pagina ' . $this->PageNo() . ' de {nb}', 0, 0, 'C');
+        $this->Cell(0, 8, 'Gerencia Express - Pagina ' . $this->PageNo() . ' de {nb}', 0, 0, 'C');
     }
 
     function CreateTableHeader($headers, $widths)
     {
-        $this->SetFillColor(220, 38, 38);
+        $this->SetFillColor(26, 58, 74);
         $this->SetTextColor(255, 255, 255);
-        $this->SetDrawColor(185, 28, 28);
+        $this->SetDrawColor(26, 58, 74);
         $this->SetLineWidth(0.3);
         $this->SetFont('Arial', 'B', 8);
 
@@ -162,7 +166,7 @@ class MotoManiaPDF extends FPDF
         $rowHeight = 5;
 
         if ($isEven) {
-            $this->SetFillColor(255, 245, 245);
+            $this->SetFillColor(240, 244, 248);
         } else {
             $this->SetFillColor(255, 255, 255);
         }
@@ -196,8 +200,8 @@ class MotoManiaPDF extends FPDF
 
     function CreateInfoSection($title, $data)
     {
-        $this->SetFillColor(254, 226, 226);
-        $this->SetTextColor(185, 28, 28);
+        $this->SetFillColor(240, 244, 248);
+        $this->SetTextColor(26, 58, 74);
         $this->SetFont('Arial', 'B', 8);
         $this->Cell(0, 5, $this->safeText($title), 1, 1, 'L', true);
 
@@ -221,16 +225,15 @@ class MotoManiaPDF extends FPDF
             $isTotal = (strpos(strtolower($label), 'total') !== false);
 
             if ($isTotal) {
-                $this->SetFillColor(220, 38, 38);
+                $this->SetFillColor(26, 58, 74);
                 $this->SetTextColor(255, 255, 255);
                 $this->SetFont('Arial', 'B', 10);
             } else {
-                $this->SetFillColor(255, 245, 245);
+                $this->SetFillColor(240, 244, 248);
                 $this->SetTextColor(0, 0, 0);
                 $this->SetFont('Arial', '', 9);
             }
-
-            $this->SetDrawColor(185, 28, 28);
+            $this->SetDrawColor(26, 58, 74);
 
             $this->Cell(130, 6, '', 0, 0);
             $this->Cell(30, 6, $this->safeText($label . ':'), 1, 0, 'R', true);

@@ -152,13 +152,13 @@
 }
 
 .modal-btn-confirm {
-    background: linear-gradient(135deg, #2a5298 0%, #1e3a6d 100%);
+    background: linear-gradient(135deg, #c4a98b 0%, #d4b99b 100%);
     color: white;
 }
 
 .modal-btn-confirm:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(42, 82, 152, 0.3);
+    box-shadow: 0 4px 12px rgba(196, 169, 139, 0.3);
 }
 
 .modal-btn-ok {
@@ -185,6 +185,7 @@
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -195,6 +196,7 @@
         transform: scale(0.9) translateY(-20px);
         opacity: 0;
     }
+
     to {
         transform: scale(1) translateY(0);
         opacity: 1;
@@ -206,11 +208,11 @@
     .modal-container {
         width: 95%;
     }
-    
+
     .modal-footer {
         flex-direction: column;
     }
-    
+
     .modal-btn {
         width: 100%;
     }

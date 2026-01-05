@@ -161,9 +161,11 @@ function claseEstado(estado) {
 
 function formatearMonto(valor, moneda = 'USD') {
     const numero = Number(valor);
-    if (!numero || Number.isNaN(numero) || numero <= 0) {
+    if (valor === null || valor === undefined || Number.isNaN(numero)) {
         return 'N/A';
     }
+
+    if (numero < 0) return 'N/A';
 
     const formateado = numero.toLocaleString('es-VE', {
         minimumFractionDigits: 2,
@@ -281,14 +283,14 @@ async function generarPDF() {
         const anchoUtil = anchoPagina - margenIzq - margenDer;
         let cursorY = 15;
 
-        // Cargar y agregar logo
+        // Cargar y agregar logo (Nuevo logo vertical)
         const logoDataUrl = await cargarLogoBase64();
         if (logoDataUrl) {
-            const logoAncho = 50;
-            const logoAlto = 20;
+            const logoAncho = 40; // Ajustado para el nuevo logo
+            const logoAlto = 40;
             const posX = (anchoPagina - logoAncho) / 2;
             doc.addImage(logoDataUrl, 'PNG', posX, cursorY, logoAncho, logoAlto);
-            cursorY += logoAlto + 8;
+            cursorY += logoAlto + 5;
         }
 
         // Encabezado
@@ -424,7 +426,7 @@ async function generarPDF() {
                 6: { halign: 'center' }
             },
             margin: { left: margenIzq, right: margenDer },
-            didParseCell: function(data) {
+            didParseCell: function (data) {
                 if (data.section === 'body' && data.column.index === 2) {
                     const estado = data.cell.raw;
                     if (estado === 'Pagado') {
@@ -474,7 +476,7 @@ async function cargarLogoBase64() {
     return new Promise((resolve) => {
         const img = new Image();
         img.crossOrigin = 'Anonymous';
-        img.onload = function() {
+        img.onload = function () {
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
             canvas.height = img.height;
@@ -488,11 +490,11 @@ async function cargarLogoBase64() {
                 resolve(null);
             }
         };
-        img.onerror = function() {
+        img.onerror = function () {
             console.warn('No se pudo cargar el logo');
             resolve(null);
         };
-        img.src = '../assets/img/logo_arcorui.png';
+        img.src = '../../assets/images/logo_gerencia_condominio.png';
     });
 }
 

@@ -6,7 +6,7 @@
 
 // Configuración simple
 const NAVIGATION_PROTECTION = {
-    loginUrl: '/Arcorui/pages/auth/index.html',
+    loginUrl: '/pages/auth/index.html',
     dashboardUrl: '/pages/dashboard/dashboard.html'
 };
 
@@ -132,7 +132,7 @@ async function enhancedLogout() {
     sessionStorage.clear();
 
     // Llamar al logout del servidor
-    fetch('/Arcorui/api/logout.php', {
+    fetch('/api/logout.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
     }).finally(() => {

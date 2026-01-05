@@ -230,7 +230,7 @@
 }
 
 .deuda-actions .btn {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #d4b99b 100%);
   border: none;
   border-radius: 12px;
   padding: 15px 30px;
@@ -239,7 +239,7 @@
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+  box-shadow: 0 4px 15px rgba(196, 169, 139, 0.3);
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -248,13 +248,13 @@
 
 .deuda-actions .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
-  background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+  box-shadow: 0 6px 20px rgba(196, 169, 139, 0.4);
+  background: linear-gradient(135deg, #d4b99b 0%, #e4c9ab 100%);
 }
 
 .deuda-actions .btn:active {
   transform: translateY(0);
-  box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+  box-shadow: 0 2px 10px rgba(196, 169, 139, 0.3);
 }
 
 /* Formulario de Pago Personalizado */
@@ -504,12 +504,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.1) 50%,
-    transparent 70%
-  );
+  background: linear-gradient(45deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 70%);
   transform: translateX(-100%);
   transition: transform 0.6s ease;
 }
@@ -561,6 +559,7 @@
 }
 
 @keyframes pulse-verifying {
+
   0%,
   100% {
     transform: scale(1);
@@ -768,11 +767,9 @@
   font-size: 1.4rem;
   font-weight: 800;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary),
-    var(--color-accent)
-  );
+  background: linear-gradient(135deg,
+      var(--color-secondary),
+      var(--color-accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -874,12 +871,10 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent);
   transition: left 0.6s ease;
 }
 
@@ -1031,12 +1026,10 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
   transition: left 0.5s ease;
 }
 
@@ -1134,7 +1127,7 @@
 }
 
 /* Ocultar page-actions solo cuando estamos en modo deuda acumulada */
-#deudaAcumuladaForm ~ .page-actions {
+#deudaAcumuladaForm~.page-actions {
   display: none;
 }
 
@@ -1582,15 +1575,14 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.1) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle,
+      rgba(255, 255, 255, 0.1) 0%,
+      transparent 70%);
   animation: shimmer 3s ease-in-out infinite;
 }
 
 @keyframes shimmer {
+
   0%,
   100% {
     transform: rotate(0deg);
@@ -1940,6 +1932,7 @@
 }
 
 @keyframes successPulse {
+
   0%,
   100% {
     transform: scale(1);
@@ -2187,6 +2180,7 @@
 }
 
 @keyframes checkBounce {
+
   0%,
   100% {
     transform: scale(1);
@@ -2579,30 +2573,30 @@
 }
 
 .next-button-container .btn-primary {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #2a5a6a 100%);
-    border: none;
-    border-radius: 12px;
-    padding: 15px 40px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(26, 58, 74, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #2a5a6a 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(26, 58, 74, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .next-button-container .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(26, 58, 74, 0.4);
-    background: linear-gradient(135deg, #2a5a6a 0%, #3a6a7a 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 58, 74, 0.4);
+  background: linear-gradient(135deg, #2a5a6a 0%, #3a6a7a 100%);
 }
 
 .next-button-container .btn-primary:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(26, 58, 74, 0.3);
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(26, 58, 74, 0.3);
 }
 
 .next-button-container .btn-primary i {
@@ -2860,12 +2854,10 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
   transition: left 0.5s ease;
 }
 
@@ -3800,6 +3792,7 @@
 }
 
 @media (max-width: 480px) {
+
   .debt-info-card,
   .custom-amount-card,
   .payment-method-card {
@@ -4281,6 +4274,7 @@
 }
 
 @media (max-width: 480px) {
+
   .payment-summary-card,
   .payment-info-card,
   .payment-form-card {
@@ -4433,6 +4427,7 @@
 
 /* Animación para errores */
 @keyframes shake {
+
   0%,
   100% {
     transform: translateX(0);
@@ -4579,11 +4574,9 @@
 }
 
 .modal-content.loading {
-  background: linear-gradient(
-    135deg,
-    rgba(30, 60, 114, 0.95),
-    rgba(37, 99, 235, 0.92)
-  );
+  background: linear-gradient(135deg,
+      rgba(30, 60, 114, 0.95),
+      rgba(37, 99, 235, 0.92));
   max-width: 420px;
   width: 90%;
   border-radius: 24px;
@@ -4613,12 +4606,10 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    rgba(96, 165, 250, 0.85),
-    rgba(59, 130, 246, 0.5),
-    rgba(96, 165, 250, 0.85)
-  );
+  background: conic-gradient(from 0deg,
+      rgba(96, 165, 250, 0.85),
+      rgba(59, 130, 246, 0.5),
+      rgba(96, 165, 250, 0.85));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4631,11 +4622,9 @@
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255, 255, 255, 0.85),
-    rgba(255, 255, 255, 0)
-  );
+  background: radial-gradient(circle at 30% 30%,
+      rgba(255, 255, 255, 0.85),
+      rgba(255, 255, 255, 0));
 }
 
 .modal-content.loading .loading-glow {
@@ -4643,11 +4632,9 @@
   width: 130px;
   height: 130px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(147, 197, 253, 0.4),
-    rgba(59, 130, 246, 0)
-  );
+  background: radial-gradient(circle,
+      rgba(147, 197, 253, 0.4),
+      rgba(59, 130, 246, 0));
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

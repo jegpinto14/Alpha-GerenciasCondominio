@@ -3951,7 +3951,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // ============================================
 
 /**
- * Cargar artículos disponibles en la tienda (categoría_id = 1)
+ * Cargar artículos disponibles en la tienda (categoría_id = 5)
  */
 async function loadArticulosTienda() {
     console.log('🛒 Cargando artículos de la tienda...');
@@ -3999,7 +3999,7 @@ function displayArticulosTienda(articulos) {
         // Determinar la imagen del artículo
         const imagenUrl = articulo.imagen_url;
         const imagenHTML = imagenUrl
-            ? `<img src="${imagenUrl}" alt="${articulo.nombre_item}" class="articulo-image" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-box articulo-image-placeholder\\'></i>'">`
+            ? `<img src="../../superadmin/${imagenUrl}" alt="${articulo.nombre_item}" class="articulo-image" onclick="verImagenGrande(this.src)" title="Clic para ampliar" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-box articulo-image-placeholder\\'></i>'">`
             : `<i class="fas fa-box articulo-image-placeholder"></i>`;
 
         return `
@@ -4107,6 +4107,7 @@ function abrirTienda() {
     console.log('🛒 Abriendo tienda...');
     modal.style.display = 'block';
     modal.classList.add('show');
+    document.body.classList.add('no-scroll');
 
     // Cargar artículos
     loadArticulosTienda();
@@ -4121,6 +4122,15 @@ function cerrarTienda() {
     if (modal) {
         modal.style.display = 'none';
         modal.classList.remove('show');
+
+        // Solo quitar no-scroll si no hay otros modales abiertos
+        const gastosModal = document.getElementById('gastosModal');
+        const zoomModal = document.getElementById('imageZoomModal');
+        if ((!gastosModal || gastosModal.style.display === 'none') &&
+            (!zoomModal || zoomModal.style.display === 'none' || zoomModal.style.display === '')) {
+            document.body.classList.remove('no-scroll');
+        }
+
         console.log('🛒 Tienda cerrada');
     }
 }
@@ -4131,6 +4141,36 @@ function cerrarTienda() {
 function recargarTienda() {
     console.log('🔄 Recargando artículos...');
     loadArticulosTienda();
+}
+
+/**
+ * Ver imagen en grande (Zoom)
+ */
+function verImagenGrande(url) {
+    const modal = document.getElementById('imageZoomModal');
+    const img = document.getElementById('zoomedImage');
+    if (modal && img) {
+        img.src = url;
+        modal.style.display = 'block';
+        document.body.classList.add('no-scroll');
+    }
+}
+
+/**
+ * Cerrar zoom de imagen
+ */
+function cerrarImagenGrande() {
+    const modal = document.getElementById('imageZoomModal');
+    if (modal) {
+        modal.style.display = 'none';
+        // Solo quitar no-scroll si no hay otros modales abiertos
+        const tiendaModal = document.getElementById('tiendaModal');
+        const gastosModal = document.getElementById('gastosModal');
+        if ((!tiendaModal || tiendaModal.style.display === 'none') &&
+            (!gastosModal || gastosModal.style.display === 'none')) {
+            document.body.classList.remove('no-scroll');
+        }
+    }
 }
 // Event listener para cerrar modal al hacer clic fuera - DESHABILITADO
 // Los modales tiendaModal y gastosModal están protegidos en window.onclick
@@ -4202,35 +4242,35 @@ function displayGastosExtraordinarios(gastos) {
         // Determinar la imagen del gasto
         const imagenUrl = gasto.imagen_url;
         const imagenHTML = imagenUrl
-            ? `<img src="${imagenUrl}" alt="${gasto.nombre_item}" class="articulo-image" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-exclamation-triangle articulo-image-placeholder\\'></i>'">`
+            ? `<img src="../../superadmin/${imagenUrl}" alt="${gasto.nombre_item}" class="gasto-image" onclick="verImagenGrande(this.src)" title="Clic para ampliar" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-exclamation-triangle articulo-image-placeholder\\'></i>'">`
             : `<i class="fas fa-exclamation-triangle articulo-image-placeholder"></i>`;
 
         return `
-        <div class="articulo-card" data-item-id="${gasto.item_id}">
-            <div class="articulo-image-container">
+        <div class="gasto-card" data-item-id="${gasto.item_id}">
+            <div class="gasto-image-container">
                 ${imagenHTML}
             </div>
             
-            <div class="articulo-content">
-                <div class="articulo-header">
-                    <h5 class="articulo-nombre">
+            <div class="gasto-content">
+                <div class="gasto-header">
+                    <h5 class="gasto-nombre">
                         ${gasto.nombre_item}
                     </h5>
                 </div>
                 
-                <div class="articulo-body">
-                    <p class="articulo-descripcion">
+                <div class="gasto-body">
+                    <p class="gasto-descripcion">
                         ${gasto.descripcion || 'Sin descripción disponible'}
                     </p>
                     
-                    <div class="articulo-footer">
-                        <div class="articulo-precio">
+                    <div class="gasto-footer">
+                        <div class="gasto-precio">
                             <span class="precio-label">Monto</span>
                             <span class="precio-valor">$${parseFloat(gasto.precio).toFixed(2)}</span>
                         </div>
                         
                         <button 
-                            class="btn-comprar"
+                            class="btn-pagar-gasto"
                             onclick="pagarGastoExtraordinario(${gasto.item_id}, '${gasto.nombre_item.replace(/'/g, "\\'")}', ${gasto.precio})"
                         >
                             <i class="fas fa-credit-card"></i>
@@ -4243,7 +4283,7 @@ function displayGastosExtraordinarios(gastos) {
         `;
     }).join('');
 
-    container.innerHTML = `<div class="articulos-grid">${gastosHTML}</div>`;
+    container.innerHTML = gastosHTML;
 }
 
 /**
@@ -4304,6 +4344,7 @@ function abrirGastosExtraordinarios() {
 
     console.log('📋 Abriendo gastos extraordinarios...');
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
 
     // Cargar gastos
     loadGastosExtraordinarios();
@@ -4317,6 +4358,15 @@ function cerrarGastosExtraordinarios() {
 
     if (modal) {
         modal.style.display = 'none';
+
+        // Solo quitar no-scroll si no hay otros modales abiertos
+        const tiendaModal = document.getElementById('tiendaModal');
+        const zoomModal = document.getElementById('imageZoomModal');
+        if ((!tiendaModal || tiendaModal.style.display === 'none') &&
+            (!zoomModal || zoomModal.style.display === 'none' || zoomModal.style.display === '')) {
+            document.body.classList.remove('no-scroll');
+        }
+
         console.log('📋 Modal de gastos cerrado');
     }
 }

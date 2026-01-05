@@ -27,6 +27,14 @@ function generateDocumentReceiptHTML($recibo) {
     $horaActual = date('H:i:s');
     $fechaEmision = date('d/m/Y', strtotime($recibo['fecha_emision']));
     
+    // Preparar logo en Base64
+    $logoBase64 = '';
+    $logoPath = realpath(__DIR__ . '/../assets/images/Logo jesús.png');
+    if ($logoPath && file_exists($logoPath)) {
+        $logoData = file_get_contents($logoPath);
+        $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+    }
+    
     $html = "
     <!DOCTYPE html>
     <html>
@@ -59,8 +67,8 @@ function generateDocumentReceiptHTML($recibo) {
             .header {
                 text-align: center;
                 padding: 30px 20px 20px;
-                border-bottom: 2px solid #28a745;
-                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                border-bottom: 2px solid #1A3A4A;
+                background: linear-gradient(135deg, #1A3A4A 0%, #112631 100%);
                 color: white;
             }
             
@@ -96,7 +104,7 @@ function generateDocumentReceiptHTML($recibo) {
             }
             
             .section-header {
-                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                background: linear-gradient(135deg, #1A3A4A 0%, #112631 100%);
                 color: white;
                 padding: 12px 20px;
                 font-weight: bold;
@@ -147,7 +155,7 @@ function generateDocumentReceiptHTML($recibo) {
             }
             
             .table-header {
-                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                background: linear-gradient(135deg, #1A3A4A 0%, #112631 100%);
                 color: white;
             }
             
@@ -257,7 +265,7 @@ function generateDocumentReceiptHTML($recibo) {
     <body>
         <div class='receipt-container'>
             <div class='header'>
-                <div class='company-name'>ARCORUI</div>
+                " . ($logoBase64 ? "<img src='{$logoBase64}' alt='Logo' style='max-width: 250px; height: auto; margin-bottom: 15px;'>" : "<div class='company-name'>Gerencia Express</div>") . "
                 <div class='system-title'>Sistema de Gestión Administrativa</div>
                 <div class='document-title'>Recibo de Servicio</div>
             </div>
@@ -338,7 +346,7 @@ function generateDocumentReceiptHTML($recibo) {
                     Este documento es válido como comprobante de servicio administrativo.
                 </div>
                 <div class='system-reference'>
-                    ARCORUI - Sistema de Gestión Administrativa
+                    Gerencia Express - Sistema de Gestión Administrativa
                 </div>
                 <div class='generation-timestamp'>
                     Recibo generado el: {$fechaActual} {$horaActual}
@@ -493,8 +501,8 @@ function generateDocumentReceipt($detalleId) {
         $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
         
         // Configurar información del documento
-        $pdf->SetCreator('ARCORUI');
-        $pdf->SetAuthor('Sistema ARCORUI');
+        $pdf->SetCreator('Gerencia Express');
+        $pdf->SetAuthor('Sistema Gerencia Express');
         $pdf->SetTitle('Recibo de Documento');
         $pdf->SetSubject('Recibo de Servicio Administrativo');
         
@@ -512,25 +520,26 @@ function generateDocumentReceipt($detalleId) {
         // Agregar página
         $pdf->AddPage();
         
-        // Definir colores azules
-        $azulOscuro = [25, 55, 109];      // #19376D
-        $azulMedio = [25, 55, 109];       // #2162FF  
-        $azulClaro = [227, 242, 253];     // #E3F2FD
+        // Definir colores azules del sistema
+        $azulOscuro = [26, 58, 74];       // #1A3A4A
+        $azulMedio = [26, 58, 74];        // #1A3A4A  
+        $azulClaro = [240, 244, 248];     // Gris azulado claro para contraste
         
         // ENCABEZADO CON LOGO Y COLORES
         $pdf->SetFillColor($azulOscuro[0], $azulOscuro[1], $azulOscuro[2]);
         $pdf->Rect(0, 0, 210, 45, 'F');
         
-        // Logo
-        $logoPath = __DIR__ . '/../assets/images/logo_2.jpg';
-        if (file_exists($logoPath)) {
-            $pdf->Image($logoPath, 75, 7, 60, 24, 'JPG');
+        // Logo Blanco (PNG Transparente)
+        $logoPath = realpath(__DIR__ . '/../assets/images/Logo jesús.png');
+        
+        if ($logoPath && file_exists($logoPath)) {
+            $pdf->Image($logoPath, 62.5, 5, 85, 25, '', '', '', true, 300, 'C');
         } else {
-            // Fallback si no hay logo
+            // Fallback si no hay logo - Texto Blanco para visibilidad
             $pdf->SetTextColor(255, 255, 255);
             $pdf->SetFont('helvetica', 'B', 18);
-            $pdf->SetY(8);
-            $pdf->Cell(0, 8, 'ARCORUI', 0, 1, 'C', 0, '', 0);
+            $pdf->SetY(12);
+            $pdf->Cell(0, 8, 'Gerencia Express', 0, 1, 'C', 0, '', 0);
             $pdf->SetFont('helvetica', '', 9);
             $pdf->Cell(0, 4, 'Sistema de Gestion de Documentos', 0, 1, 'C', 0, '', 0);
         }
@@ -538,7 +547,7 @@ function generateDocumentReceipt($detalleId) {
         // Título del comprobante
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('helvetica', 'B', 14);
-        $pdf->SetY(32);
+        $pdf->SetY(34);
         $pdf->Cell(0, 8, 'Comprobante de Servicio Administrativo', 0, 1, 'C', 0, '', 0);
         
         $pdf->SetY(55);
@@ -670,7 +679,7 @@ function generateDocumentReceipt($detalleId) {
         
         $pdf->SetFont('helvetica', 'B', 10);
         $pdf->SetTextColor($azulOscuro[0], $azulOscuro[1], $azulOscuro[2]);
-        $pdf->Cell(0, 5, 'ARCORUI - Sistema de Gestion de Documentos', 0, 1, 'C', 0, '', 0);
+        $pdf->Cell(0, 5, 'Gerencia Express - Sistema de Gestion de Documentos', 0, 1, 'C', 0, '', 0);
         
         $pdf->SetFont('helvetica', '', 8);
         $pdf->SetTextColor(66, 66, 66);

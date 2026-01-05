@@ -6,8 +6,8 @@
 :root {
   /* --- Paleta: Serenidad Arquitectónica --- */
   /* Primary: Azul Petróleo Profundo */
-  --primary: #1A3A4A;
-  --primary-foreground: #F8F9FA;
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
 
   /* Secondary: Gris Piedra (Greige) */
   --secondary: #B8C2C8;
