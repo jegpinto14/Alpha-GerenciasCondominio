@@ -850,24 +850,21 @@ function renderizarTablaObligaciones() {
             <td>${obl.proveedor}</td>
             <td>${obl.concepto || "Sin concepto"}</td>
             <td>
-                ${
-                  obl.frecuencia_pago
-                    ? obtenerEtiquetaFrecuencia(obl.frecuencia_pago)
-                    : "Único"
-                }
-                ${
-                  !estaActiva
-                    ? '<br><small style="color: #dc2626; font-weight: 600;">Culminada</small>'
-                    : ""
-                }
+                ${obl.frecuencia_pago
+          ? obtenerEtiquetaFrecuencia(obl.frecuencia_pago)
+          : "Único"
+        }
+                ${!estaActiva
+          ? '<br><small style="color: #dc2626; font-weight: 600;">Culminada</small>'
+          : ""
+        }
             </td>
             <td>${formatearFecha(obl.fecha_vencimiento)}</td>
             <td>${formatearMoneda(obl.monto_total_usd)}</td>
             <td>${formatearMoneda(montoPagado)}</td>
             <td>${formatearMoneda(saldoPendiente)}</td>
-            <td><span class="cxp-status" data-status="${
-              obl.estado || "pendiente"
-            }">${estadoLabel}</span></td>
+            <td><span class="cxp-status" data-status="${obl.estado || "pendiente"
+        }">${estadoLabel}</span></td>
             <td>
                 <div class="actions-dropdown">
                     <button type="button" class="actions-dropdown-toggle" onclick="toggleActionsDropdown(event)">
@@ -875,45 +872,40 @@ function renderizarTablaObligaciones() {
                         Acciones
                     </button>
                     <div class="actions-dropdown-menu">
-                        <button type="button" class="actions-dropdown-item edit-action" onclick="editarObligacion(${
-                          obl.obligacion_id
-                        })">
+                        <button type="button" class="actions-dropdown-item edit-action" onclick="editarObligacion(${obl.obligacion_id
+        })">
                             <i class="fas fa-edit"></i>
                             Editar
                         </button>
-                        ${
-                          obl.obligacion_periodo_id
-                            ? `
+                        ${obl.obligacion_periodo_id
+          ? `
                             <button type="button" class="actions-dropdown-item payment-action" onclick="abrirModalPagoParaObligacionPeriodo(${obl.obligacion_periodo_id}, ${obl.obligacion_id})">
                                 <i class="fas fa-dollar-sign"></i>
                                 Registrar pago
                             </button>
                         `
-                            : ""
-                        }
-                        ${
-                          esRecurrente && estaActiva
-                            ? `
+          : ""
+        }
+                        ${esRecurrente && estaActiva
+          ? `
                             <button type="button" class="actions-dropdown-item complete-action" onclick="culminarObligacion(${obl.obligacion_id}, '${obl.concepto}')">
                                 <i class="fas fa-check-circle"></i>
                                 Culminar
                             </button>
                         `
-                            : ""
-                        }
-                        ${
-                          esRecurrente && !estaActiva
-                            ? `
+          : ""
+        }
+                        ${esRecurrente && !estaActiva
+          ? `
                             <button type="button" class="actions-dropdown-item reactivate-action" onclick="reactivarObligacion(${obl.obligacion_id}, '${obl.concepto}')">
                                 <i class="fas fa-redo"></i>
                                 Reactivar
                             </button>
                         `
-                            : ""
-                        }
-                        <button type="button" class="actions-dropdown-item delete-action" onclick="eliminarObligacion(${
-                          obl.obligacion_id
-                        }, '${nroDocumento}')">
+          : ""
+        }
+                        <button type="button" class="actions-dropdown-item delete-action" onclick="eliminarObligacion(${obl.obligacion_id
+        }, '${nroDocumento}')">
                             <i class="fas fa-trash"></i>
                             Eliminar
                         </button>
@@ -966,10 +958,10 @@ function renderizarTablaObligacionesVencidas() {
       const diasVencidos = Math.floor(
         (hoy - fechaVenc) / (1000 * 60 * 60 * 24)
       );
-
+      console.log('Obligacion:', obl);
       return `
             <tr>
-                <td>${obl.numero_documento}</td>
+                <td>${obl.proveedor_id}</td>
                 <td>${obl.proveedor}</td>
                 <td>${obl.concepto}</td>
                 <td>${formatearFecha(obl.fecha_vencimiento)}</td>
@@ -977,13 +969,12 @@ function renderizarTablaObligacionesVencidas() {
                 <td>${formatearMoneda(obl.monto_total_usd)}</td>
                 <td>${formatearMoneda(obl.monto_pagado_usd || 0)}</td>
                 <td><strong>${formatearMoneda(
-                  obl.saldo_pendiente_usd || obl.monto_total_usd
-                )}</strong></td>
+        obl.saldo_pendiente_usd || obl.monto_total_usd
+      )}</strong></td>
                 <td><span class="cxp-status" data-status="vencida">Vencida</span></td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-danger" onclick="abrirModalPagoParaObligacion(${
-                      obl.obligacion_id
-                    })">
+                    <button type="button" class="btn btn-sm btn-danger" onclick="abrirModalPagoParaObligacion(${obl.obligacion_id
+        })">
                         Registrar pago
                     </button>
                 </td>
@@ -1002,7 +993,7 @@ function renderizarHistorialPagos() {
       '<tr><td colspan="6" class="cxp-table__empty">Aún no hay pagos registrados.</td></tr>';
     return;
   }
-
+  console.log('Pagos:', state.pagos);
   tbody.innerHTML = state.pagos
     .map(
       (pago) => `
@@ -1012,9 +1003,8 @@ function renderizarHistorialPagos() {
             <td>${pago.numero_documento}</td>
             <td>${pago.metodo_pago || "No especificado"}</td>
             <td>${formatearMoneda(pago.monto_pagado_usd)}</td>
-            <td><span class="cxp-status" data-status="${
-              pago.estado
-            }">${obtenerEtiquetaEstado(pago.estado)}</span></td>
+            <td><span class="cxp-status" data-status="${pago.estado
+        }">${obtenerEtiquetaEstado(pago.estado)}</span></td>
         </tr>
     `
     )
@@ -1037,9 +1027,8 @@ function renderizarTablaProveedores() {
     .map((prov) => {
       const infoBancaria =
         prov.nombre_banco && prov.numero_cuenta
-          ? `${prov.nombre_banco} - ${prov.tipo_cuenta || ""} ${
-              prov.numero_cuenta
-            }`
+          ? `${prov.nombre_banco} - ${prov.tipo_cuenta || ""} ${prov.numero_cuenta
+          }`
           : "No registrado";
 
       const documento =
@@ -1052,33 +1041,28 @@ function renderizarTablaProveedores() {
                 <td>${prov.nombre_razon_social}</td>
                 <td>${documento}</td>
                 <td>
-                    <div class="cxp-list__label">${
-                      prov.telefono || "Sin teléfono"
-                    }</div>
-                    <div class="cxp-list__meta">${
-                      prov.email || "Sin correo"
-                    }</div>
+                    <div class="cxp-list__label">${prov.telefono || "Sin teléfono"
+        }</div>
+                    <div class="cxp-list__meta">${prov.email || "Sin correo"
+        }</div>
                 </td>
                 <td>
                     <div class="cxp-list__label">${infoBancaria}</div>
-                    ${
-                      prov.titular_cuenta
-                        ? `<div class="cxp-list__meta">Titular: ${prov.titular_cuenta}</div>`
-                        : ""
-                    }
+                    ${prov.titular_cuenta
+          ? `<div class="cxp-list__meta">Titular: ${prov.titular_cuenta}</div>`
+          : ""
+        }
                 </td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-primary-light" onclick="editarProveedor(${
-                      prov.proveedor_id
-                    })" title="Editar">
+                    <button type="button" class="btn btn-sm btn-primary-light" onclick="editarProveedor(${prov.proveedor_id
+        })" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-danger-light" onclick="eliminarProveedor(${
-                      prov.proveedor_id
-                    }, '${prov.nombre_razon_social.replace(
-        /'/g,
-        "\\'"
-      )}')" title="Eliminar">
+                    <button type="button" class="btn btn-sm btn-danger-light" onclick="eliminarProveedor(${prov.proveedor_id
+        }, '${prov.nombre_razon_social.replace(
+          /'/g,
+          "\\'"
+        )}')" title="Eliminar">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -1116,17 +1100,15 @@ function renderizarTablaCuentasContables() {
                 <td>${cuenta.descripcion || "Sin descripción"}</td>
                 <td>${estadoBadge}</td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-primary-light" onclick="editarCuentaContable(${
-                      cuenta.cuenta_id
-                    })" title="Editar">
+                    <button type="button" class="btn btn-sm btn-primary-light" onclick="editarCuentaContable(${cuenta.cuenta_id
+        })" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-danger-light" onclick="confirmarEliminarCuenta(${
-                      cuenta.cuenta_id
-                    }, '${cuenta.nombre_cuenta.replace(
-        /'/g,
-        "\\'"
-      )}')" title="Eliminar">
+                    <button type="button" class="btn btn-sm btn-danger-light" onclick="confirmarEliminarCuenta(${cuenta.cuenta_id
+        }, '${cuenta.nombre_cuenta.replace(
+          /'/g,
+          "\\'"
+        )}')" title="Eliminar">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -1208,14 +1190,13 @@ async function generarReportes() {
           .map(
             (obl) => `
                     <li>
-                        <div class="cxp-list__label"><strong>${
-                          obl.proveedor
-                        }</strong> - ${obl.numero_documento}</div>
+                        <div class="cxp-list__label"><strong>${obl.proveedor
+              }</strong> - ${obl.numero_documento}</div>
                         <div class="cxp-list__meta">Vence: ${formatearFecha(
-                          obl.fecha_vencimiento
-                        )} | ${formatearMoneda(
-              obl.saldo_pendiente_usd || obl.monto_total_usd
-            )}</div>
+                obl.fecha_vencimiento
+              )} | ${formatearMoneda(
+                obl.saldo_pendiente_usd || obl.monto_total_usd
+              )}</div>
                     </li>
                 `
           )
@@ -1250,8 +1231,8 @@ async function generarReportes() {
                         <li>
                             <div class="cxp-list__label"><strong>${cuenta}</strong></div>
                             <div class="cxp-list__meta">${formatearMoneda(
-                              monto
-                            )}</div>
+              monto
+            )}</div>
                         </li>
                     `
           )
@@ -1303,15 +1284,13 @@ async function cargarHistorialProveedor(proveedorId) {
                     <tr>
                         <td>${formatearFecha(pago.fecha_pago)}</td>
                         <td>${pago.numero_documento}</td>
-                        <td>${
-                          pago.obligacion_concepto || pago.concepto || "—"
-                        }</td>
+                        <td>${pago.obligacion_concepto || pago.concepto || "—"
+              }</td>
                         <td>${pago.metodo_pago || "No especificado"}</td>
                         <td>${formatearMoneda(pago.monto_pagado_usd)}</td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-primary-light" onclick="verDetallePagoProveedor(${
-                              pago.pago_proveedor_id
-                            })" title="Ver detalles">
+                            <button type="button" class="btn btn-sm btn-primary-light" onclick="verDetallePagoProveedor(${pago.pago_proveedor_id
+              })" title="Ver detalles">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td>
@@ -1660,9 +1639,8 @@ function setupForms() {
             const fechaVenc = formatearFecha(o.fecha_vencimiento);
             const option = document.createElement("option");
             option.value = o.obligacion_id;
-            option.textContent = `${
-              o.concepto || 'Sin concepto'
-            } | Vence: ${fechaVenc} | Saldo: USD ${saldo.toFixed(2)}`;
+            option.textContent = `${o.concepto || 'Sin concepto'
+              } | Vence: ${fechaVenc} | Saldo: USD ${saldo.toFixed(2)}`;
             option.dataset.obligacionPeriodoId = o.obligacion_periodo_id || '';
             option.dataset.saldo = saldo;
             option.dataset.concepto = o.concepto || '';
@@ -1685,7 +1663,7 @@ function setupForms() {
               const saldoRaw =
                 obligacionesProveedor[0].saldo_pendiente_usd ||
                 obligacionesProveedor[0].monto_total_usd -
-                  (obligacionesProveedor[0].monto_pagado_usd || 0);
+                (obligacionesProveedor[0].monto_pagado_usd || 0);
               const saldo = parseFloat(saldoRaw) || 0;
               amountField.value = saldo.toFixed(2);
             }
@@ -1918,13 +1896,12 @@ function poblarSelectCuentas() {
       cuentasActivas
         .map(
           (c) =>
-            `<option value="${c.cuenta_id}" data-tipo="${c.nombre_tipo_cuenta || c.tipo_cuenta}">${c.codigo_cuenta} - ${
-              c.nombre_cuenta
+            `<option value="${c.cuenta_id}" data-tipo="${c.nombre_tipo_cuenta || c.tipo_cuenta}">${c.codigo_cuenta} - ${c.nombre_cuenta
             } (${c.nombre_tipo_cuenta || c.tipo_cuenta || 'N/A'})</option>`
         )
         .join("");
     console.log("Cuentas contables cargadas en select:", cuentasActivas.length);
-    
+
     // Agregar evento para filtrar frecuencias de pago según tipo de cuenta
     select.removeEventListener("change", filtrarFrecuenciasPago);
     select.addEventListener("change", filtrarFrecuenciasPago);
@@ -1938,12 +1915,12 @@ function filtrarFrecuenciasPago(event) {
   const selectedOption = selectCuenta.options[selectCuenta.selectedIndex];
   const tipoCuenta = selectedOption.getAttribute("data-tipo");
   const selectFrecuencia = document.getElementById("obligationFrequency");
-  
+
   if (!selectFrecuencia) return;
-  
+
   // Obtener el valor actual antes de modificar las opciones
   const valorActual = selectFrecuencia.value;
-  
+
   if (tipoCuenta === "gasto_extraordinario") {
     // Solo mostrar "Pago único" para gastos extraordinarios
     selectFrecuencia.innerHTML = '<option value="unico">Pago único</option>';
@@ -2211,7 +2188,7 @@ function setupModals() {
       btn.addEventListener("click", () => {
         console.log(`Abriendo modal: ${modalId}`);
         abrirModal(modalId);
-        
+
         // Renderizar tabla de tipos de cuenta cuando se abre el modal
         if (modalId === "accountTypeModal") {
           renderizarTablaTiposCuenta();
@@ -2822,9 +2799,8 @@ window.abrirModalPagoParaObligacionPeriodo = function (
   }
 
   if (paymentProviderInfo) {
-    paymentProviderInfo.textContent = `Proveedor: ${
-      obligacion.proveedor
-    } | Concepto: ${obligacion.concepto || "Sin concepto"}`;
+    paymentProviderInfo.textContent = `Proveedor: ${obligacion.proveedor
+      } | Concepto: ${obligacion.concepto || "Sin concepto"}`;
   }
 
   // Ocultar campos de selección de proveedor y obligación
@@ -3107,9 +3083,8 @@ async function generarPDFHistorial(anio, mes, pagos) {
     const nombreMes = meses[parseInt(mes) - 1];
 
     const fechaGeneracion = new Date();
-    const fechaFormateada = `${fechaGeneracion.getDate()}/${
-      fechaGeneracion.getMonth() + 1
-    }/${fechaGeneracion.getFullYear()}`;
+    const fechaFormateada = `${fechaGeneracion.getDate()}/${fechaGeneracion.getMonth() + 1
+      }/${fechaGeneracion.getFullYear()}`;
     const horaFormateada = `${fechaGeneracion.getHours()}:${String(
       fechaGeneracion.getMinutes()
     ).padStart(2, "0")}`;
@@ -3462,9 +3437,8 @@ function poblarSelectApartamentos() {
       apto.nombre && apto.apellido
         ? `${apto.nombre} ${apto.apellido}`
         : "Sin asignar";
-    const label = `${apto.piso} ${
-      apto.apartamento || ""
-    } - ${nombrePropietario} (${apto.alicuota}%)`;
+    const label = `${apto.piso} ${apto.apartamento || ""
+      } - ${nombrePropietario} (${apto.alicuota}%)`;
 
     const option = document.createElement("option");
     option.value = apto.apartamento_id;
@@ -3576,38 +3550,35 @@ function generarPDFRecibo(datos) {
         </div>
 
         <div class="info-section">
-            <div class="info-item"><strong>Apartamento:</strong> ${
-              datos.apartamento.piso
-            } ${datos.apartamento.nombre}</div>
-            <div class="info-item" style="text-align: end;"><strong>C.I./R.I.F.:</strong> ${
-              datos.propietario.cedula
-            }</div>
-            <div class="info-item"><strong>Propietario:</strong> ${
-              datos.propietario.nombre
-            }</div>
+            <div class="info-item"><strong>Apartamento:</strong> ${datos.apartamento.piso
+    } ${datos.apartamento.nombre}</div>
+            <div class="info-item" style="text-align: end;"><strong>C.I./R.I.F.:</strong> ${datos.propietario.cedula
+    }</div>
+            <div class="info-item"><strong>Propietario:</strong> ${datos.propietario.nombre
+    }</div>
             <div class="info-item" style="text-align: end;"><strong>Recibo Nro.:</strong> 001-${new Date(
-              datos.fecha
-            )
-              .toLocaleDateString("es-VE", { month: "short", year: "2-digit" })
-              .toUpperCase()}-25</div>
+      datos.fecha
+    )
+      .toLocaleDateString("es-VE", { month: "short", year: "2-digit" })
+      .toUpperCase()}-25</div>
             <div class="info-item"><strong>Dirección:</strong> 3ra Av. Bis con 8va Transversal. Altamira</div>
             <div class="info-item" style="text-align: end;"><strong>Mes Relacionado:</strong> ${new Date(
-              datos.fecha
-            )
-              .toLocaleDateString("es-VE", { month: "long", year: "numeric" })
-              .toUpperCase()}</div>
+        datos.fecha
+      )
+      .toLocaleDateString("es-VE", { month: "long", year: "numeric" })
+      .toUpperCase()}</div>
             <div class="info-item"><strong>Alícuota:</strong> ${parseFloat(
-              datos.apartamento.alicuota
-            ).toFixed(8)}%</div>
+        datos.apartamento.alicuota
+      ).toFixed(8)}%</div>
             <div class="info-item" style="text-align: end;"><strong>Fecha Vencimiento:</strong> ${new Date(
-              new Date(datos.fecha).getFullYear(),
-              new Date(datos.fecha).getMonth() + 1,
-              30
-            ).toLocaleDateString("es-VE")}</div>
+        new Date(datos.fecha).getFullYear(),
+        new Date(datos.fecha).getMonth() + 1,
+        30
+      ).toLocaleDateString("es-VE")}</div>
             <div></div>
             <div class="info-item" style="text-align: end;"><strong>Valor del Dólar:</strong> ${datos.tasa_dolar.toFixed(
-              2
-            )}</div>
+        2
+      )}</div>
         </div>
 
         <table>
@@ -3620,13 +3591,12 @@ function generarPDFRecibo(datos) {
                 </tr>
             </thead>
             <tbody>
-                ${
-                  datos.gastos_ordinarios.length > 0
-                    ? `
+                ${datos.gastos_ordinarios.length > 0
+      ? `
                 <tr><td colspan="4" class="section-title">Gastos Ordinarios:</td></tr>
                 ${datos.gastos_ordinarios
-                  .map(
-                    (g) => `
+        .map(
+          (g) => `
                 <tr>
                     <td>${g.concepto}</td>
                     <td class="text-right">${g.monto_bs.toFixed(2)}</td>
@@ -3634,31 +3604,30 @@ function generarPDFRecibo(datos) {
                     <td class="text-right">${g.cuota_usd.toFixed(2)}</td>
                 </tr>
                 `
-                  )
-                  .join("")}
+        )
+        .join("")}
                 <tr class="total-row">
                     <td>Total Gastos Ordinarios =></td>
                     <td class="text-right">${datos.gastos_ordinarios
-                      .reduce((sum, g) => sum + g.monto_bs, 0)
-                      .toFixed(2)}</td>
+        .reduce((sum, g) => sum + g.monto_bs, 0)
+        .toFixed(2)}</td>
                     <td class="text-right">${datos.gastos_ordinarios
-                      .reduce((sum, g) => sum + g.cuota_bs, 0)
-                      .toFixed(2)}</td>
+        .reduce((sum, g) => sum + g.cuota_bs, 0)
+        .toFixed(2)}</td>
                     <td class="text-right">${datos.totales.gastos_ordinarios.toFixed(
-                      2
-                    )}</td>
+          2
+        )}</td>
                 </tr>
                 `
-                    : ""
-                }
+      : ""
+    }
 
-                ${
-                  datos.gastos_extraordinarios.length > 0
-                    ? `
+                ${datos.gastos_extraordinarios.length > 0
+      ? `
                 <tr><td colspan="4" class="section-title">Gastos Extraordinarios:</td></tr>
                 ${datos.gastos_extraordinarios
-                  .map(
-                    (g) => `
+        .map(
+          (g) => `
                 <tr>
                     <td>${g.concepto}</td>
                     <td class="text-right">${g.monto_bs.toFixed(2)}</td>
@@ -3666,31 +3635,30 @@ function generarPDFRecibo(datos) {
                     <td class="text-right">${g.cuota_usd.toFixed(2)}</td>
                 </tr>
                 `
-                  )
-                  .join("")}
+        )
+        .join("")}
                 <tr class="total-row">
                     <td>Total Gastos Extraordinarios =></td>
                     <td class="text-right">${datos.gastos_extraordinarios
-                      .reduce((sum, g) => sum + g.monto_bs, 0)
-                      .toFixed(2)}</td>
+        .reduce((sum, g) => sum + g.monto_bs, 0)
+        .toFixed(2)}</td>
                     <td class="text-right">${datos.gastos_extraordinarios
-                      .reduce((sum, g) => sum + g.cuota_bs, 0)
-                      .toFixed(2)}</td>
+        .reduce((sum, g) => sum + g.cuota_bs, 0)
+        .toFixed(2)}</td>
                     <td class="text-right">${datos.totales.gastos_extraordinarios.toFixed(
-                      2
-                    )}</td>
+          2
+        )}</td>
                 </tr>
                 `
-                    : ""
-                }
+      : ""
+    }
 
-                ${
-                  datos.gastos_individuales.length > 0
-                    ? `
+                ${datos.gastos_individuales.length > 0
+      ? `
                 <tr><td colspan="4" class="section-title">Gastos Individuales:</td></tr>
                 ${datos.gastos_individuales
-                  .map(
-                    (g) => `
+        .map(
+          (g) => `
                 <tr>
                     <td>${g.concepto}</td>
                     <td class="text-right">${g.monto_bs.toFixed(2)}</td>
@@ -3698,31 +3666,30 @@ function generarPDFRecibo(datos) {
                     <td class="text-right">${g.cuota_usd.toFixed(2)}</td>
                 </tr>
                 `
-                  )
-                  .join("")}
+        )
+        .join("")}
                 <tr class="total-row">
                     <td>Total Gastos Individuales =></td>
                     <td class="text-right">${datos.gastos_individuales
-                      .reduce((sum, g) => sum + g.monto_bs, 0)
-                      .toFixed(2)}</td>
+        .reduce((sum, g) => sum + g.monto_bs, 0)
+        .toFixed(2)}</td>
                     <td class="text-right">${datos.gastos_individuales
-                      .reduce((sum, g) => sum + g.cuota_bs, 0)
-                      .toFixed(2)}</td>
+        .reduce((sum, g) => sum + g.cuota_bs, 0)
+        .toFixed(2)}</td>
                     <td class="text-right">${datos.totales.gastos_individuales.toFixed(
-                      2
-                    )}</td>
+          2
+        )}</td>
                 </tr>
                 `
-                    : ""
-                }
+      : ""
+    }
 
-                ${
-                  datos.previsiones.length > 0
-                    ? `
+                ${datos.previsiones.length > 0
+      ? `
                 <tr><td colspan="4" class="section-title">Previsiones:</td></tr>
                 ${datos.previsiones
-                  .map(
-                    (g) => `
+        .map(
+          (g) => `
                 <tr>
                     <td>${g.concepto}</td>
                     <td class="text-right">${g.monto_bs.toFixed(2)}</td>
@@ -3730,31 +3697,30 @@ function generarPDFRecibo(datos) {
                     <td class="text-right">${g.cuota_usd.toFixed(2)}</td>
                 </tr>
                 `
-                  )
-                  .join("")}
+        )
+        .join("")}
                 <tr class="total-row">
                     <td>Total Previsiones =></td>
                     <td class="text-right">${datos.previsiones
-                      .reduce((sum, g) => sum + g.monto_bs, 0)
-                      .toFixed(2)}</td>
+        .reduce((sum, g) => sum + g.monto_bs, 0)
+        .toFixed(2)}</td>
                     <td class="text-right">${datos.previsiones
-                      .reduce((sum, g) => sum + g.cuota_bs, 0)
-                      .toFixed(2)}</td>
+        .reduce((sum, g) => sum + g.cuota_bs, 0)
+        .toFixed(2)}</td>
                     <td class="text-right">${datos.totales.previsiones.toFixed(
-                      2
-                    )}</td>
+          2
+        )}</td>
                 </tr>
                 `
-                    : ""
-                }
+      : ""
+    }
 
-                ${
-                  datos.gastos_variables.length > 0
-                    ? `
+                ${datos.gastos_variables.length > 0
+      ? `
                 <tr><td colspan="4" class="section-title">Gastos Variables:</td></tr>
                 ${datos.gastos_variables
-                  .map(
-                    (g) => `
+        .map(
+          (g) => `
                 <tr>
                     <td>${g.concepto}</td>
                     <td class="text-right">${g.monto_bs.toFixed(2)}</td>
@@ -3762,40 +3728,40 @@ function generarPDFRecibo(datos) {
                     <td class="text-right">${g.cuota_usd.toFixed(2)}</td>
                 </tr>
                 `
-                  )
-                  .join("")}
+        )
+        .join("")}
                 <tr class="total-row">
                     <td>Total Gastos Variables =></td>
                     <td class="text-right">${datos.gastos_variables
-                      .reduce((sum, g) => sum + g.monto_bs, 0)
-                      .toFixed(2)}</td>
+        .reduce((sum, g) => sum + g.monto_bs, 0)
+        .toFixed(2)}</td>
                     <td class="text-right">${datos.gastos_variables
-                      .reduce((sum, g) => sum + g.cuota_bs, 0)
-                      .toFixed(2)}</td>
+        .reduce((sum, g) => sum + g.cuota_bs, 0)
+        .toFixed(2)}</td>
                     <td class="text-right">${datos.totales.gastos_variables.toFixed(
-                      2
-                    )}</td>
+          2
+        )}</td>
                 </tr>
                 `
-                    : ""
-                }
+      : ""
+    }
 
                 <tr class="final-total">
                     <td colspan="2" class="text-right"><strong>Cuota Cond.:</strong></td>
                     <td class="text-right"><strong>${(
-                      (datos.gastos_ordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.gastos_extraordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.gastos_individuales || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.previsiones || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.gastos_variables || []).reduce((sum, g) => sum + g.cuota_bs, 0)
-                    ).toFixed(2)}</strong></td>
+      (datos.gastos_ordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.gastos_extraordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.gastos_individuales || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.previsiones || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.gastos_variables || []).reduce((sum, g) => sum + g.cuota_bs, 0)
+    ).toFixed(2)}</strong></td>
                     <td class="text-right"><strong>${(
-                      datos.totales.gastos_ordinarios +
-                      datos.totales.gastos_extraordinarios +
-                      datos.totales.gastos_individuales +
-                      datos.totales.previsiones +
-                      datos.totales.gastos_variables
-                    ).toFixed(2)}</strong></td>
+      datos.totales.gastos_ordinarios +
+      datos.totales.gastos_extraordinarios +
+      datos.totales.gastos_individuales +
+      datos.totales.previsiones +
+      datos.totales.gastos_variables
+    ).toFixed(2)}</strong></td>
                 </tr>
                 <tr class="final-total">
                     <td colspan="2" class="text-right"><strong>Cuota Extras:</strong></td>
@@ -3815,19 +3781,19 @@ function generarPDFRecibo(datos) {
                 <tr class="final-total">
                     <td colspan="2" class="text-right"><strong>Cuota del Mes:</strong></td>
                     <td class="text-right"><strong>${(
-                      (datos.gastos_ordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.gastos_extraordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.gastos_individuales || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.previsiones || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.gastos_variables || []).reduce((sum, g) => sum + g.cuota_bs, 0)
-                    ).toFixed(2)}</strong></td>
+      (datos.gastos_ordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.gastos_extraordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.gastos_individuales || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.previsiones || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.gastos_variables || []).reduce((sum, g) => sum + g.cuota_bs, 0)
+    ).toFixed(2)}</strong></td>
                     <td class="text-right"><strong>${(
-                      datos.totales.gastos_ordinarios +
-                      datos.totales.gastos_extraordinarios +
-                      datos.totales.gastos_individuales +
-                      datos.totales.previsiones +
-                      datos.totales.gastos_variables
-                    ).toFixed(2)}</strong></td>
+      datos.totales.gastos_ordinarios +
+      datos.totales.gastos_extraordinarios +
+      datos.totales.gastos_individuales +
+      datos.totales.previsiones +
+      datos.totales.gastos_variables
+    ).toFixed(2)}</strong></td>
                 </tr>
                 <tr class="final-total">
                     <td colspan="2" class="text-right"><strong>Sdo.Ant.Ctas Ord.:</strong></td>
@@ -3842,19 +3808,19 @@ function generarPDFRecibo(datos) {
                 <tr class="final-total" style="background-color: #d0d0d0;">
                     <td colspan="2" class="text-right"><strong>Acumulado:</strong></td>
                     <td class="text-right"><strong>${(
-                      (datos.gastos_ordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.gastos_extraordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.gastos_individuales || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.previsiones || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
-                      (datos.gastos_variables || []).reduce((sum, g) => sum + g.cuota_bs, 0)
-                    ).toFixed(2)}</strong></td>
+      (datos.gastos_ordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.gastos_extraordinarios || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.gastos_individuales || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.previsiones || []).reduce((sum, g) => sum + g.cuota_bs, 0) +
+      (datos.gastos_variables || []).reduce((sum, g) => sum + g.cuota_bs, 0)
+    ).toFixed(2)}</strong></td>
                     <td class="text-right"><strong>${(
-                      datos.totales.gastos_ordinarios +
-                      datos.totales.gastos_extraordinarios +
-                      datos.totales.gastos_individuales +
-                      datos.totales.previsiones +
-                      datos.totales.gastos_variables
-                    ).toFixed(2)}</strong></td>
+      datos.totales.gastos_ordinarios +
+      datos.totales.gastos_extraordinarios +
+      datos.totales.gastos_individuales +
+      datos.totales.previsiones +
+      datos.totales.gastos_variables
+    ).toFixed(2)}</strong></td>
                 </tr>
             </tbody>
         </table>
@@ -3872,20 +3838,20 @@ function generarPDFRecibo(datos) {
                 <tr>
                     <td class="text-right">0.00</td>
                     <td class="text-right">${(
-                      datos.totales.gastos_ordinarios +
-                      datos.totales.gastos_extraordinarios +
-                      datos.totales.gastos_individuales +
-                      datos.totales.previsiones +
-                      datos.totales.gastos_variables
-                    ).toFixed(2)}</td>
+      datos.totales.gastos_ordinarios +
+      datos.totales.gastos_extraordinarios +
+      datos.totales.gastos_individuales +
+      datos.totales.previsiones +
+      datos.totales.gastos_variables
+    ).toFixed(2)}</td>
                     <td class="text-right">0.00</td>
                     <td class="text-right">${(
-                      datos.totales.gastos_ordinarios +
-                      datos.totales.gastos_extraordinarios +
-                      datos.totales.gastos_individuales +
-                      datos.totales.previsiones +
-                      datos.totales.gastos_variables
-                    ).toFixed(2)}</td>
+      datos.totales.gastos_ordinarios +
+      datos.totales.gastos_extraordinarios +
+      datos.totales.gastos_individuales +
+      datos.totales.previsiones +
+      datos.totales.gastos_variables
+    ).toFixed(2)}</td>
                 </tr>
             </tbody>
         </table>

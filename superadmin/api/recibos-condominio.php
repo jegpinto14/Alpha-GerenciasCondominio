@@ -105,7 +105,8 @@ function generarDatosRecibo($conn, $apartamentoId, $fecha)
                             c.nombre_cuenta
                          FROM obligaciones o
                          INNER JOIN cuentas_contables c ON o.cuenta_id = c.cuenta_id
-                         WHERE c.tipo_cuenta = 'gasto_fijo'
+                         INNER JOIN tipo_cuenta_contable tcc ON c.tipo_cuenta_contable_id = tcc.tipo_cuenta_contable_id
+                         WHERE tcc.nombre_tipo_cuenta = 'Gasto Fijo'
                          AND o.activa = 1
                          AND (
                              o.frecuencia_pago != 'unico' 
@@ -124,7 +125,8 @@ function generarDatosRecibo($conn, $apartamentoId, $fecha)
                             c.nombre_cuenta
                          FROM obligaciones o
                          INNER JOIN cuentas_contables c ON o.cuenta_id = c.cuenta_id
-                         WHERE c.tipo_cuenta = 'gasto_extraordinario'
+                         INNER JOIN tipo_cuenta_contable tcc ON c.tipo_cuenta_contable_id = tcc.tipo_cuenta_contable_id
+                         WHERE tcc.nombre_tipo_cuenta = 'Gasto Extraordinario'
                          AND o.activa = 1
                          AND (
                              o.frecuencia_pago != 'unico' 
@@ -143,7 +145,8 @@ function generarDatosRecibo($conn, $apartamentoId, $fecha)
                             c.nombre_cuenta
                          FROM obligaciones o
                          INNER JOIN cuentas_contables c ON o.cuenta_id = c.cuenta_id
-                         WHERE c.tipo_cuenta = 'previsiones'
+                         INNER JOIN tipo_cuenta_contable tcc ON c.tipo_cuenta_contable_id = tcc.tipo_cuenta_contable_id
+                         WHERE tcc.nombre_tipo_cuenta = 'Previsiones'
                          AND o.activa = 1
                          AND (
                              o.frecuencia_pago != 'unico' 
@@ -162,7 +165,8 @@ function generarDatosRecibo($conn, $apartamentoId, $fecha)
                             c.nombre_cuenta
                          FROM obligaciones o
                          INNER JOIN cuentas_contables c ON o.cuenta_id = c.cuenta_id
-                         WHERE c.tipo_cuenta = 'gasto_variable'
+                         INNER JOIN tipo_cuenta_contable tcc ON c.tipo_cuenta_contable_id = tcc.tipo_cuenta_contable_id
+                         WHERE tcc.nombre_tipo_cuenta = 'Gasto Variable'
                          AND o.activa = 1
                          AND (
                              o.frecuencia_pago != 'unico' 
