@@ -10,6 +10,7 @@ header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 header('Access-Control-Allow-Headers: Content-Type');
 
 require_once 'conexion.php';
+require_once 'utils/fecha_vencimiento.php';
 
 // Obtener método HTTP
 $method = $_SERVER['REQUEST_METHOD'];
@@ -49,10 +50,11 @@ try {
                             o.obligacion_id,
                             o.proveedor_id,
                             p.nombre_razon_social as proveedor,
+                            p.nro_documento as numero_documento,
                             o.cuenta_id,
                             c.nombre_cuenta,
                             o.fecha_emision,
-                            o.fecha_vencimiento,
+                            COALESCE(MAX(op.fecha_vencimiento), o.fecha_vencimiento) as fecha_vencimiento,
                             o.monto_total_usd,
                             o.concepto,
                             o.aprobado_por,
@@ -70,10 +72,10 @@ try {
                           LEFT JOIN obligacion_periodo op ON o.obligacion_id = op.obligacion_id AND op.periodo_id = :periodo_id
                           LEFT JOIN pagos_proveedores pp ON op.obligacion_periodo_id = pp.obligacion_periodo_id
                           WHERE o.activa = 1
-                          GROUP BY o.obligacion_id, o.proveedor_id, p.nombre_razon_social, o.cuenta_id, 
-                                   c.nombre_cuenta, o.fecha_emision, o.fecha_vencimiento, o.monto_total_usd,
+                          GROUP BY o.obligacion_id, o.proveedor_id, p.nombre_razon_social, p.nro_documento, o.cuenta_id, 
+                                   c.nombre_cuenta, o.fecha_emision, o.monto_total_usd,
                                    o.concepto, o.aprobado_por, o.fecha_aprobacion, o.frecuencia_pago,
-                                   o.activa, o.creado_en, o.actualizado_en
+                                   o.activa, o.creado_en, o.actualizado_en, o.fecha_vencimiento
                           ORDER BY o.fecha_emision DESC";
 
                 $stmt = $conn->prepare($query);
@@ -109,17 +111,31 @@ try {
                         }
 
                         if ($debeCrearPeriodo) {
+                            // Calcular fecha de vencimiento ajustada para el periodo
+                            $queryPeriodoFecha = "SELECT fecha_periodo FROM periodos WHERE periodo_id = :periodo_id";
+                            $stmtPeriodoFecha = $conn->prepare($queryPeriodoFecha);
+                            $stmtPeriodoFecha->bindParam(':periodo_id', $periodoId);
+                            $stmtPeriodoFecha->execute();
+                            $periodoFecha = $stmtPeriodoFecha->fetch(PDO::FETCH_ASSOC);
+                            
+                            $fechaVencimientoAjustada = calcularFechaVencimientoAjustada(
+                                $obl['fecha_vencimiento'],
+                                $periodoFecha['fecha_periodo']
+                            );
+
                             // Crear obligacion_periodo si no existe y la obligación está activa
-                            $insertOP = "INSERT INTO obligacion_periodo (obligacion_id, periodo_id, estado) 
-                                        VALUES (:obligacion_id, :periodo_id, 'Por Pagar')";
+                            $insertOP = "INSERT INTO obligacion_periodo (obligacion_id, periodo_id, estado, fecha_vencimiento) 
+                                        VALUES (:obligacion_id, :periodo_id, 'Por Pagar', :fecha_vencimiento)";
                             $insertOPStmt = $conn->prepare($insertOP);
                             $insertOPStmt->bindParam(':obligacion_id', $obl['obligacion_id']);
                             $insertOPStmt->bindParam(':periodo_id', $periodoId);
+                            $insertOPStmt->bindParam(':fecha_vencimiento', $fechaVencimientoAjustada);
                             $insertOPStmt->execute();
 
                             $obl['obligacion_periodo_id'] = $conn->lastInsertId();
                             $obl['estado'] = 'Por Pagar';
                             $obl['monto_pagado_usd'] = 0;
+                            $obl['fecha_vencimiento'] = $fechaVencimientoAjustada;
                         }
                     }
 

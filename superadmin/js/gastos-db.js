@@ -958,10 +958,9 @@ function renderizarTablaObligacionesVencidas() {
       const diasVencidos = Math.floor(
         (hoy - fechaVenc) / (1000 * 60 * 60 * 24)
       );
-      console.log('Obligacion:', obl);
       return `
             <tr>
-                <td>${obl.proveedor_id}</td>
+                <td>${obl.numero_documento || 'N/A'}</td>
                 <td>${obl.proveedor}</td>
                 <td>${obl.concepto}</td>
                 <td>${formatearFecha(obl.fecha_vencimiento)}</td>
@@ -993,7 +992,6 @@ function renderizarHistorialPagos() {
       '<tr><td colspan="6" class="cxp-table__empty">Aún no hay pagos registrados.</td></tr>';
     return;
   }
-  console.log('Pagos:', state.pagos);
   tbody.innerHTML = state.pagos
     .map(
       (pago) => `
