@@ -21,8 +21,8 @@ function generateInvoiceHTML($pago, $mesNombre)
 
     // Preparar logo en Base64
     $logoBase64 = '';
-    $logoPath = realpath(__DIR__ . '/../assets/images/Logo jesús.png');
-    if ($logoPath && file_exists($logoPath)) {
+    $logoPath = dirname(__DIR__) . '/assets/images/logo_gerencia_condominio.png';
+    if (file_exists($logoPath)) {
         $logoData = file_get_contents($logoPath);
         $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
     }
@@ -60,30 +60,29 @@ function generateInvoiceHTML($pago, $mesNombre)
             .header {
                 text-align: center;
                 padding: 30px 20px 20px;
-                border-bottom: 2px solid #1A3A4A;
-                background: linear-gradient(135deg, #1A3A4A 0%, #112631 100%);
-                color: white;
+                background: white;
+                color: #1A3A4A;
             }
             
             .company-name {
                 font-size: 32px;
                 font-weight: bold;
                 margin-bottom: 8px;
-                color: white;
-                text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+                color: #1A3A4A;
             }
             
             .system-title {
                 font-size: 16px;
-                color: #e8f2ff;
+                color: #1A3A4A;
                 margin-bottom: 15px;
             }
             
             .document-title {
+                margin-top: 5px;
                 font-size: 24px;
                 font-weight: bold;
-                color: white;
-                background: rgba(255,255,255,0.1);
+                color: #1A3A4A;
+                background: rgba(26,58,74,0.1);
                 padding: 10px 20px;
                 border-radius: 5px;
                 display: inline-block;
@@ -200,6 +199,7 @@ function generateInvoiceHTML($pago, $mesNombre)
             .method-column {
                 color: #2c5aa0;
                 font-weight: 500;
+                min-width: 120px;
             }
             
             .bank-column {
@@ -285,7 +285,7 @@ function generateInvoiceHTML($pago, $mesNombre)
         <div class='receipt-container'>
             <!-- Header -->
             <div class='header'>
-                " . ($logoBase64 ? "<img src='{$logoBase64}' alt='Logo' style='max-width: 250px; height: auto; margin-bottom: 15px;'>" : "<div class='company-name'>Gerencia Express</div>") . "
+                " . ($logoBase64 ? "<img src='{$logoBase64}' alt='Logo' style='max-width: 250px; height: auto; margin-bottom: 20px; margin-top: 0;'>" : "<div class='company-name'>Gerencia Express</div>") . "
                 <div class='system-title'>Sistema de Gestión de Pagos</div>
                 <div class='document-title'>Comprobante de Pago</div>
             </div>
@@ -658,18 +658,15 @@ function generateReceipt($paymentId = null, $paymentDetailId = null)
         $azulClaro = [240, 244, 248];     // Gris azulado claro para contraste
 
         // ENCABEZADO CON LOGO Y COLORES
-        $pdf->SetFillColor($azulOscuro[0], $azulOscuro[1], $azulOscuro[2]);
-        $pdf->Rect(0, 0, 210, 45, 'F');
-
-        // Logo Blanco (PNG Transparente o con fondo blanco)
-        $logoPath = realpath(__DIR__ . '/../assets/images/Logo jesús.png');
+        // Logo - Priorizar logo_gerencia_condominio.png
+        $logoPath = dirname(__DIR__) . '/assets/images/logo_gerencia_condominio.png';
         
-        if ($logoPath && file_exists($logoPath)) {
-            // Usar Image con detección automática de tipo y parámetros de escalado
-            $pdf->Image($logoPath, 62.5, 5, 85, 25, '', '', '', true, 300, 'C');
+        if (file_exists($logoPath)) {
+            // Usar Image con alto 0 para mantener proporción - Tamaño reducido a 80 y movido a Y=2
+            $pdf->Image($logoPath, 0, 2, 80, 0, 'PNG', '', '', true, 300, 'C');
         } else {
-            // Fallback si no hay logo - Texto Blanco para que sea visible sobre el fondo azul
-            $pdf->SetTextColor(255, 255, 255);
+            // Fallback si no hay logo - Texto Azul para que sea visible sobre el fondo blanco
+            $pdf->SetTextColor($azulOscuro[0], $azulOscuro[1], $azulOscuro[2]);
             $pdf->SetFont('helvetica', 'B', 18);
             $pdf->SetY(12);
             $pdf->Cell(0, 8, 'Gerencia Express', 0, 1, 'C', 0, '', 0);
@@ -677,13 +674,13 @@ function generateReceipt($paymentId = null, $paymentDetailId = null)
             $pdf->Cell(0, 4, 'Sistema de Gestion de Pagos', 0, 1, 'C', 0, '', 0);
         }
 
-        // Título del comprobante
-        $pdf->SetTextColor(255, 255, 255);
+        // Título del comprobante - Reajustado para evitar solapamiento (Y=65)
+        $pdf->SetTextColor($azulOscuro[0], $azulOscuro[1], $azulOscuro[2]);
         $pdf->SetFont('helvetica', 'B', 14);
-        $pdf->SetY(34);
+        $pdf->SetY(65);
         $pdf->Cell(0, 8, 'Comprobante de Pago Mensual', 0, 1, 'C', 0, '', 0);
-
-        $pdf->SetY(55);
+ 
+        $pdf->SetY(78);
 
         // Información del pago
         // Usar fecha_pago si existe (pago móvil/transferencia), sino usar fecha_transaccion (efectivo divisa)
@@ -787,8 +784,8 @@ function generateReceipt($paymentId = null, $paymentDetailId = null)
         $pdf->SetFont('helvetica', 'B', 9);
 
         $pdf->Cell(35, 8, 'CONCEPTO', 1, 0, 'C', 1, '', 0);
-        $pdf->Cell(25, 8, 'METODO', 1, 0, 'C', 1, '', 0);
-        $pdf->Cell(60, 8, 'BANCO', 1, 0, 'C', 1, '', 0);
+        $pdf->Cell(45, 8, 'METODO', 1, 0, 'C', 1, '', 0);
+        $pdf->Cell(40, 8, 'BANCO', 1, 0, 'C', 1, '', 0);
         $pdf->Cell(30, 8, 'REFERENCIA', 1, 0, 'C', 1, '', 0);
         $pdf->Cell(30, 8, 'MONTO', 1, 1, 'C', 1, '', 0);
 
@@ -799,8 +796,8 @@ function generateReceipt($paymentId = null, $paymentDetailId = null)
         // Concepto según tipo de pago
         $conceptoPago = $esPagoDeuda ? 'Pago Deuda' : 'Pago de Mensualidades';
         $pdf->Cell(35, 8, $conceptoPago, 1, 0, 'L', 0, '', 0);
-        $pdf->Cell(25, 8, $pago['metodo_pago'] ?: 'N/A', 1, 0, 'C', 0, '', 0);
-        $pdf->Cell(60, 8, $pago['banco_emisor'] ?: 'N/A', 1, 0, 'C', 0, '', 0);
+        $pdf->Cell(45, 8, $pago['metodo_pago'] ?: 'N/A', 1, 0, 'C', 0, '', 0);
+        $pdf->Cell(40, 8, $pago['banco_emisor'] ?: 'N/A', 1, 0, 'C', 0, '', 0);
         $pdf->Cell(30, 8, $pago['nro_referencia'] ?: 'N/A', 1, 0, 'C', 0, '', 0);
         $pdf->SetFont('helvetica', 'B', 8);
 

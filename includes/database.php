@@ -3,7 +3,7 @@
 $host = 'localhost';
 $dbname = 'alpha_gerenciaexpress';
 $username = 'root';
-$password = '';
+$password = 'root';
 
 
 try {
@@ -12,4 +12,3 @@ try {
 } catch (PDOException $e) {
     throw new PDOException("Error de conexión: " . $e->getMessage());
 }
-?>

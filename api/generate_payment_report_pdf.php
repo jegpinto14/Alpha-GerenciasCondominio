@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 
 // Verificar sesión
@@ -229,9 +230,12 @@ try {
     
     $pdf->Ln(10);
     
-    // Pie de página
-    $pdf->SetFont('Arial', '', 10);
     $pdf->Cell(0, 8, 'Reporte generado automaticamente por el Sistema Gerencia Express', 0, 1, 'C');
+    
+    // Limpiar output antes de enviar PDF
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
     
     // Configurar headers para descarga
     header('Content-Type: application/pdf');
@@ -272,4 +276,4 @@ try {
     error_log("Error PDF Reporte: " . $e->getMessage() . " en " . $e->getFile() . ":" . $e->getLine());
     exit;
 }
-?>
+

@@ -294,4 +294,3 @@ function generatePDFHTML($months, $total_bs, $total_usd, $year, $house_id = null
     
     return $html;
 }
-?>

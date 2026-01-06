@@ -575,8 +575,8 @@ body {
 }
 
 .btn-primary {
-    width: 20%;
-    padding: 12px;
+    width: auto;
+    padding: 12px 24px;
     background-color: var(--primary);
     color: var(--primary-foreground);
     border: none;
@@ -595,6 +595,12 @@ body {
 
 .btn-primary i {
     margin-right: 8px;
+}
+
+.btn-sm {
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
 }
 
 /* Botón de registro específico */

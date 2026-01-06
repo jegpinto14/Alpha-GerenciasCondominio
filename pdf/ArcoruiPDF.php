@@ -41,4 +41,3 @@ class ArcoruiPDF extends FPDF {
     
     
 }
-?>

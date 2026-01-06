@@ -7,6 +7,7 @@ while (ob_get_level()) {
     ob_end_clean();
 }
 
+ob_start();
 session_start();
 
 // Verificar sesión
@@ -347,7 +348,11 @@ try {
     while (ob_get_level()) {
         ob_end_clean();
     }
-
+    
+    // Iniciar buffer fresco NO es necesario si vamos a usar Output('D') directamente
+    // Pero si lo usamos, debemos asegurarnos de FLUSH o no limpiarlo al final.
+    // Lo más seguro: Limpiar todo y dejar que FPDF maneje la salida directa.
+    
     // Configurar headers para descarga
     header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="Reporte_Pagos_' . $year . '_' . date('Ymd_His') . '.pdf"');
@@ -355,7 +360,9 @@ try {
     header('Pragma: public');
 
     // Generar PDF
+    // Al no haber buffers activos (gracias al while anterior), FPDF enviará los datos directamente
     $pdf->Output('D', 'Reporte_Pagos_' . $year . '.pdf', true);
+    exit;
 
 } catch (Exception $e) {
     // Limpiar output en caso de error
