@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,8 @@
     <link rel="stylesheet" href="../../assets/css/style.css">
     <link rel="stylesheet" href="../../assets/css/custom-select.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -385,8 +387,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .no-results {
@@ -454,6 +461,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -485,12 +493,8 @@
         <div class="controls-container">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="Buscar por nombre, cédula, email o teléfono..."
-                    onkeyup="handleSearch()"
-                >
+                <input type="text" id="searchInput" placeholder="Buscar por nombre, cédula, email o teléfono..."
+                    onkeyup="handleSearch()">
             </div>
             <div class="per-page-selector">
                 <label>Mostrar:</label>
@@ -570,7 +574,7 @@
         let sortColumn = 'nombre_completo';
         let sortDirection = 'asc';
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadData();
         });
 
@@ -585,10 +589,10 @@
                         viviendas_count: p.viviendas.length
                     }));
                     filteredData = [...allData];
-                    
+
                     displayStats(data.stats);
                     sortAndDisplay();
-                    
+
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('tableContainer').style.display = 'block';
                 } else {
@@ -623,19 +627,19 @@
             filteredData.sort((a, b) => {
                 let aVal = a[sortColumn];
                 let bVal = b[sortColumn];
-                
+
                 if (typeof aVal === 'string') {
                     aVal = aVal.toLowerCase();
                     bVal = bVal.toLowerCase();
                 }
-                
+
                 if (sortDirection === 'asc') {
                     return aVal > bVal ? 1 : -1;
                 } else {
                     return aVal < bVal ? 1 : -1;
                 }
             });
-            
+
             displayTable();
         }
 
@@ -655,11 +659,11 @@
             document.getElementById('noResults').style.display = 'none';
 
             tbody.innerHTML = '';
-            
+
             pageData.forEach((prop, index) => {
                 const rowId = `row-${start + index}`;
                 const detailRowId = `detail-${start + index}`;
-                
+
                 const row = document.createElement('tr');
                 row.id = rowId;
                 row.innerHTML = `
@@ -719,7 +723,7 @@
         function toggleDetails(rowId, detailRowId, btn) {
             const row = document.getElementById(rowId);
             const detailRow = document.getElementById(detailRowId);
-            
+
             row.classList.toggle('expanded');
             detailRow.classList.toggle('show');
             btn.classList.toggle('active');
@@ -730,7 +734,7 @@
             const start = (currentPage - 1) * itemsPerPage + 1;
             const end = itemsPerPage === -1 ? filteredData.length : Math.min(currentPage * itemsPerPage, filteredData.length);
 
-            document.getElementById('paginationInfo').textContent = 
+            document.getElementById('paginationInfo').textContent =
                 `Mostrando ${start} a ${end} de ${filteredData.length} registros`;
 
             document.getElementById('prevBtn').disabled = currentPage === 1;
@@ -786,17 +790,15 @@
 
         function handleSearch() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
+
             filteredData = allData.filter(prop => {
                 return prop.nombre_completo.toLowerCase().includes(searchTerm) ||
-                       prop.nro_documento.toString().includes(searchTerm) ||
-                       prop.gmail.toLowerCase().includes(searchTerm) ||
-                       prop.telefono.includes(searchTerm) ||
-                       prop.viviendas.some(v => 
-                           v.nombre_vivienda.toLowerCase().includes(searchTerm) ||
-                           v.tipo_vivienda.toLowerCase().includes(searchTerm) ||
-                           (v.avenida && v.avenida.toLowerCase().includes(searchTerm))
-                       );
+                    prop.nro_documento.toString().includes(searchTerm) ||
+                    prop.gmail.toLowerCase().includes(searchTerm) ||
+                    prop.telefono.includes(searchTerm) ||
+                    prop.viviendas.some(v =>
+                        v.nombre_vivienda.toLowerCase().includes(searchTerm)
+                    );
             });
 
             currentPage = 1;
@@ -819,4 +821,5 @@
         }
     </script>
 </body>
+
 </html>

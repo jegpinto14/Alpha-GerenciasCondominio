@@ -6,8 +6,8 @@ header('Access-Control-Allow-Methods: GET');
 require_once '../includes/database.php';
 
 try {
-    // Consultar los tipos de vivienda
-    $query = "SELECT tipo_id, nombre_tipo, monto_mensual_usd FROM tipo_vivienda ORDER BY nombre_tipo ASC";
+    // Consultar solo el tipo de vivienda 'Apartamento'
+    $query = "SELECT tipo_id, nombre_tipo, monto_mensual_usd FROM tipo_vivienda WHERE nombre_tipo = 'Apartamento' LIMIT 1";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
 

@@ -1597,7 +1597,9 @@ async function loadTiposVivienda() {
         const data = await response.json();
 
         if (data.success && data.tipos) {
-            console.log('✅ Tipos de vivienda cargados:', data.tipos);
+            // Filtrar para dejar solo Apartamentos
+            const soloApartamentos = data.tipos.filter(t => t.nombre.toLowerCase() === 'apartamento');
+            console.log('✅ Tipos de vivienda filtrados:', soloApartamentos);
 
             // Poblar el select del modal de registro inicial
             const housingTypeSelect = document.getElementById('housingType');
@@ -1606,7 +1608,7 @@ async function loadTiposVivienda() {
                 housingTypeSelect.innerHTML = '<option value="">Selecciona el tipo</option>';
 
                 // Agregar los tipos de vivienda
-                data.tipos.forEach(tipo => {
+                soloApartamentos.forEach(tipo => {
                     const option = document.createElement('option');
                     option.value = tipo.id;
                     option.textContent = tipo.nombre;
@@ -1614,7 +1616,7 @@ async function loadTiposVivienda() {
                     housingTypeSelect.appendChild(option);
                 });
 
-                console.log(`✅ ${data.tipos.length} tipos de vivienda agregados al select`);
+                console.log(`✅ ${soloApartamentos.length} tipos de vivienda agregados al select`);
             }
 
             // Poblar el select del modal de nueva vivienda
@@ -1622,7 +1624,7 @@ async function loadTiposVivienda() {
             if (newHousingTypeSelect) {
                 newHousingTypeSelect.innerHTML = '<option value="">Selecciona el tipo</option>';
 
-                data.tipos.forEach(tipo => {
+                soloApartamentos.forEach(tipo => {
                     const option = document.createElement('option');
                     option.value = tipo.id;
                     option.textContent = tipo.nombre;
@@ -1630,10 +1632,10 @@ async function loadTiposVivienda() {
                     newHousingTypeSelect.appendChild(option);
                 });
 
-                console.log(`✅ ${data.tipos.length} tipos de vivienda agregados al select de nueva vivienda`);
+                console.log(`✅ ${soloApartamentos.length} tipos de vivienda agregados al select de nueva vivienda`);
             }
 
-            return data.tipos;
+            return soloApartamentos;
         } else {
             console.error('❌ Error al cargar tipos de vivienda:', data.message);
             return [];
@@ -1646,14 +1648,15 @@ async function loadTiposVivienda() {
 
 // Toggle campos de vivienda
 function toggleHousingFields() {
-    const housingType = document.getElementById('housingType').value;
+    const housingTypeSelect = document.getElementById('housingType');
+    const selectedOption = housingTypeSelect.options[housingTypeSelect.selectedIndex];
+    const housingType = selectedOption ? selectedOption.textContent.toLowerCase() : '';
     const apartamentoFields = document.getElementById('apartamentoFields');
 
     apartamentoFields.style.display = housingType === 'apartamento' ? 'block' : 'none';
 
-    // Hacer campos requeridos según el tipo
+    // Hacer campos requeridos si es apartamento
     const apartamentoInputs = apartamentoFields.querySelectorAll('input');
-
     apartamentoInputs.forEach(input => {
         input.required = housingType === 'apartamento';
     });
@@ -1705,8 +1708,7 @@ function populateHousingForm() {
         document.getElementById('apartamentoFields').style.display = 'block';
 
     } else {
-        console.log('Tipo de vivienda no reconocido:', currentHousing.tipo);
-        // Para otros tipos de vivienda
+        console.log('Tipo de vivienda no soportado:', currentHousing.tipo);
         document.getElementById('apartamentoFields').style.display = 'none';
     }
 
@@ -3618,12 +3620,29 @@ function loadCartas() {
             if (data.success && data.solicitudes && data.solicitudes.length > 0) {
                 cartasList.innerHTML = data.solicitudes.map(solicitud => {
                     const fecha = new Date(solicitud.fecha).toLocaleDateString('es-VE');
-                    const estadoClass = solicitud.estado.toLowerCase();
+                    const estadoClass = solicitud.estado.toLowerCase().replace(' ', '_');
 
                     // Mostrar texto personalizado según el estado
                     let estadoTexto = solicitud.estado;
-                    if (solicitud.estado === 'Pagada') {
-                        estadoTexto = 'Pagada esperando otorgación';
+                    let mensajeEntrega = '';
+
+                    const esPagada = solicitud.estado === 'Pagada' ||
+                        solicitud.estado === 'Confirmado' ||
+                        solicitud.estado === 'Confirmada';
+
+                    const esEntregada = solicitud.estado === 'Entregado' ||
+                        solicitud.estado === 'Entregada';
+
+                    if (esPagada) {
+                        estadoTexto = 'Pagada - Esperando Entrega';
+                        mensajeEntrega = `
+                            <div class="alert alert-warning mt-2" style="background-color: #fef3c7; color: #92400e; border: 1px solid #fcd34d; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; width: 100%;">
+                                <i class="fas fa-info-circle"></i>
+                                La Junta de Condominio se comunicará con usted para coordinar la entrega física de su carta de residencia.
+                            </div>
+                        `;
+                    } else if (esEntregada) {
+                        estadoTexto = 'Entregado';
                     }
 
                     let botonPago = '';
@@ -3643,6 +3662,7 @@ function loadCartas() {
                             </div>
                             <div class="solicitud-body">
                                 <p>${solicitud.descripcion}</p>
+                                ${mensajeEntrega}
                             </div>
                             <div class="solicitud-footer">
                                 <span class="solicitud-date">

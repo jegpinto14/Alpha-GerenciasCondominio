@@ -26,79 +26,59 @@ try {
         exit;
     }
     
-    // Obtener información de la casa
+    // Obtener información del apartamento
     $stmt = $pdo->prepare("
         SELECT 
-            v.id,
-            v.numero,
-            v.tipo,
-            v.nombre_propietario,
-            v.apellido_propietario,
+            i.inmueble_id as id,
+            a.apartamento as numero,
+            e.nombre_edificio,
+            a.piso,
+            p.nombre as nombre_propietario,
+            p.apellido as apellido_propietario,
             u.username,
-            u.email,
-            u.tipo as usuario_tipo
-        FROM viviendas v
-        LEFT JOIN usuarios u ON v.usuario_id = u.id
-        WHERE v.id = ?
+            u.email
+        FROM inmueble i
+        JOIN apartamentos a ON i.entidad_id = a.apartamento_id
+        JOIN edificios e ON a.edificio_id = e.edificio_id
+        JOIN propietarios p ON i.propietario_id = p.propietario_id
+        LEFT JOIN usuarios u ON p.user_id = u.user_id
+        WHERE i.inmueble_id = ? AND i.tipo_entidad = 'apartamento'
     ");
     $stmt->execute([$houseId]);
     $house = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$house) {
-        echo json_encode(['success' => false, 'message' => 'Casa no encontrada']);
+        echo json_encode(['success' => false, 'message' => 'Apartamento no encontrado']);
         exit;
     }
     
-    // Obtener historial de pagos para 2025
+    // Obtener historial de pagos
     $stmt = $pdo->prepare("
         SELECT 
-            p.meses,
-            p.monto_bs,
-            p.monto_dolares,
-            p.moneda_pago,
-            p.metodo_pago,
-            p.tasa_bs,
-            p.fecha_pago,
-            p.estado
-        FROM pagos_mensualidades p
-        WHERE p.vivienda_id = ? 
-        AND YEAR(p.fecha_pago) = 2025
-        ORDER BY p.fecha_pago ASC
+            per.fecha_periodo,
+            pd.monto_Bs,
+            pd.monto_usd,
+            pd.monto_pagado,
+            pd.fecha as fecha_pago,
+            pd.estado
+        FROM pago_detalles pd
+        JOIN pagos p ON pd.pago_id = p.pago_id
+        JOIN periodos per ON p.periodo_id = per.periodo_id
+        WHERE p.inmueble_id = ?
+        ORDER BY per.fecha_periodo DESC
     ");
     $stmt->execute([$houseId]);
     $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Procesar pagos para extraer meses individuales
     $payments = [];
-    $meses_unicos = [];
-    
     foreach ($pagos as $pago) {
-        $meses = json_decode($pago['meses'], true);
-        if (is_array($meses)) {
-            $cantidad_meses = count($meses);
-            $monto_por_mes_bs = $pago['monto_bs'] / $cantidad_meses;
-            $monto_por_mes_usd = $pago['monto_dolares'] / $cantidad_meses;
-            
-            foreach ($meses as $mes) {
-                $mes_key = $mes['id'] . '_' . $mes['name'];
-                
-                if (!isset($meses_unicos[$mes_key])) {
-                    $meses_unicos[$mes_key] = true;
-                    
-                    $payments[] = [
-                        'mes' => $mes['id'],
-                        'mes_nombre' => $mes['name'],
-                        'monto_bs' => $monto_por_mes_bs,
-                        'monto_dolares' => $monto_por_mes_usd,
-                        'moneda_pago' => $pago['moneda_pago'],
-                        'metodo_pago' => $pago['metodo_pago'],
-                        'tasa_bs' => $pago['tasa_bs'],
-                        'fecha_pago' => $pago['fecha_pago'],
-                        'estado' => $pago['estado'] === 'aprobado' ? 'Pagado' : ucfirst($pago['estado'])
-                    ];
-                }
-            }
-        }
+        $payments[] = [
+            'mes_nombre' => date('F Y', strtotime($pago['fecha_periodo'])),
+            'monto_bs' => $pago['monto_Bs'],
+            'monto_dolares' => $pago['monto_usd'],
+            'fecha_pago' => $pago['fecha_pago'],
+            'estado' => $pago['estado']
+        ];
     }
     
     // Ordenar por mes

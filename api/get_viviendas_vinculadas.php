@@ -21,37 +21,25 @@ try {
             p.telefono,
             tv.nombre_tipo as tipo_vivienda,
             tv.monto_mensual_usd,
-            CASE 
-                WHEN i.tipo_entidad = 'casa' THEN c.nombre_casa
-                WHEN i.tipo_entidad = 'apartamento' THEN CONCAT(e.nombre_edificio, ' - Piso ', a.piso, ' Apto ', a.apartamento)
-                WHEN i.tipo_entidad = 'establecimientos' THEN est.nombre_establecimiento
-                WHEN i.tipo_entidad = 'centro_comercial' THEN 'Centro Comercial'
-                ELSE 'N/A'
-            END as nombre_vivienda,
-            CASE 
-                WHEN i.tipo_entidad = 'casa' THEN av.nombre_avenida
-                WHEN i.tipo_entidad = 'apartamento' THEN NULL
-                WHEN i.tipo_entidad = 'establecimientos' THEN av2.nombre_avenida
-                WHEN i.tipo_entidad = 'centro_comercial' THEN av3.nombre_avenida
-                ELSE NULL
-            END as avenida
+            CONCAT(e.nombre_edificio, ' - Piso ', a.piso, ' Apto ', a.apartamento) as nombre_vivienda,
+            'Sector Corozo' as avenida
         FROM inmueble i
         INNER JOIN propietarios p ON i.propietario_id = p.propietario_id
         INNER JOIN tipo_vivienda tv ON i.tipo_vivienda_id = tv.tipo_id
-        LEFT JOIN casas c ON i.tipo_entidad = 'casa' AND i.entidad_id = c.casa_id
-        LEFT JOIN avenidas av ON c.avenida_id = av.id_avenida
-        LEFT JOIN apartamentos a ON i.tipo_entidad = 'apartamento' AND i.entidad_id = a.apartamento_id
-        LEFT JOIN edificios e ON a.edificio_id = e.edificio_id
-        LEFT JOIN establecimientos est ON i.tipo_entidad = 'establecimientos' AND i.entidad_id = est.establecimiento_id
-        LEFT JOIN avenidas av2 ON est.avenida_id = av2.id_avenida
-        LEFT JOIN centro_comercial cc ON i.tipo_entidad = 'centro_comercial' AND i.entidad_id = cc.cc_id
-        LEFT JOIN avenidas av3 ON cc.avenida_id = av3.id_avenida
+        INNER JOIN apartamentos a ON i.entidad_id = a.apartamento_id
+        INNER JOIN edificios e ON a.edificio_id = e.edificio_id
+        WHERE i.tipo_entidad = 'apartamento'
         ORDER BY p.apellido, p.nombre, i.inmueble_id
     ";
 
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $viviendas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    error_log("Viviendas query returned " . count($viviendas) . " rows");
+    if (count($viviendas) > 0) {
+        error_log("First row: " . json_encode($viviendas[0]));
+    }
 
     // Agrupar por propietario
     $propietarios = [];
@@ -98,6 +86,7 @@ try {
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {
+    error_log("PDO Error in get_viviendas_vinculadas.php: " . $e->getMessage());
     echo json_encode([
         'success' => false,
         'message' => 'Error al obtener las viviendas vinculadas',

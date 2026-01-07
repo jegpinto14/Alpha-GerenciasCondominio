@@ -65,29 +65,25 @@ try {
             'montoMensualUsd' => (float) ($inmueble['monto_mensual_usd'] ?? 15.00)
         ];
 
-        // Agregar información específica según el tipo de entidad
-        if ($inmueble['tipo_entidad'] === 'apartamento') {
-            // Obtener información del apartamento
-            $stmt = $pdo->prepare("
-                SELECT 
-                    a.apartamento_id,
-                    a.apartamento,
-                    a.piso,
-                    e.nombre_edificio
-                FROM apartamentos a
-                JOIN edificios e ON a.edificio_id = e.edificio_id
-                WHERE a.apartamento_id = ?
-            ");
-            $stmt->execute([$inmueble['entidad_id']]);
-            $apartamento = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Obtener la información del apartamento obligatoriamente
+        $stmt = $pdo->prepare("
+            SELECT 
+                a.apartamento_id,
+                a.apartamento,
+                a.piso,
+                e.nombre_edificio
+            FROM apartamentos a
+            JOIN edificios e ON a.edificio_id = e.edificio_id
+            WHERE a.apartamento_id = ?
+        ");
+        $stmt->execute([$inmueble['entidad_id']]);
+        $apartamento = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($apartamento) {
-                $housing['numero_apartamento'] = $apartamento['apartamento'];
-                $housing['piso'] = $apartamento['piso'];
-                $housing['nombre_edificio'] = $apartamento['nombre_edificio'];
-                $housing['nombre_avenida'] = 'No especificada';
-            }
-
+        if ($apartamento) {
+            $housing['numero_apartamento'] = $apartamento['apartamento'];
+            $housing['piso'] = $apartamento['piso'];
+            $housing['nombre_edificio'] = $apartamento['nombre_edificio'];
+            $housing['nombre_avenida'] = 'Sector Corozo';
         }
 
         $housing_list[] = $housing;

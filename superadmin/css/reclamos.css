@@ -252,7 +252,7 @@
 
 .btn-secondary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(30, 60, 114, 0.15);
+    box-shadow: 0 6px 16px rgba(184, 194, 200, 0.3);
 }
 
 .btn-outline {
@@ -266,14 +266,15 @@
 }
 
 .btn-primary {
-    background: var(--color-primary);
+    background: #C4A98B;
     color: #fff;
+    box-shadow: 0 4px 12px rgba(196, 169, 139, 0.3);
 }
 
 .btn-primary:hover {
-    background: var(--color-secondary);
+    background: #d4b99b;
     transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(30, 60, 114, 0.25);
+    box-shadow: 0 8px 18px rgba(196, 169, 139, 0.4);
 }
 
 .btn-success {
@@ -331,8 +332,8 @@
 
 .page-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(30, 60, 114, 0.25);
-    background: rgba(30, 60, 114, 0.15);
+    box-shadow: 0 8px 18px rgba(196, 169, 139, 0.25);
+    background: rgba(196, 169, 139, 0.15);
 }
 
 .page-btn:disabled {
@@ -447,7 +448,7 @@
 }
 
 .volver-btn {
-    background-color: var(--color-primary);
+    background-color: #C4A98B;
     color: white;
     border: none;
     padding: 0.6rem 1.2rem;
@@ -459,17 +460,17 @@
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(26, 58, 74, 0.2);
+    box-shadow: 0 4px 12px rgba(196, 169, 139, 0.3);
 }
 
 .volver-btn:hover {
-    background-color: #2a5a6a;
+    background-color: #d4b99b;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(26, 58, 74, 0.3);
+    box-shadow: 0 6px 16px rgba(196, 169, 139, 0.4);
 }
 
 .breadcrumb-link {
-    color: #1e3c72;
+    color: #1A3A4A;
     text-decoration: none;
     font-weight: 500;
     padding: 0.25rem 0.5rem;
@@ -478,8 +479,8 @@
 }
 
 .breadcrumb-link:hover {
-    background-color: rgba(30, 60, 114, 0.1);
-    color: #2a5298;
+    background-color: rgba(26, 58, 74, 0.1);
+    color: #C4A98B;
     text-decoration: underline;
 }
 

@@ -33,20 +33,6 @@ try {
     $resultados = [];
     
     switch ($tipo_vivienda) {
-        case 'quinta':
-            // Obtener quintas disponibles por avenida (no ocupadas)
-            $stmt = $pdo->prepare("
-                SELECT c.casa_id as id, c.nombre_casa as nombre, 'quinta' as tipo
-                FROM casas c 
-                LEFT JOIN inmueble i ON c.casa_id = i.entidad_id AND i.tipo_entidad = 'casa'
-                WHERE c.avenida_id = ? AND i.entidad_id IS NULL
-                ORDER BY c.nombre_casa
-            ");
-            $stmt->execute([$filtro_id]);
-            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            error_log("🏠 API: Encontradas " . count($resultados) . " quintas disponibles para avenida_id: " . $filtro_id);
-            break;
-            
         case 'apartamento':
             // Obtener apartamentos disponibles por edificio
             $stmt = $pdo->prepare("
@@ -61,23 +47,9 @@ try {
             error_log("🏠 API: Encontrados " . count($resultados) . " apartamentos para edificio_id: " . $filtro_id);
             break;
             
-        case 'establecimiento':
-            // Obtener establecimientos disponibles por avenida
-            $stmt = $pdo->prepare("
-                SELECT e.establecimiento_id as id, e.nombre_establecimiento as nombre, 'establecimiento' as tipo
-                FROM establecimientos e 
-                LEFT JOIN inmueble i ON e.establecimiento_id = i.entidad_id AND i.tipo_entidad = 'establecimiento'
-                WHERE e.avenida_id = ? AND i.entidad_id IS NULL
-                ORDER BY e.nombre_establecimiento
-            ");
-            $stmt->execute([$filtro_id]);
-            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            error_log("🏠 API: Encontrados " . count($resultados) . " establecimientos para avenida_id: " . $filtro_id);
-            break;
-            
         default:
-            error_log("❌ API: Tipo de vivienda no válido: " . $tipo_vivienda);
-            echo json_encode(['success' => false, 'message' => 'Tipo de vivienda no válido']);
+            error_log("❌ API: Tipo de vivienda no válido o deshabilitado: " . $tipo_vivienda);
+            echo json_encode(['success' => false, 'message' => 'Tipo de vivienda no válido o deshabilitado']);
             exit;
     }
     

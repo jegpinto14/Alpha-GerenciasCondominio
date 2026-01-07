@@ -217,7 +217,7 @@
 }
 
 .summary-icon[class*="status-"] {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, #1A3A4A 0%, #2a5a6a 100%);
 }
 
 .status-chip.status-default {
@@ -269,6 +269,30 @@
     background: linear-gradient(135deg, #2563eb, #3b82f6);
 }
 
+/* Estado Confirmado - Verde */
+.status-chip.status-confirmado,
+.status-chip.status-confirmada {
+    background: rgba(16, 185, 129, 0.15);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.summary-card.status-confirmado .summary-icon,
+.summary-card.status-confirmada .summary-icon {
+    background: linear-gradient(135deg, #059669, #10b981);
+}
+
+/* Estado Entregado - Gris Azulado */
+.status-chip.status-entregado {
+    background: rgba(71, 85, 105, 0.15);
+    color: #334155;
+    border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.summary-card.status-entregado .summary-icon {
+    background: linear-gradient(135deg, #475569, #64748b);
+}
+
 .request-actions {
     display: flex;
     flex-direction: column;
@@ -295,18 +319,19 @@
 
 .btn-secondary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(30, 60, 114, 0.15);
+    box-shadow: 0 6px 16px rgba(184, 194, 200, 0.3);
 }
 
 .btn-primary {
-    background: var(--color-primary);
+    background: #C4A98B;
     color: #fff;
+    box-shadow: 0 4px 12px rgba(196, 169, 139, 0.3);
 }
 
 .btn-primary:hover {
-    background: var(--color-secondary);
+    background: #d4b99b;
     transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(30, 60, 114, 0.25);
+    box-shadow: 0 8px 18px rgba(196, 169, 139, 0.4);
 }
 
 .btn-outline {
@@ -495,7 +520,7 @@
 }
 
 .volver-btn {
-    background-color: #1e3c72;
+    background-color: #C4A98B;
     color: white;
     border: none;
     padding: 0.6rem 1.2rem;
@@ -507,13 +532,13 @@
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(30, 60, 114, 0.2);
+    box-shadow: 0 2px 4px rgba(196, 169, 139, 0.3);
 }
 
 .volver-btn:hover {
-    background-color: #2a5298;
+    background-color: #d4b99b;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(30, 60, 114, 0.3);
+    box-shadow: 0 4px 8px rgba(196, 169, 139, 0.4);
 }
 
 .volver-btn:active {
@@ -521,7 +546,7 @@
 }
 
 .breadcrumb-link {
-    color: #1e3c72;
+    color: #1A3A4A;
     text-decoration: none;
     font-weight: 500;
     padding: 0.25rem 0.5rem;
@@ -530,7 +555,7 @@
 }
 
 .breadcrumb-link:hover {
-    background-color: rgba(30, 60, 114, 0.1);
-    color: #2a5298;
+    background-color: rgba(26, 58, 74, 0.1);
+    color: #C4A98B;
     text-decoration: underline;
 }

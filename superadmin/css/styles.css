@@ -185,8 +185,8 @@ body.modal-open {
 }
 
 .card-btn {
-    background-color: var(--color-primary);
-    color: var(--color-text-inverse);
+    background-color: var(--color-accent);
+    color: white;
     border: none;
     padding: 1rem 1.5rem;
     border-radius: 8px;
@@ -200,13 +200,13 @@ body.modal-open {
     transition: all 0.3s ease;
     width: 100%;
     margin-top: auto;
-    box-shadow: 0 4px 12px rgba(26, 58, 74, 0.3);
+    box-shadow: 0 4px 12px rgba(196, 169, 139, 0.3);
 }
 
 .card-btn:hover {
-    background-color: #2a5a6a;
+    background-color: #d4b99b;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(26, 58, 74, 0.4);
+    box-shadow: 0 6px 16px rgba(196, 169, 139, 0.4);
 }
 
 .card-btn:active {
@@ -229,24 +229,24 @@ body.modal-open {
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .main-content {
         padding: 1rem;
     }
-    
+
     .welcome-card h1 {
         font-size: 2rem;
     }
-    
+
     .welcome-card p {
         font-size: 1rem;
     }
-    
+
     .dashboard-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
-    
+
     .dashboard-card {
         padding: 1.5rem;
     }
@@ -256,20 +256,20 @@ body.modal-open {
     .welcome-card {
         padding: 1.5rem;
     }
-    
+
     .welcome-card h1 {
         font-size: 1.8rem;
     }
-    
+
     .dashboard-card {
         padding: 1rem;
     }
-    
+
     .card-icon {
         width: 50px;
         height: 50px;
     }
-    
+
     .card-icon i {
         font-size: 1.5rem;
     }
@@ -282,6 +282,7 @@ body.modal-open {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -292,12 +293,29 @@ body.modal-open {
     animation: fadeInUp 0.6s ease forwards;
 }
 
-.dashboard-card:nth-child(1) { animation-delay: 0.1s; }
-.dashboard-card:nth-child(2) { animation-delay: 0.2s; }
-.dashboard-card:nth-child(3) { animation-delay: 0.3s; }
-.dashboard-card:nth-child(4) { animation-delay: 0.4s; }
-.dashboard-card:nth-child(5) { animation-delay: 0.5s; }
-.dashboard-card:nth-child(6) { animation-delay: 0.6s; }
+.dashboard-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.dashboard-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dashboard-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.dashboard-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.dashboard-card:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.dashboard-card:nth-child(6) {
+    animation-delay: 0.6s;
+}
 
 /* Modal cerrar sesión */
 .logout-modal {

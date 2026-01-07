@@ -828,6 +828,48 @@ function generateReceipt($paymentId = null, $paymentDetailId = null)
             $pdf->Cell(0, 10, 'TOTAL PAGADO: ' . $totalPagado . ' (Bolivares)', 1, 1, 'C', 1, '', 0);
         }
 
+        // ADJUNTAR COMPROBANTE - Si existe
+        if (!empty($pago['comprobante'])) {
+            $comprobanteFull = dirname(__DIR__) . '/' . str_replace('../', '', $pago['comprobante']);
+            
+            if (file_exists($comprobanteFull)) {
+                $pdf->AddPage();
+                
+                $pdf->SetFillColor($azulOscuro[0], $azulOscuro[1], $azulOscuro[2]);
+                $pdf->SetTextColor(255, 255, 255);
+                $pdf->SetFont('helvetica', 'B', 12);
+                $pdf->Cell(0, 10, 'COMPROBANTE ADJUNTO (ORIGINAL)', 1, 1, 'C', 1, '', 0);
+                
+                $pdf->Ln(5);
+                
+                // Intentar insertar la imagen del comprobante
+                try {
+                    // Obtener dimensiones para ajustar la imagen
+                    $imgData = getimagesize($comprobanteFull);
+                    if ($imgData) {
+                        $w = $imgData[0];
+                        $h = $imgData[1];
+                        $ratio = $w / $h;
+                        
+                        // Ajustar a un ancho máximo de 180mm o alto máximo de 240mm
+                        if ($ratio > (180/240)) {
+                            $imgW = 180;
+                            $imgH = 0; // Auto proporcional
+                        } else {
+                            $imgW = 0; // Auto proporcional
+                            $imgH = 240;
+                        }
+                        
+                        $pdf->Image($comprobanteFull, 15, $pdf->GetY(), $imgW, $imgH, '', '', '', true, 300, 'C');
+                    }
+                } catch (Exception $imgEx) {
+                    error_log("Error al insertar imagen en PDF: " . $imgEx->getMessage());
+                    $pdf->SetTextColor(255, 0, 0);
+                    $pdf->Cell(0, 10, 'Error al cargar la imagen del comprobante', 0, 1, 'C');
+                }
+            }
+        }
+
         $pdf->Ln(8);
 
         // PIE DE PÁGINA
@@ -905,9 +947,12 @@ try {
             FROM pago_detalles pd
             INNER JOIN pagos pag ON pd.pago_id = pag.pago_id
             INNER JOIN propietarios prop ON pag.propietario_id = prop.propietario_id
-            WHERE pd.pago_detalle_id = ? AND prop.user_id = ?
+            INNER JOIN usuarios u ON u.user_id = ?
+            LEFT JOIN roles r ON u.rol_id = r.rol_id
+            WHERE pd.pago_detalle_id = ? 
+            AND (prop.user_id = u.user_id OR r.nombre = 'superadmin')
         ");
-        $stmt->execute([$paymentDetailId, $_SESSION['user_id']]);
+        $stmt->execute([$_SESSION['user_id'], $paymentDetailId]);
         $userPayment = $stmt->fetch(PDO::FETCH_ASSOC);
 
     } else {
@@ -916,9 +961,12 @@ try {
             SELECT pag.pago_id 
             FROM pagos pag
             INNER JOIN propietarios prop ON pag.propietario_id = prop.propietario_id
-            WHERE pag.pago_id = ? AND prop.user_id = ?
+            INNER JOIN usuarios u ON u.user_id = ?
+            LEFT JOIN roles r ON u.rol_id = r.rol_id
+            WHERE pag.pago_id = ? 
+            AND (prop.user_id = u.user_id OR r.nombre = 'superadmin')
         ");
-        $stmt->execute([$paymentId, $_SESSION['user_id']]);
+        $stmt->execute([$_SESSION['user_id'], $paymentId]);
         $userPayment = $stmt->fetch(PDO::FETCH_ASSOC);
     }
 

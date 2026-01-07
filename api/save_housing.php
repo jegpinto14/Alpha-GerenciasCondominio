@@ -72,11 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Obtener el tipo_vivienda_id
         $stmt = $pdo->prepare("SELECT tipo_id FROM tipo_vivienda WHERE nombre_tipo = ?");
-        if ($tipo_vivienda == "Establecimiento") {
-            $stmt->execute([$data['tipo_vivienda_nombre']]);
-        } else {
-            $stmt->execute([$tipo_vivienda]);
-        }
+        $stmt->execute([$tipo_vivienda]);
         $tipo_vivienda_result = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$tipo_vivienda_result) {
             echo json_encode(['success' => false, 'message' => 'Tipo de vivienda no válido']);

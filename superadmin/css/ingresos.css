@@ -2,7 +2,7 @@
 
 /* Botón Volver */
 .volver-btn {
-    background: linear-gradient(135deg, #1A3A4A 0%, #2a5a6a 100%);
+    background: linear-gradient(135deg, #C4A98B 0%, #d4b99b 100%);
     color: white;
     border: none;
     padding: 0.6rem 1.2rem;
@@ -14,12 +14,12 @@
     font-size: 0.9rem;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(26, 58, 74, 0.3);
+    box-shadow: 0 4px 12px rgba(196, 169, 139, 0.3);
 }
 
 .volver-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(26, 58, 74, 0.4);
+    box-shadow: 0 6px 16px rgba(196, 169, 139, 0.4);
 }
 
 .volver-btn:active {
@@ -59,6 +59,149 @@
     margin-bottom: 2rem;
 }
 
+/* Estilo para el modal de detalles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.65);
+    display: none;
+    /* Se cambia a flex en JS */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+    padding: 20px;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    animation: modalFadeIn 0.3s ease-out;
+    border: 1px solid #e2e8f0;
+}
+
+.modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    border-radius: 16px 16px 0 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #1e3c72;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.modal-close {
+    background: #f1f5f9;
+    border: none;
+    font-size: 1.2rem;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    background-color: #fee2e2;
+    color: #ef4444;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-large {
+    max-width: 95% !important;
+    width: 1400px !important;
+}
+
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.details-table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 12px 10px;
+    border-bottom: 2px solid #e2e8f0;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.details-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+.btn-detail {
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-detail:hover {
+    background-color: #4f46e5;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.recibo-link {
+    color: #6366f1;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.recibo-link:hover {
+    color: #4f46e5;
+}
+
 .balance-card {
     display: flex;
     align-items: center;
@@ -90,7 +233,7 @@
 }
 
 .balance-icon.usd {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, #C4A98B, #d4b99b);
 }
 
 .balance-icon.bs {
@@ -200,7 +343,7 @@
 }
 
 .filter-btn {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, #C4A98B, #d4b99b);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -212,13 +355,13 @@
     font-size: 1rem;
     font-weight: 500;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(30, 60, 114, 0.3);
+    box-shadow: 0 4px 6px rgba(196, 169, 139, 0.3);
     white-space: nowrap;
 }
 
 .filter-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(30, 60, 114, 0.4);
+    box-shadow: 0 6px 12px rgba(196, 169, 139, 0.4);
 }
 
 /* Sección de Estadísticas */
@@ -262,7 +405,7 @@
     justify-content: center;
     font-size: 1.5rem;
     color: white;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, #1A3A4A, #2a5a6a);
 }
 
 .summary-content {
@@ -359,7 +502,7 @@
 }
 
 .stats-table th {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, #1A3A4A, #2a5a6a);
     color: white;
     padding: 1rem;
     text-align: left;
@@ -406,6 +549,7 @@
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .export-btn {
@@ -450,8 +594,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Notificaciones */
@@ -518,24 +667,24 @@
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
     .charts-section {
         grid-template-columns: 1fr;
     }
-    
+
     .summary-cards {
         grid-template-columns: 1fr;
     }
-    
+
     .export-buttons {
         flex-direction: column;
     }
-    
+
     .summary-card {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .summary-icon {
         width: 80px;
         height: 80px;

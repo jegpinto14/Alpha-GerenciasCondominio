@@ -21,14 +21,20 @@ try {
         SELECT 
             sc.carta_id,
             sc.descripcion,
-            sc.estado,
+            CASE 
+                WHEN sc.estado = 'Aprobada' THEN 'Entregado'
+                ELSE COALESCE(ing.estado, sc.estado) 
+            END as estado,
             sc.fecha,
             i.nombre_item,
             i.precio,
             i.item_id
         FROM solicitudes_cartas sc
         INNER JOIN items i ON sc.item_id = i.item_id
+        LEFT JOIN movimientos_items mi ON (sc.item_id = mi.item_id AND mi.tipo_movimiento = 'SALIDA')
+        LEFT JOIN ingresos ing ON (mi.ingreso_id = ing.ingreso_id AND ing.inmueble_id = sc.inmueble_id)
         WHERE sc.inmueble_id = ?
+        GROUP BY sc.carta_id
         ORDER BY sc.fecha DESC
     ");
     

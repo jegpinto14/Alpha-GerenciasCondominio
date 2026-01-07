@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadísticas de Ingresos - GGerencias De Condominio</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/ingresos.css">
-    <link rel="stylesheet" href="../../assets/css/custom-select.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
         <div class="header-content">
             <div class="logo">
-                <i class="fas fa-building"></i> 
+                <i class="fas fa-building"></i>
                 <span>GGerencias De Condominio</span>
             </div>
             <div class="user-section">
@@ -56,56 +58,27 @@
                                 Fecha Inicio
                             </label>
                             <div class="date-input-container">
-                                <input type="text" 
-                                       id="fechaInicio" 
-                                       name="fechaInicio"
-                                       required>
+                                <input type="text" id="fechaInicio" name="fechaInicio" required>
                                 <button type="button" class="calendar-btn" onclick="abrirCalendario('fechaInicio')">
-                                   
+
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div class="filter-group">
                             <label for="fechaFin">
                                 <i class="fas fa-calendar-alt"></i>
                                 Fecha Fin
                             </label>
                             <div class="date-input-container">
-                                <input type="text" 
-                                       id="fechaFin" 
-                                       name="fechaFin"
-                                       required>
+                                <input type="text" id="fechaFin" name="fechaFin" required>
                                 <button type="button" class="calendar-btn" onclick="abrirCalendario('fechaFin')">
-                                    
+
                                 </button>
                             </div>
                         </div>
-                        
-                        <div class="filter-group">
-                            <label for="tipoReporte">
-                                <i class="fas fa-filter"></i>
-                                Tipo de Reporte
-                            </label>
-                            <select id="tipoReporte" name="tipoReporte" required>
-                                <option value="mensual">Mensual</option>
-                                <option value="trimestral">Trimestral</option>
-                                <option value="anual">Anual</option>
-                                <option value="personalizado">Personalizado</option>
-                            </select>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label for="metodoPago">
-                                <i class="fas fa-credit-card"></i>
-                                Método de Pago
-                            </label>
-                            <select id="metodoPago" name="metodoPago">
-                                <option value="">Todos los métodos</option>
-                                <!-- Los métodos se cargarán dinámicamente -->
-                            </select>
-                        </div>
-                        
+
+
                         <div class="filter-actions">
                             <button type="submit" class="filter-btn">
                                 <i class="fas fa-search"></i>
@@ -167,7 +140,7 @@
                             <p class="summary-label">Viviendas registradas</p>
                         </div>
                     </div>
-                    
+
                     <div class="summary-card">
                         <div class="summary-icon">
                             <i class="fas fa-check-circle"></i>
@@ -178,7 +151,7 @@
                             <p class="summary-label">En el período seleccionado</p>
                         </div>
                     </div>
-                    
+
                     <div class="summary-card">
                         <div class="summary-icon">
                             <i class="fas fa-users"></i>
@@ -189,7 +162,7 @@
                             <p class="summary-label">Que realizaron pagos</p>
                         </div>
                     </div>
-                    
+
                     <div class="summary-card">
                         <div class="summary-icon">
                             <i class="fas fa-dollar-sign"></i>
@@ -219,7 +192,7 @@
                         <h3><i class="fas fa-chart-pie"></i> Distribución por Métodos de Pago</h3>
                         <canvas id="metodosPagoChart"></canvas>
                     </div>
-                    
+
                     <div class="chart-container">
                         <h3><i class="fas fa-chart-line"></i> Pagos por Mes</h3>
                         <canvas id="pagosPorMesChart"></canvas>
@@ -239,6 +212,7 @@
                                         <th>Total USD</th>
                                         <th>Total Bs</th>
                                         <th>Porcentaje</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="metodosPagoTableBody">
@@ -247,7 +221,7 @@
                             </table>
                         </div>
                     </div>
-                    
+
                     <div class="table-container">
                         <h3><i class="fas fa-calendar-week"></i> Pagos por Mes</h3>
                         <div class="table-responsive">
@@ -274,23 +248,53 @@
                 <div class="export-section">
                     <h3><i class="fas fa-download"></i> Exportar Reporte</h3>
                     <div class="export-buttons">
-                        <button class="export-btn" onclick="exportarExcel()">
-                            <i class="fas fa-file-excel"></i>
-                            Exportar Excel
-                        </button>
                         <button class="export-btn" onclick="exportarPDF()">
                             <i class="fas fa-file-pdf"></i>
                             Exportar PDF
-                        </button>
-                        <button class="export-btn" onclick="imprimirReporte()">
-                            <i class="fas fa-print"></i>
-                            Imprimir
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- Modal Detalle por Método de Pago -->
+    <div id="modalDetallePago" class="modal-overlay" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="modalDetalleTitulo">Detalles: </h3>
+                <button class="modal-close" onclick="cerrarModalDetalles()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="details-table">
+                            <thead>
+                                <tr>
+                                    <th>FECHA</th>
+                                    <th>INMUEBLE</th>
+                                    <th>PROPIETARIO</th>
+                                    <th>TASA</th>
+                                    <th>MONTO BS</th>
+                                    <th>MONTO $</th>
+                                    <th>ORIGEN</th>
+                                    <th>DESTINO</th>
+                                    <th>REF</th>
+                                    <th>TITULAR / TELÉF.</th>
+                                    <th>COMPROBANTE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detallesPagoTableBody">
+                                <!-- Los detalles se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Notification Container -->
     <div id="notificationContainer" class="notification-container"></div>
@@ -300,4 +304,5 @@
     <script src="../js/main.js?v=3.0"></script>
     <script src="../js/ingresos.js?v=4.1"></script>
 </body>
+
 </html>

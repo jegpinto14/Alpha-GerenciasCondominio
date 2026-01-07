@@ -108,7 +108,23 @@ try {
         throw new Exception('La fecha de inicio no puede ser posterior a la fecha fin');
     }
     
-    // Obtener estadísticas
+    // Obtener estadísticas o detalles según la acción
+    $action = isset($input['action']) ? $input['action'] : (isset($_GET['action']) ? $_GET['action'] : 'estadisticas');
+
+    if ($action === 'detalles_pago') {
+        $metodo_id = isset($input['metodo_id']) ? $input['metodo_id'] : (isset($_GET['metodo_id']) ? $_GET['metodo_id'] : '');
+        if (empty($metodo_id)) {
+            throw new Exception('Debe proporcionar un ID de método de pago');
+        }
+        $detalles = obtenerDetallesPago($pdo, $fecha_inicio, $fecha_fin, $metodo_id);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Detalles de pago obtenidos exitosamente',
+            'data' => $detalles
+        ]);
+        exit;
+    }
+
     $estadisticas = obtenerEstadisticasIngresos($pdo, $fecha_inicio, $fecha_fin, $tipo_reporte, $metodo_pago);
     
     echo json_encode([
@@ -256,6 +272,7 @@ function obtenerEstadisticasMetodosPago($pdo, $fecha_inicio, $fecha_fin, $metodo
     
     $sql = "
         SELECT 
+            mp.metodo_id,
             mp.descripcion as metodo_pago,
             COUNT(pd.pago_detalle_id) as cantidad,
             COALESCE(SUM(pd.monto_usd), 0) as total_usd,
@@ -359,6 +376,63 @@ function obtenerEstadisticasPagosPorMes($pdo, $fecha_inicio, $fecha_fin, $metodo
 
         // Mantener compatibilidad con el campo anterior
         $resultado['promedio_por_vivienda'] = $resultado['promedio_usd'];
+    }
+    
+    return $resultados;
+}
+
+// Función para obtener detalles de pago por método
+function obtenerDetallesPago($pdo, $fecha_inicio, $fecha_fin, $metodo_id) {
+    $sql = "
+        SELECT 
+            pd.Fecha as fecha,
+            CASE 
+                WHEN i.tipo_entidad = 'apartamento' THEN CONCAT(e.nombre_edificio, ' - Piso ', a.piso, ' - Apt ', a.apartamento)
+                ELSE 'Inmueble'
+            END as inmueble,
+            CONCAT(prop.nombre, ' ', prop.apellido) as propietario,
+            t.tasa as tasa,
+            pd.monto_Bs as monto_bs,
+            pd.monto_usd as monto_usd,
+            b_emisor.nombre_banco as origen,
+            b_receptor.nombre_banco as destino,
+            be.nro_referencia as ref,
+            CONCAT(prop.nombre, ' ', prop.apellido, ' ', COALESCE(be.nro_documento, ''), ' | ', COALESCE(be.telefono, '')) as titular_telef,
+            pd.pago_id,
+            pd.pago_detalle_id,
+            pd.comprobante_path
+        FROM pago_detalles pd
+        INNER JOIN pagos p ON pd.pago_id = p.pago_id
+        INNER JOIN inmueble i ON p.inmueble_id = i.inmueble_id
+        LEFT JOIN apartamentos a ON (i.tipo_entidad = 'apartamento' AND i.entidad_id = a.apartamento_id)
+        LEFT JOIN edificios e ON (i.tipo_entidad = 'apartamento' AND a.edificio_id = e.edificio_id)
+        INNER JOIN propietarios prop ON p.propietario_id = prop.propietario_id
+        LEFT JOIN tasas t ON pd.tasa_id = t.tasa_id
+        LEFT JOIN banco_emisor be ON pd.banco_emisor_id = be.banco_emisor_id
+        LEFT JOIN bancos b_emisor ON be.banco_id = b_emisor.banco_id
+        LEFT JOIN banco_receptor br ON pd.banco_receptor_id = br.banco_receptor_id
+        LEFT JOIN bancos b_receptor ON br.banco_id = b_receptor.banco_id
+        INNER JOIN periodos per ON p.periodo_id = per.periodo_id
+        WHERE pd.metodo_id = :metodo_id
+        AND per.fecha_periodo BETWEEN :fecha_inicio AND :fecha_fin
+        AND pd.estado = 'Confirmado'
+        ORDER BY pd.Fecha DESC
+    ";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':metodo_id', $metodo_id);
+    $stmt->bindParam(':fecha_inicio', $fecha_inicio);
+    $stmt->bindParam(':fecha_fin', $fecha_fin);
+    $stmt->execute();
+    
+    $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    foreach ($resultados as &$r) {
+        $r['monto_bs'] = round($r['monto_bs'], 2);
+        $r['monto_usd'] = round($r['monto_usd'], 2);
+        if ($r['fecha'] && $r['fecha'] !== '0000-00-00 00:00:00') {
+            $r['fecha'] = date('d/m/Y', strtotime($r['fecha']));
+        }
     }
     
     return $resultados;

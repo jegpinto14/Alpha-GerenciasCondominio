@@ -97,10 +97,10 @@ if (!$user || $user['tipo'] !== 'admin') {
                     <i class="fas fa-calendar"></i> Pagos Mensuales
                 </button>
                 <button class="type-filter-btn" data-type="articulos" onclick="switchPaymentType('articulos')">
-                    <i class="fas fa-shopping-cart"></i> Artículos (Cat. 1)
+                    <i class="fas fa-shopping-cart"></i> Artículos (Cat. 5)
                 </button>
                 <button class="type-filter-btn" data-type="documentos" onclick="switchPaymentType('documentos')">
-                    <i class="fas fa-file-alt"></i> Documentos (Cat. 2)
+                    <i class="fas fa-file-alt"></i> Documentos (Cat. 4)
                 </button>
                 <button class="type-filter-btn" data-type="extraordinarios"
                     onclick="switchPaymentType('extraordinarios')">

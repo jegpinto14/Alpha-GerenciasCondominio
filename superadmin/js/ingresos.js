@@ -47,78 +47,42 @@ async function cargarBalancesIniciales() {
 }
 
 // Inicialización cuando se carga la página
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('Sistema de Estadísticas de Ingresos iniciado');
-    
+
     // Configurar fechas por defecto (último mes)
     const hoy = new Date();
     const haceUnMes = new Date();
     haceUnMes.setMonth(hoy.getMonth() - 1);
-    
+
     document.getElementById('fechaInicio').value = formatearFechaDDMMYYYY(haceUnMes);
     document.getElementById('fechaFin').value = formatearFechaDDMMYYYY(hoy);
 
     configurarCalendarios();
-    
+
     // Configurar el formulario de filtros
     const form = document.getElementById('filtersForm');
     if (form) {
         form.addEventListener('submit', generarEstadisticas);
     }
-    
-    // Configurar el selector de tipo de reporte
-    const tipoReporte = document.getElementById('tipoReporte');
-    if (tipoReporte) {
-        tipoReporte.addEventListener('change', configurarFechasPorTipo);
-    }
-    
-    // Cargar métodos de pago
-    cargarMetodosPago();
 
     cargarBalancesIniciales();
 });
 
-// Función para configurar fechas según el tipo de reporte
-function configurarFechasPorTipo() {
-    const tipo = document.getElementById('tipoReporte').value;
-    const fechaInicio = document.getElementById('fechaInicio');
-    const fechaFin = document.getElementById('fechaFin');
-    
-    const hoy = new Date();
-    let inicio = new Date();
-    
-    switch (tipo) {
-        case 'mensual':
-            inicio.setMonth(hoy.getMonth() - 1);
-            break;
-        case 'trimestral':
-            inicio.setMonth(hoy.getMonth() - 3);
-            break;
-        case 'anual':
-            inicio.setFullYear(hoy.getFullYear() - 1);
-            break;
-        case 'personalizado':
-            // No cambiar fechas, dejar que el usuario las configure
-            return;
-    }
-    
-    fechaInicio._flatpickr.setDate(inicio, true, 'd/m/Y');
-    fechaFin._flatpickr.setDate(hoy, true, 'd/m/Y');
-}
 
 // Función principal para generar estadísticas
 async function generarEstadisticas(event) {
     event.preventDefault();
-    
+
     const fechaInicioRaw = document.getElementById('fechaInicio').value;
     const fechaFinRaw = document.getElementById('fechaFin').value;
     const fechaInicio = convertirFechaADate(fechaInicioRaw);
     const fechaFin = convertirFechaADate(fechaFinRaw);
-    const tipoReporte = document.getElementById('tipoReporte').value;
-    const metodoPago = document.getElementById('metodoPago').value;
-    
-    console.log('Generando estadísticas:', { fechaInicio, fechaFin, tipoReporte, metodoPago });
-    
+    const tipoReporte = 'personalizado';
+    const metodoPago = '';
+
+    console.log('Generando estadísticas:', { fechaInicio, fechaFin });
+
     // Validar fechas
     if (!fechaInicio || !fechaFin) {
         mostrarNotificacion('Debes seleccionar ambas fechas', 'error');
@@ -129,11 +93,11 @@ async function generarEstadisticas(event) {
         mostrarNotificacion('La fecha de inicio no puede ser posterior a la fecha fin', 'error');
         return;
     }
-    
+
     // Mostrar spinner
     mostrarLoading(true);
     ocultarEstadisticas();
-    
+
     try {
         const response = await fetch(`${API_BASE_URL}/estadisticas-ingresos.php`, {
             method: 'POST',
@@ -147,12 +111,12 @@ async function generarEstadisticas(event) {
                 metodo_pago: metodoPago
             })
         });
-        
+
         console.log('Respuesta recibida:', response);
-        
+
         const data = await response.json();
         console.log('Datos parseados:', data);
-        
+
         if (data.success) {
             currentStatistics = data.data;
             balancesServidor = data.data?.balances || balancesServidor;
@@ -161,7 +125,7 @@ async function generarEstadisticas(event) {
             console.log('Error en la respuesta:', data.message);
             mostrarNotificacion(data.message || 'Error al generar las estadísticas', 'error');
         }
-        
+
     } catch (error) {
         console.error('Error al generar estadísticas:', error);
         mostrarNotificacion('Error al conectar con el servidor: ' + error.message, 'error');
@@ -187,11 +151,11 @@ function mostrarEstadisticas(data) {
     document.getElementById('totalPersonas').textContent = data.resumen.total_personas || '0';
     document.getElementById('totalAcumuladoUsd').textContent = formatearMoneda(data.resumen.total_usd || 0);
     document.getElementById('totalAcumuladoBs').textContent = formatearMonedaBs(data.resumen.total_bs || 0);
-    
+
     // Crear gráficos
     crearGraficoMetodosPago(data.metodos_pago);
     crearGraficoPagosPorMes(data.pagos_por_mes);
-    
+
     // Llenar tablas
     llenarTablaMetodosPago(data.metodos_pago);
     llenarTablaPagosPorMes(data.pagos_por_mes);
@@ -200,16 +164,16 @@ function mostrarEstadisticas(data) {
 // Función para crear el gráfico de métodos de pago
 function crearGraficoMetodosPago(datos) {
     const ctx = document.getElementById('metodosPagoChart').getContext('2d');
-    
+
     // Destruir gráfico anterior si existe
     if (metodosPagoChart) {
         metodosPagoChart.destroy();
     }
-    
+
     const labels = datos.map(item => item.metodo_pago);
     const values = datos.map(item => item.cantidad);
     const colors = generarColores(datos.length);
-    
+
     metodosPagoChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -240,15 +204,15 @@ function crearGraficoMetodosPago(datos) {
 // Función para crear el gráfico de pagos por mes
 function crearGraficoPagosPorMes(datos) {
     const ctx = document.getElementById('pagosPorMesChart').getContext('2d');
-    
+
     // Destruir gráfico anterior si existe
     if (pagosPorMesChart) {
         pagosPorMesChart.destroy();
     }
-    
+
     const labels = datos.map(item => item.mes);
     const values = datos.map(item => item.viviendas_pagaron);
-    
+
     pagosPorMesChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -295,7 +259,7 @@ function crearGraficoPagosPorMes(datos) {
 // Función para llenar la tabla de métodos de pago
 function llenarTablaMetodosPago(datos) {
     const tbody = document.getElementById('metodosPagoTableBody');
-    
+
     const filas = datos.map(item => `
         <tr>
             <td><strong>${item.metodo_pago}</strong></td>
@@ -303,16 +267,21 @@ function llenarTablaMetodosPago(datos) {
             <td>${formatearMoneda(item.total_usd)}</td>
             <td>${formatearMonedaBs(item.total_bs)}</td>
             <td><span class="percentage">${item.porcentaje}%</span></td>
+            <td>
+                <button class="btn-detail" onclick="verDetalleMetodo('${item.metodo_id}', '${item.metodo_pago}')">
+                    <i class="fas fa-eye"></i> Ver Detalle
+                </button>
+            </td>
         </tr>
     `).join('');
-    
+
     tbody.innerHTML = filas;
 }
 
 // Función para llenar la tabla de pagos por mes
 function llenarTablaPagosPorMes(datos) {
     const tbody = document.getElementById('pagosPorMesTableBody');
-    
+
     const filas = datos.map(item => `
         <tr>
             <td><strong>${item.mes}</strong></td>
@@ -323,7 +292,7 @@ function llenarTablaPagosPorMes(datos) {
             <td>${formatearMoneda(item.promedio_usd)} / ${formatearMonedaBs(item.promedio_bs)}</td>
         </tr>
     `).join('');
-    
+
     tbody.innerHTML = filas;
 }
 
@@ -342,21 +311,21 @@ function mostrarLoading(mostrar) {
 // Función para mostrar notificaciones
 function mostrarNotificacion(mensaje, tipo = 'info') {
     const container = document.getElementById('notificationContainer');
-    
+
     const notification = document.createElement('div');
     notification.className = `notification notification-${tipo}`;
     notification.innerHTML = `
         <i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
         <span>${mensaje}</span>
     `;
-    
+
     container.appendChild(notification);
-    
+
     // Mostrar la notificación
     setTimeout(() => {
         notification.classList.add('show');
     }, 100);
-    
+
     // Ocultar después de 5 segundos
     setTimeout(() => {
         notification.classList.remove('show');
@@ -419,26 +388,6 @@ function convertirFechaAISO(fecha) {
     return `${año}-${mes}-${dia}`;
 }
 
-async function cargarMetodosPago() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/metodos-pago.php`);
-        const data = await response.json();
-        
-        if (data.success) {
-            const select = document.getElementById('metodoPago');
-            select.innerHTML = '<option value="">Todos los métodos</option>';
-            
-            data.metodos.forEach(metodo => {
-                const option = document.createElement('option');
-                option.value = metodo.metodo_id;
-                option.textContent = metodo.descripcion;
-                select.appendChild(option);
-            });
-        }
-    } catch (error) {
-        console.error('Error al cargar métodos de pago:', error);
-    }
-}
 
 function formatearMoneda(monto) {
     if (!monto || monto === 0) return '$0.00';
@@ -455,7 +404,7 @@ function generarColores(cantidad) {
         '#1e3c72', '#2a5298', '#3b82f6', '#10b981', '#f59e0b',
         '#ef4444', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'
     ];
-    
+
     const resultado = [];
     for (let i = 0; i < cantidad; i++) {
         resultado.push(colores[i % colores.length]);
@@ -474,6 +423,96 @@ function exportarPDF() {
 
 function imprimirReporte() {
     window.print();
+}
+
+// Funciones para ver detalle por método
+async function verDetalleMetodo(metodoId, metodoNombre) {
+    const fechaInicioRaw = document.getElementById('fechaInicio').value;
+    const fechaFinRaw = document.getElementById('fechaFin').value;
+    const fechaInicio = convertirFechaAISO(convertirFechaADate(fechaInicioRaw));
+    const fechaFin = convertirFechaAISO(convertirFechaADate(fechaFinRaw));
+
+    mostrarLoading(true);
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/estadisticas-ingresos.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'detalles_pago',
+                metodo_id: metodoId,
+                fecha_inicio: fechaInicio,
+                fecha_fin: fechaFin
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            mostrarModalDetalles(data.data, metodoNombre);
+        } else {
+            mostrarNotificacion(data.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error al obtener detalles:', error);
+        mostrarNotificacion('Error al cargar detalles', 'error');
+    } finally {
+        mostrarLoading(false);
+    }
+}
+
+function mostrarModalDetalles(detalles, metodoNombre) {
+    const modal = document.getElementById('modalDetallePago');
+    const titulo = document.getElementById('modalDetalleTitulo');
+    const tbody = document.getElementById('detallesPagoTableBody');
+
+    titulo.textContent = `Detalles: ${metodoNombre}`;
+
+    if (detalles.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align: center;">No se encontraron pagos confirmados para este período</td></tr>';
+    } else {
+        tbody.innerHTML = detalles.map(d => `
+            <tr>
+                <td>${d.fecha}</td>
+                <td>${d.inmueble}</td>
+                <td>${d.propietario}</td>
+                <td>${d.tasa ? 'Bs ' + d.tasa : '-'}</td>
+                <td>${formatearMonedaBs(d.monto_bs)}</td>
+                <td>${formatearMoneda(d.monto_usd)}</td>
+                <td>${d.origen || '-'}</td>
+                <td>${d.destino || '-'}</td>
+                <td>${d.ref || '-'}</td>
+                <td>${d.titular_telef}</td>
+                <td style="text-align: center; white-space: nowrap;">
+                    <i class="fas fa-file-pdf recibo-link" title="Ver Comprobante PDF" onclick="descargarReciboDetalle(${d.pago_detalle_id})" style="margin-right: 10px;"></i>
+                    ${d.comprobante_path ? `
+                        <i class="fas fa-image recibo-link" title="Ver Comprobante Original" onclick="verFotoComprobante('${d.comprobante_path}')" style="color: #10b981;"></i>
+                    ` : ''}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    modal.style.display = 'flex';
+    document.body.classList.add('modal-open');
+}
+
+function verFotoComprobante(path) {
+    if (!path) return;
+    // Ajustar path si tiene ../
+    const fullPath = path.startsWith('../') ? '../../' + path.replace('../', '') : '../../' + path;
+    window.open(fullPath, '_blank');
+}
+
+function cerrarModalDetalles() {
+    document.getElementById('modalDetallePago').style.display = 'none';
+    document.body.classList.remove('modal-open');
+}
+
+function descargarReciboDetalle(pagoDetalleId) {
+    // Abrir el recibo individual por pago_detalle_id
+    window.open(`../../api/generate_payment_receipt.php?payment_detail_id=${pagoDetalleId}`, '_blank');
 }
 
 // Función para volver al dashboard

@@ -30,12 +30,6 @@ function construirViviendaDesdeFila(array $fila): array {
     $avenida = '';
 
     switch ($tipoEntidad) {
-        case 'casa':
-            $nombre = $fila['nombre_casa'] ?? 'Casa';
-            if (!empty($fila['avenida_casa'])) {
-                $avenida = 'Av. ' . $fila['avenida_casa'];
-            }
-            break;
         case 'apartamento':
             $edificio = $fila['nombre_edificio'] ?? 'Edificio';
             $piso = $fila['piso'] ?? '';
@@ -43,28 +37,6 @@ function construirViviendaDesdeFila(array $fila): array {
             $nombre = trim(sprintf('%s - Piso %s - Apt %s', $edificio, $piso, $apartamento));
             if (!empty($fila['edificio_abreviatura'])) {
                 $direccion = 'Edif. ' . $fila['edificio_abreviatura'];
-            }
-            break;
-        case 'centro_comercial':
-            $nombre = 'Centro Comercial';
-            $partes = [];
-            if (!empty($fila['nivel_nombre'])) {
-                $partes[] = 'Nivel ' . $fila['nivel_nombre'];
-            }
-            if (!empty($fila['codigo_local'])) {
-                $partes[] = 'Local ' . $fila['codigo_local'];
-            }
-            if (!empty($partes)) {
-                $nombre .= ' - ' . implode(' ', $partes);
-            }
-            if (!empty($fila['avenida_cc'])) {
-                $avenida = 'Av. ' . $fila['avenida_cc'];
-            }
-            break;
-        case 'establecimientos':
-            $nombre = $fila['nombre_establecimiento'] ?? 'Establecimiento';
-            if (!empty($fila['avenida_est'])) {
-                $avenida = 'Av. ' . $fila['avenida_est'];
             }
             break;
         default:
@@ -90,7 +62,10 @@ try {
     $sql = "
         SELECT
             s.carta_id,
-            s.estado,
+            CASE 
+                WHEN s.estado = 'Aprobada' THEN 'Entregado'
+                ELSE COALESCE(i2.estado, s.estado) 
+            END as estado,
             s.fecha,
             s.descripcion,
             i.inmueble_id,
@@ -102,34 +77,21 @@ try {
             p.nro_documento,
             p.gmail,
             p.telefono,
-            c.nombre_casa,
-            av_c.nombre_avenida AS avenida_casa,
             a.piso,
             a.apartamento,
             e.nombre_edificio,
             e.abreviatura AS edificio_abreviatura,
-            nl.nombre_nivel,
-            nl.abreviatura AS nivel_abreviatura,
-            cl.codigo AS codigo_local,
-            av_cc.nombre_avenida AS avenida_cc,
-            est.nombre_establecimiento,
-            av_est.nombre_avenida AS avenida_est,
             dp.monto_deuda_usd
         FROM solicitudes_cartas s
         INNER JOIN inmueble i ON s.inmueble_id = i.inmueble_id
         INNER JOIN propietarios p ON i.propietario_id = p.propietario_id
         LEFT JOIN tipo_vivienda tv ON i.tipo_vivienda_id = tv.tipo_id
-        LEFT JOIN casas c ON (i.tipo_entidad = 'casa' AND i.entidad_id = c.casa_id)
-        LEFT JOIN avenidas av_c ON c.avenida_id = av_c.id_avenida
         LEFT JOIN apartamentos a ON (i.tipo_entidad = 'apartamento' AND i.entidad_id = a.apartamento_id)
         LEFT JOIN edificios e ON a.edificio_id = e.edificio_id
-        LEFT JOIN centro_comercial cc ON (i.tipo_entidad = 'centro_comercial' AND i.entidad_id = cc.cc_id)
-        LEFT JOIN avenidas av_cc ON cc.avenida_id = av_cc.id_avenida
-        LEFT JOIN nivel_locales nl ON cc.nivel_id = nl.nivel_id
-        LEFT JOIN cod_locales cl ON cc.local_id = cl.local_id
-        LEFT JOIN establecimientos est ON (i.tipo_entidad = 'establecimientos' AND i.entidad_id = est.establecimiento_id)
-        LEFT JOIN avenidas av_est ON est.avenida_id = av_est.id_avenida
         LEFT JOIN deuda_propetario dp ON i.inmueble_id = dp.inmueble_id
+        LEFT JOIN movimientos_items mi ON (s.item_id = mi.item_id AND mi.tipo_movimiento = 'SALIDA')
+        LEFT JOIN ingresos i2 ON (mi.ingreso_id = i2.ingreso_id AND i2.inmueble_id = s.inmueble_id)
+        GROUP BY s.carta_id
         ORDER BY s.fecha DESC, s.carta_id DESC
     ";
 

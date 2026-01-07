@@ -5,7 +5,7 @@ header('Access-Control-Allow-Origin: *');
 require_once __DIR__ . '/../includes/database.php';
 
 try {
-    // Obtener items de categoría 2 (Servicios - Cartas)
+    // Obtener items de categoría 4 (Cartas y Solicitudes)
     $stmt = $pdo->prepare("
         SELECT 
             i.item_id,
@@ -17,7 +17,7 @@ try {
             c.nombre_categoria
         FROM items i
         INNER JOIN categoria_items c ON i.categoria_id = c.categoria_id
-        WHERE i.categoria_id = 2 
+        WHERE i.categoria_id = 4 
         AND i.activo = 1
         ORDER BY i.nombre_item ASC
     ");

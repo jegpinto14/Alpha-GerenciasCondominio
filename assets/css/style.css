@@ -5311,6 +5311,23 @@ body.modal-open {
     color: #1e40af;
 }
 
+.status-badge.confirmado,
+.status-badge.confirmada {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.pagada_-_esperando_entrega {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.entregado,
+.status-badge.entregada {
+    background: #f3f4f6;
+    color: #374151;
+}
+
 .solicitud-body,
 .reclamo-body {
     color: #6b7280;

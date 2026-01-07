@@ -99,49 +99,9 @@ try {
             $housing['nombre_edificio'] = $apartamento['nombre_edificio'];
             $housing['nombre_avenida'] = 'Corozo'; // Los apartamentos siempre están en Corozo
         }
-
-    } elseif ($inmueble['tipo_entidad'] === 'casa') {
-        $stmt = $pdo->prepare("
-            SELECT 
-                c.nombre_casa,
-                av.nombre_avenida
-            FROM casas c
-            JOIN avenidas av ON c.avenida_id = av.id_avenida
-            WHERE c.casa_id = ?
-        ");
-        $stmt->execute([$inmueble['entidad_id']]);
-        $casa = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($casa) {
-            $housing['nombre_casa'] = $casa['nombre_casa'];
-            $housing['nombre_avenida'] = $casa['nombre_avenida'];
-        }
-
-    } elseif ($inmueble['tipo_entidad'] === 'establecimientos') {
-        $stmt = $pdo->prepare("
-            SELECT nombre_establecimiento
-            FROM establecimientos
-            WHERE establecimiento_id = ?
-        ");
-        $stmt->execute([$inmueble['entidad_id']]);
-        $establecimiento = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($establecimiento) {
-            $housing['nombre_establecimiento'] = $establecimiento['nombre_establecimiento'];
-        }
-
-    } elseif ($inmueble['tipo_entidad'] === 'centro_comercial') {
-        $stmt = $pdo->prepare("
-            SELECT nombre_centro
-            FROM centros_comerciales
-            WHERE centro_id = ?
-        ");
-        $stmt->execute([$inmueble['entidad_id']]);
-        $centro = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($centro) {
-            $housing['nombre_centro'] = $centro['nombre_centro'];
-        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Tipo de inmueble no soportado']);
+        exit;
     }
 
     echo json_encode(['success' => true, 'housing' => $housing]);

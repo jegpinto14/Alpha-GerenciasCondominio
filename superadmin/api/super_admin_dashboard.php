@@ -26,23 +26,29 @@ try {
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM usuarios");
     $stats['totalUsers'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // Total casas
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM viviendas");
+    // Total casas (ahora solo apartamentos)
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM inmueble WHERE tipo_entidad = 'apartamento'");
     $stats['totalHouses'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     
-    // Total ingresos (pagos aprobados)
+    // Total ingresos (pagos confirmados)
+    // Usando pago_detalles que tiene la información de moneda
     $stmt = $pdo->query("
         SELECT 
-            SUM(CASE WHEN moneda_pago = 'bs' THEN monto_bs ELSE 0 END) as total_bs,
-            SUM(CASE WHEN moneda_pago = 'dolares' THEN monto_dolares ELSE 0 END) as total_usd
-        FROM pagos_mensualidades 
-        WHERE estado = 'aprobado'
+            SUM(monto_Bs) as total_bs,
+            SUM(monto_usd) as total_usd
+        FROM pago_detalles 
+        WHERE estado = 'Confirmado'
     ");
     $revenue = $stmt->fetch(PDO::FETCH_ASSOC);
-    $stats['totalRevenue'] = $revenue['total_bs'] + ($revenue['total_usd'] * 36); // Asumiendo tasa de cambio de 36 Bs por USD
+    
+    // Obtener tasa actual para el cálculo del total consolidado
+    $stmt = $pdo->query("SELECT tasa FROM tasas ORDER BY fecha DESC LIMIT 1");
+    $tasa = $stmt->fetch(PDO::FETCH_ASSOC)['tasa'] ?? 36;
+    
+    $stats['totalRevenue'] = ($revenue['total_bs'] ?? 0) + (($revenue['total_usd'] ?? 0) * $tasa);
     
     // Pagos pendientes
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM pagos_mensualidades WHERE estado = 'pendiente'");
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM pagos WHERE estado = 'Pendiente'");
     $stats['pendingPayments'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     
     // Actividad reciente
@@ -50,9 +56,9 @@ try {
     
     // Últimos usuarios registrados
     $stmt = $pdo->query("
-        SELECT username, fecha_registro 
+        SELECT username, created_at as fecha_registro 
         FROM usuarios 
-        ORDER BY fecha_registro DESC 
+        ORDER BY created_at DESC 
         LIMIT 5
     ");
     $recentUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -64,24 +70,28 @@ try {
         ];
     }
     
-    // Últimos pagos
+    // Últimos pagos registrados
     $stmt = $pdo->query("
-        SELECT p.monto_bs, p.monto_dolares, p.moneda_pago, p.fecha_pago, v.numero as casa_numero
-        FROM pagos_mensualidades p
-        JOIN viviendas v ON p.vivienda_id = v.id
-        ORDER BY p.fecha_pago DESC 
+        SELECT pd.monto_Bs, pd.monto_usd, pd.fecha, a.apartamento as casa_numero, e.nombre_edificio
+        FROM pago_detalles pd
+        JOIN pagos p ON pd.pago_id = p.pago_id
+        JOIN inmueble i ON p.inmueble_id = i.inmueble_id
+        JOIN apartamentos a ON i.entidad_id = a.apartamento_id
+        JOIN edificios e ON a.edificio_id = e.edificio_id
+        WHERE i.tipo_entidad = 'apartamento'
+        ORDER BY pd.fecha DESC 
         LIMIT 5
     ");
     $recentPayments = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     foreach ($recentPayments as $payment) {
-        $amount = $payment['moneda_pago'] === 'bs' ? 
-            "Bs " . number_format($payment['monto_bs']) : 
-            "$" . number_format($payment['monto_dolares']);
+        $amount = $payment['monto_usd'] > 0 ? 
+            "$" . number_format($payment['monto_usd'], 2) : 
+            "Bs " . number_format($payment['monto_Bs'], 2);
         
         $recentActivity[] = [
-            'text' => "Pago recibido de Casa {$payment['casa_numero']}: {$amount}",
-            'time' => date('d/m/Y H:i', strtotime($payment['fecha_pago']))
+            'text' => "Pago recibido de {$payment['nombre_edificio']} - Apto {$payment['casa_numero']}: {$amount}",
+            'time' => date('d/m/Y H:i', strtotime($payment['fecha']))
         ];
     }
     

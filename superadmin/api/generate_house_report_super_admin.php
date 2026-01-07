@@ -24,94 +24,79 @@ try {
     $houseId = $input['house_id'] ?? '';
     $year = $input['year'] ?? date('Y');
     
-    // Obtener información de la casa
+    // Obtener información del apartamento
     $houseInfo = null;
     if ($houseId) {
         $stmt = $pdo->prepare("
             SELECT 
-                v.numero,
-                v.tipo,
-                v.nombre_propietario,
-                v.apellido_propietario,
+                a.apartamento as numero,
+                e.nombre_edificio,
+                p.nombre as nombre_propietario,
+                p.apellido as apellido_propietario,
                 u.username
-            FROM viviendas v
-            LEFT JOIN usuarios u ON v.usuario_id = u.id
-            WHERE v.id = ?
+            FROM inmueble i
+            JOIN apartamentos a ON i.entidad_id = a.apartamento_id
+            JOIN edificios e ON a.edificio_id = e.edificio_id
+            JOIN propietarios p ON i.propietario_id = p.propietario_id
+            LEFT JOIN usuarios u ON p.user_id = u.user_id
+            WHERE i.inmueble_id = ? AND i.tipo_entidad = 'apartamento'
         ");
         $stmt->execute([$houseId]);
         $houseInfo = $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
     // Obtener pagos para el año especificado
-    $whereClause = "WHERE YEAR(p.fecha_pago) = ? AND p.estado = 'aprobado'";
+    $whereClause = "WHERE YEAR(per.fecha_periodo) = ? AND pd.estado = 'Confirmado'";
     $params = [$year];
     
     if ($houseId) {
-        $whereClause .= " AND p.vivienda_id = ?";
+        $whereClause .= " AND p.inmueble_id = ?";
         $params[] = $houseId;
     }
     
     $stmt = $pdo->prepare("
         SELECT 
-            p.meses,
-            p.monto_bs,
-            p.monto_dolares,
-            p.moneda_pago,
-            p.metodo_pago,
-            p.tasa_bs,
-            p.fecha_pago,
-            p.estado,
-            v.numero as casa_numero,
-            v.nombre_propietario,
-            v.apellido_propietario
-        FROM pagos_mensualidades p
-        JOIN viviendas v ON p.vivienda_id = v.id
+            per.fecha_periodo,
+            pd.monto_Bs,
+            pd.monto_usd,
+            pd.fecha as fecha_pago,
+            pd.estado,
+            a.apartamento as casa_numero,
+            e.nombre_edificio,
+            p.nombre as nombre_propietario,
+            p.apellido as apellido_propietario
+        FROM pago_detalles pd
+        JOIN pagos p ON pd.pago_id = p.pago_id
+        JOIN periodos per ON p.periodo_id = per.periodo_id
+        JOIN inmueble i ON p.inmueble_id = i.inmueble_id
+        JOIN apartamentos a ON i.entidad_id = a.apartamento_id
+        JOIN edificios e ON a.edificio_id = e.edificio_id
+        JOIN propietarios p ON i.propietario_id = p.propietario_id
         $whereClause
-        ORDER BY p.fecha_pago ASC
+        ORDER BY per.fecha_periodo ASC
     ");
     $stmt->execute($params);
     $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Procesar pagos para extraer meses individuales
+    // Procesar pagos
     $paid_months = [];
-    $meses_unicos = [];
     $total_bs = 0;
     $total_usd = 0;
     
     foreach ($pagos as $pago) {
-        $meses = json_decode($pago['meses'], true);
-        if (is_array($meses)) {
-            $cantidad_meses = count($meses);
-            $monto_por_mes_bs = $pago['monto_bs'] / $cantidad_meses;
-            $monto_por_mes_usd = $pago['monto_dolares'] / $cantidad_meses;
-            
-            foreach ($meses as $mes) {
-                $mes_key = $mes['id'] . '_' . $mes['name'];
-                
-                if (!isset($meses_unicos[$mes_key])) {
-                    $meses_unicos[$mes_key] = true;
-                    
-                    $paid_months[] = [
-                        'mes' => $mes['id'],
-                        'año' => $year,
-                        'mes_nombre' => $mes['name'],
-                        'monto_bs' => $monto_por_mes_bs,
-                        'monto_dolares' => $monto_por_mes_usd,
-                        'moneda_pago' => $pago['moneda_pago'],
-                        'metodo_pago' => $pago['metodo_pago'],
-                        'tasa_bs' => $pago['tasa_bs'],
-                        'fecha_pago' => $pago['fecha_pago'],
-                        'estado' => 'Pagado'
-                    ];
-                    
-                    if ($pago['moneda_pago'] === 'bs') {
-                        $total_bs += $monto_por_mes_bs;
-                    } else {
-                        $total_usd += $monto_por_mes_usd;
-                    }
-                }
-            }
-        }
+        $mes_num = (int)date('n', strtotime($pago['fecha_periodo']));
+        
+        $paid_months[$mes_num] = [
+            'mes' => $mes_num,
+            'año' => $year,
+            'monto_bs' => $pago['monto_Bs'],
+            'monto_dolares' => $pago['monto_usd'],
+            'fecha_pago' => $pago['fecha_pago'],
+            'estado' => 'Pagado'
+        ];
+        
+        $total_bs += $pago['monto_Bs'];
+        $total_usd += $pago['monto_usd'];
     }
     
     // Generar todos los meses del año
@@ -123,16 +108,8 @@ try {
     ];
     
     for ($i = 1; $i <= 12; $i++) {
-        $is_paid = false;
-        $paid_data = null;
-        
-        foreach ($paid_months as $paid_month) {
-            if ($paid_month['mes'] == $i) {
-                $is_paid = true;
-                $paid_data = $paid_month;
-                break;
-            }
-        }
+        $is_paid = isset($paid_months[$i]);
+        $paid_data = $is_paid ? $paid_months[$i] : null;
         
         $all_months[] = [
             'mes' => $i,
@@ -141,17 +118,14 @@ try {
             'estado' => $is_paid ? 'Pagado' : 'No Pagado',
             'monto_bs' => $is_paid ? $paid_data['monto_bs'] : 0,
             'monto_dolares' => $is_paid ? $paid_data['monto_dolares'] : 0,
-            'moneda_pago' => $is_paid ? $paid_data['moneda_pago'] : null,
-            'metodo_pago' => $is_paid ? $paid_data['metodo_pago'] : null,
-            'tasa_bs' => $is_paid ? $paid_data['tasa_bs'] : 0,
             'fecha_pago' => $is_paid ? $paid_data['fecha_pago'] : null
         ];
     }
     
     // Generar título del reporte
     $title = $houseInfo ? 
-        "Reporte Casa {$houseInfo['numero']} - {$houseInfo['nombre_propietario']} {$houseInfo['apellido_propietario']} ($year)" :
-        "Reporte General - Todas las Casas ($year)";
+        "Reporte {$houseInfo['nombre_edificio']} - Apto {$houseInfo['numero']} ($year)" :
+        "Reporte General - Todos los Apartamentos ($year)";
     
     echo json_encode([
         'success' => true,

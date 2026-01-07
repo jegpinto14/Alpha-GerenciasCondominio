@@ -115,11 +115,11 @@ async function loadPayments() {
                 tipoTexto = "pagos mensuales"
                 break
             case 'articulos':
-                endpoint = "../../api/get_ingresos_admin.php?categoria_id=1"
+                endpoint = "../../api/get_ingresos_admin.php?categoria_id=5"
                 tipoTexto = "ingresos de artículos"
                 break
             case 'documentos':
-                endpoint = "../../api/get_ingresos_admin.php?categoria_id=2"
+                endpoint = "../../api/get_ingresos_admin.php?categoria_id=4"
                 tipoTexto = "ingresos de documentos"
                 break
             case 'extraordinarios':

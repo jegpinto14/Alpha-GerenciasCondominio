@@ -24,39 +24,21 @@ try {
         exit;
     }
     
-    // Obtener todas las casas
-    $stmt = $pdo->query("
-        SELECT 
-            c.casa_id,
-            c.nombre_casa,
-            a.nombre_avenida,
-            'casa' as tipo_entidad,
-            'Quinta' as tipo_vivienda
-        FROM casas c
-        JOIN avenidas a ON c.avenida_id = a.id_avenida
-        ORDER BY c.casa_id ASC
-    ");
-    
-    $casas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
     // Obtener todos los apartamentos
     $stmt = $pdo->query("
         SELECT 
-            a.apartamento_id,
+            a.apartamento_id as id,
             e.nombre_edificio,
-            a.apartamento,
+            a.apartamento as numero,
             a.piso,
             'apartamento' as tipo_entidad,
-            'Apartamento' as tipo_vivienda
+            'Apartamento' as tipo
         FROM apartamentos a
         JOIN edificios e ON a.edificio_id = e.edificio_id
-        ORDER BY a.apartamento_id ASC
+        ORDER BY e.nombre_edificio ASC, a.piso ASC, a.apartamento ASC
     ");
     
-    $apartamentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Combinar casas y apartamentos
-    $houses = array_merge($casas, $apartamentos);
+    $houses = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     echo json_encode([
         'success' => true,

@@ -4,18 +4,18 @@ let allHouses = [];
 let filteredHouses = [];
 
 // Inicialización
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     console.log('Inicializando página...');
-    
+
     // Esperar un poco para asegurar que el DOM esté completamente cargado
     setTimeout(async () => {
         // Verificar sesión primero
         const sessionValid = await checkSession();
-        
+
         if (sessionValid) {
             // Solo cargar casas si la sesión es válida
             await loadHouses();
-    setupEventListeners();
+            setupEventListeners();
         } else {
             console.log('Sesión no válida, no se cargarán las casas');
         }
@@ -25,19 +25,19 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Verificar sesión - SOLO SUPER ADMIN
 async function checkSession() {
     console.log('Verificando sesión...');
-    
+
     try {
         // Solo verificar como super admin - acceso restringido
         const superAdminResponse = await fetch('../../superadmin/api/check_super_admin.php');
         console.log('Respuesta de verificación:', superAdminResponse.status);
-        
+
         if (!superAdminResponse.ok) {
             throw new Error(`HTTP error! status: ${superAdminResponse.status}`);
         }
-        
+
         const superAdminData = await superAdminResponse.json();
         console.log('Datos de verificación:', superAdminData);
-        
+
         if (superAdminData.success) {
             const userNameElement = document.getElementById('userName');
             if (userNameElement) {
@@ -46,13 +46,13 @@ async function checkSession() {
             console.log('Sesión verificada correctamente');
             return true;
         }
-        
+
         // Si no es super admin, denegar acceso y redirigir
         console.log('Acceso denegado: Solo super administradores pueden acceder a esta página');
         alert('Acceso denegado. Solo super administradores pueden acceder a esta página.');
-            window.location.href = '/pages/auth/index.html';
+        window.location.href = '/pages/auth/index.html';
         return false;
-        
+
     } catch (error) {
         console.error('Error verificando sesión:', error);
         alert('Error verificando acceso. Redirigiendo al login.');
@@ -65,7 +65,7 @@ async function checkSession() {
 function setupEventListeners() {
     const searchInput = document.getElementById('houseSearch');
     const typeFilter = document.getElementById('typeFilter');
-    
+
     searchInput.addEventListener('input', filterHouses);
     typeFilter.addEventListener('change', filterHouses);
 }
@@ -73,18 +73,18 @@ function setupEventListeners() {
 // Cargar casas
 async function loadHouses() {
     console.log('Iniciando carga de casas...');
-    
+
     try {
         const response = await fetch('../../api/get_all_houses.php');
         console.log('Respuesta recibida:', response.status, response.statusText);
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         console.log('Datos recibidos:', data);
-        
+
         if (data.success) {
             allHouses = data.houses || [];
             filteredHouses = [...allHouses];
@@ -105,21 +105,21 @@ async function loadHouses() {
 function filterHouses() {
     const searchTerm = document.getElementById('houseSearch').value.toLowerCase();
     const typeFilter = document.getElementById('typeFilter').value;
-    
+
     filteredHouses = allHouses.filter(house => {
         // Búsqueda por cédula del propietario, nombre de edificio o casa
-        const matchesSearch = !searchTerm || 
+        const matchesSearch = !searchTerm ||
             house.cedula.toLowerCase().includes(searchTerm) ||
             (house.nombre_casa && house.nombre_casa.toLowerCase().includes(searchTerm)) ||
             (house.nombre_edificio && house.nombre_edificio.toLowerCase().includes(searchTerm)) ||
             house.nombre_propietario.toLowerCase().includes(searchTerm) ||
             house.apellido_propietario.toLowerCase().includes(searchTerm);
-        
+
         const matchesType = !typeFilter || house.tipo === typeFilter;
-        
+
         return matchesSearch && matchesType;
     });
-    
+
     displayHousesTable(filteredHouses);
     updateStatistics();
 }
@@ -136,13 +136,13 @@ function getHouseStatus(house) {
 // Mostrar casas en la grilla
 function displayHousesTable(houses) {
     const tbody = document.getElementById('housesTableBody');
-    
+
     if (!tbody) {
         console.error('Elemento housesTableBody no encontrado');
         showError('Error: Elemento de tabla no encontrado');
         return;
     }
-    
+
     if (!houses || houses.length === 0) {
         tbody.innerHTML = `
             <tr class="no-results-row">
@@ -157,7 +157,7 @@ function displayHousesTable(houses) {
         `;
         return;
     }
-    
+
     try {
         tbody.innerHTML = houses.map(house => createHouseTableRow(house)).join('');
         console.log('Tabla actualizada con', houses.length, 'viviendas');
@@ -168,58 +168,29 @@ function displayHousesTable(houses) {
 }
 
 function createHouseTableRow(house) {
-    const tipo = house.tipo;
-    // Iconos según el tipo
-    let tipoIcon = 'fas fa-home';
-    if (tipo === 'apartamento') tipoIcon = 'fas fa-building';
-    else if (tipo === 'local') tipoIcon = 'fas fa-store';
-    else if (tipo === 'mercadito') tipoIcon = 'fas fa-shopping-cart';
-    else if (tipo === 'deporte') tipoIcon = 'fas fa-futbol';
-    
-    const tipoClass = tipo;
-    
-    // Identificación según el tipo
-    let identificacion = '';
-    if (tipo === 'casa') {
-        identificacion = `
-            <div class="house-identification">
-                <span class="house-name">${house.nombre_casa || 'Sin nombre'}</span>
-                <span class="house-details">Casa</span>
-            </div>
-        `;
-    } else if (tipo === 'apartamento') {
-        identificacion = `
-            <div class="house-identification">
-                <span class="house-name">${house.nombre_edificio || 'Sin nombre'}</span>
-                <span class="house-details">Apto. ${house.numero_apartamento || 'N/A'}</span>
-            </div>
-        `;
-    } else {
-        // Para local, mercadito, deporte, etc.
-        identificacion = `
-            <div class="house-identification">
-                <span class="house-name">${house.nombre_casa || house.nombre_edificio || 'Sin nombre'}</span>
-                <span class="house-details">${tipo.charAt(0).toUpperCase() + tipo.slice(1)}</span>
-            </div>
-        `;
-    }
-    
+    const tipo = 'apartamento';
+    const tipoIcon = 'fas fa-building';
+    const tipoClass = 'apartamento';
+
+    // Identificación
+    const identificacion = `
+        <div class="house-identification">
+            <span class="house-name">${house.nombre_edificio || 'Sin nombre'}</span>
+            <span class="house-details">Apto. ${house.numero || 'N/A'}</span>
+        </div>
+    `;
+
     // Propietario
     const propietario = `
         <div class="house-owner">
             <span class="owner-name">${house.nombre_propietario} ${house.apellido_propietario}</span>
-            <span class="owner-cedula">C.I. ${house.cedula}</span>
+            <span class="owner-cedula">C.I. ${house.cedula || 'N/A'}</span>
         </div>
     `;
-    
-    // Dirección según el tipo
-    let direccion = '';
-    if (tipo === 'casa') {
-        direccion = house.direccion_casa || 'Sin dirección';
-    } else {
-        direccion = house.direccion_edificio || 'Sin dirección';
-    }
-    
+
+    // Dirección
+    const direccion = house.nombre_edificio || 'Sin dirección';
+
     // Usuario
     const usuario = house.username ? `
         <div class="house-user">
@@ -227,13 +198,13 @@ function createHouseTableRow(house) {
             <span>${house.username}</span>
         </div>
     ` : '<span style="color: #adb5bd;">Sin usuario</span>';
-    
+
     return `
         <tr>
             <td>
                 <span class="house-type ${tipoClass}">
                     <i class="${tipoIcon}"></i>
-                    ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}
+                    Apartamento
                 </span>
             </td>
             <td>${identificacion}</td>
@@ -256,7 +227,7 @@ function createHouseTableRow(house) {
 function createHouseCard(house) {
     const status = getHouseStatus(house);
     const statusClass = status === 'Ocupada' ? 'status-occupied' : 'status-vacant';
-    
+
     return `
         <div class="house-card" onclick="showHouseDetails(${house.id})">
             <div class="house-header">
@@ -317,46 +288,38 @@ function createHouseCard(house) {
 
 // Actualizar estadísticas
 function updateStatistics() {
-    const totalCasas = allHouses.filter(house => house.tipo === 'casa').length;
-    const totalApartamentos = allHouses.filter(house => house.tipo === 'apartamento').length;
-    const totalGeneral = allHouses.length;
-    
+    const totalApartamentos = allHouses.length;
+
     // Actualizar elementos si existen
-    const totalCasasElement = document.getElementById('totalCasas');
     const totalApartamentosElement = document.getElementById('totalApartamentos');
     const totalGeneralElement = document.getElementById('totalGeneral');
-    
-    if (totalCasasElement) {
-        totalCasasElement.textContent = totalCasas;
-    }
+
     if (totalApartamentosElement) {
         totalApartamentosElement.textContent = totalApartamentos;
     }
     if (totalGeneralElement) {
-        totalGeneralElement.textContent = totalGeneral;
+        totalGeneralElement.textContent = totalApartamentos;
     }
-    
+
     console.log('Estadísticas actualizadas:', {
-        casas: totalCasas,
-        apartamentos: totalApartamentos,
-        total: totalGeneral
+        apartamentos: totalApartamentos
     });
 }
 
 // Limpiar filtros
-window.clearFilters = function() {
+window.clearFilters = function () {
     document.getElementById('houseSearch').value = '';
     document.getElementById('typeFilter').value = '';
     filterHouses();
 }
 
 // Cerrar modal
-window.closeModal = function(modalId) {
+window.closeModal = function (modalId) {
     console.log('Cerrando modal:', modalId);
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
+        document.body.style.overflow = 'auto';
         console.log('Modal cerrado correctamente');
     } else {
         console.error('Modal no encontrado:', modalId);
@@ -366,7 +329,7 @@ window.closeModal = function(modalId) {
 // Formatear fecha
 function formatDate(dateString) {
     if (!dateString) return 'No especificada';
-    
+
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', {
         year: 'numeric',
@@ -384,7 +347,7 @@ function showError(message) {
         <i class="fas fa-exclamation-circle"></i>
         <span>${message}</span>
     `;
-    
+
     // Estilos
     notification.style.cssText = `
         position: fixed;
@@ -402,9 +365,9 @@ function showError(message) {
         font-weight: 500;
         animation: slideInRight 0.3s ease;
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     // Remover después de 4 segundos
     setTimeout(() => {
         notification.style.animation = 'slideOutRight 0.3s ease';
@@ -415,45 +378,45 @@ function showError(message) {
 }
 
 // Mostrar detalles de la vivienda
-window.showHouseDetails = function(houseId) {
+window.showHouseDetails = function (houseId) {
     console.log('showHouseDetails llamada con ID:', houseId);
     console.log('allHouses disponibles:', allHouses.length);
-    
+
     // Convertir a número para asegurar comparación correcta
     const numericId = parseInt(houseId);
     const house = allHouses.find(h => parseInt(h.id) === numericId);
-    
+
     if (!house) {
         console.error('Casa no encontrada con ID:', houseId);
         console.log('IDs disponibles:', allHouses.map(h => h.id));
         showError('No se encontró la vivienda con ID: ' + houseId);
         return;
     }
-    
+
     console.log('Casa encontrada:', house);
-    
+
     const modal = document.getElementById('houseDetailsModal');
     const content = document.getElementById('houseDetailsContent');
-    
+
     if (!modal) {
         console.error('Modal no encontrado');
         showError('Error: Modal no encontrado');
         return;
     }
-    
+
     if (!content) {
         console.error('Contenido del modal no encontrado');
         showError('Error: Contenido del modal no encontrado');
         return;
     }
-    
-    const tipo = house.tipo;
-    const tipoIcon = tipo === 'casa' ? 'fas fa-home' : 'fas fa-building';
-    
+
+    const tipo = 'apartamento';
+    const tipoIcon = 'fas fa-building';
+
     // Construir contenido del modal estilo formulario
     let modalContent = `
         <div class="registro-header">
-            <h2>Registro de ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}</h2>
+            <h2>Registro de Apartamento</h2>
         </div>
         
         <div class="registro-form">
@@ -461,28 +424,9 @@ window.showHouseDetails = function(houseId) {
                 <div class="form-row">
                     <div class="form-field full-width">
                         <label>Tipo de Vivienda:</label>
-                        <div class="field-value">${tipo.charAt(0).toUpperCase() + tipo.slice(1)}</div>
-                    </div>
-                </div>`;
-    
-    // Campos específicos según el tipo
-    if (tipo === 'casa') {
-        modalContent += `
-                <div class="form-row">
-                    <div class="form-field full-width">
-                        <label>Nombre de la Casa:</label>
-                        <div class="field-value">${house.nombre_casa || ''}</div>
+                        <div class="field-value">Apartamento</div>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-field full-width">
-                        <label>Dirección:</label>
-                        <div class="field-value">${house.direccion_casa || ''}</div>
-                    </div>
-                </div>
-        `;
-    } else if (tipo === 'apartamento') {
-        modalContent += `
                 <div class="form-row">
                     <div class="form-field">
                         <label>Nombre del Edificio:</label>
@@ -490,34 +434,17 @@ window.showHouseDetails = function(houseId) {
                     </div>
                     <div class="form-field">
                         <label>Nº Apartamento:</label>
-                        <div class="field-value">${house.numero_apartamento || ''}</div>
+                        <div class="field-value">${house.numero || ''}</div>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-field full-width">
                         <label>Dirección del Edificio:</label>
-                        <div class="field-value">${house.direccion_edificio || ''}</div>
+                        <div class="field-value">${house.nombre_edificio || ''}</div>
                     </div>
                 </div>
-        `;
-    } else {
-        // Para local, mercadito, deporte u otros
-        modalContent += `
-                <div class="form-row">
-                    <div class="form-field full-width">
-                        <label>Nombre:</label>
-                        <div class="field-value">${house.nombre_casa || house.nombre_edificio || ''}</div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-field full-width">
-                        <label>Dirección:</label>
-                        <div class="field-value">${house.direccion_casa || house.direccion_edificio || ''}</div>
-                    </div>
-                </div>
-        `;
-    }
-    
+    `;
+
     modalContent += `
                 <div class="form-section-title">Datos del Propietario</div>
                 
@@ -554,7 +481,7 @@ window.showHouseDetails = function(houseId) {
                     </div>
                 </div>
     `;
-    
+
     if (house.username) {
         modalContent += `
                 <div class="form-section-title">Usuario del Sistema</div>
@@ -571,7 +498,7 @@ window.showHouseDetails = function(houseId) {
                 </div>
         `;
     }
-    
+
     modalContent += `
                 <div class="form-section-title">Información de Registro</div>
                 
@@ -579,25 +506,25 @@ window.showHouseDetails = function(houseId) {
                     <div class="form-field full-width">
                         <label>Fecha de Registro:</label>
                         <div class="field-value">${new Date(house.created_at).toLocaleDateString('es-ES', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        })}</div>
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    })}</div>
                     </div>
                 </div>
             </div>
         </div>
     `;
-    
+
     content.innerHTML = modalContent;
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
-    
+
     console.log('Modal abierto correctamente');
 }
 
 // Volver al menú anterior (Super Admin Dashboard)
-window.goBack = function() {
+window.goBack = function () {
     window.location.href = '../superadmin/html/super_admin.html';
 }
 

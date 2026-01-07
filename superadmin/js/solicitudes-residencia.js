@@ -11,6 +11,10 @@ const ICONOS_ESTADO = {
     rechazada: 'fa-times-circle',
     rechazadas: 'fa-times-circle',
     rechazados: 'fa-times-circle',
+    confirmado: 'fa-check-circle',
+    confirmada: 'fa-check-circle',
+    entregado: 'fa-hand-holding-heart',
+    entregada: 'fa-hand-holding-heart',
     generado: 'fa-file-signature',
     generada: 'fa-file-signature',
     generados: 'fa-file-signature',
@@ -296,8 +300,12 @@ function crearSolicitudMarkup(solicitud) {
     const statusClass = obtenerClaseEstado(solicitud.estadoSlug);
     const statusLabel = solicitud.estado || 'Sin estado';
     const statusIcon = obtenerIconoEstado(solicitud.estadoSlug);
-    // Solo mostrar botón "Generar" cuando el estado sea "Aprobada"
-    const puedeGenerar = solicitud.estadoSlug === 'aprobada';
+    // Mostrar botones solo cuando el pago esté confirmado y NO se haya entregado aún
+    const esEntregado = solicitud.estadoSlug === 'entregado' || solicitud.estadoSlug === 'entregada' || solicitud.estado === 'Entregado';
+    const esPagoConfirmado = solicitud.estadoSlug === 'confirmado' || solicitud.estadoSlug === 'confirmada' || solicitud.estado === 'Confirmado' || solicitud.estado === 'Confirmada';
+
+    const puedeGenerar = !esEntregado && esPagoConfirmado;
+    const puedeEntregar = puedeGenerar;
 
     return `
         <article class="request-item" data-id="${solicitud.id}">
@@ -330,6 +338,11 @@ function crearSolicitudMarkup(solicitud) {
                     <i class="fas fa-file-signature"></i>
                     Generar
                 </button>` : ''}
+                ${puedeEntregar ? `
+                <button class="btn-primary entregar-carta" data-action="entregar">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    Entregado
+                </button>` : ''}
             </div>
         </article>
     `;
@@ -357,13 +370,47 @@ function manejarAccionSolicitud(evento) {
             mostrarDetalleVivienda(solicitud.vivienda, solicitud.solicitante);
             break;
         case 'generar':
-            // Solo generar si el estado es "Aprobada"
-            if (solicitud.estadoSlug === 'aprobada') {
+            // Generar si el estado es "Aprobada" o "Confirmado"
+            if (solicitud.estadoSlug === 'aprobada' || solicitud.estadoSlug === 'confirmado' || solicitud.estadoSlug === 'confirmada') {
                 generarCartaResidencia(solicitud);
             }
             break;
+        case 'entregar':
+            marcarComoEntregada(id);
+            break;
         default:
             break;
+    }
+}
+
+async function marcarComoEntregada(cartaId) {
+    if (!confirm('¿Estás seguro de marcar esta carta como entregada? Esta acción no se puede deshacer.')) {
+        return;
+    }
+
+    try {
+        const respuesta = await fetch('../api/entregar_carta.php', {
+            method: 'POST',
+            body: JSON.stringify({ carta_id: cartaId }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await respuesta.json();
+        if (data.success) {
+            if (typeof mostrarNotificacion === 'function') {
+                mostrarNotificacion('Carta marcada como entregada exitosamente', 'success');
+            }
+            cargarSolicitudes(); // Recargar la lista
+        } else {
+            throw new Error(data.message || 'Error al actualizar');
+        }
+    } catch (error) {
+        console.error('Error al entregar carta:', error);
+        if (typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion('Error: ' + error.message, 'error');
+        }
     }
 }
 
@@ -684,13 +731,13 @@ function renderResumen() {
 
     // Tarjeta de total
     html += `
-        <div class="summary-card">
-            <div class="summary-icon">
+        <div class="summary-card status-total">
+            <div class="summary-icon status-total">
                 <i class="fas ${obtenerIconoResumen('total')}"></i>
             </div>
             <div class="summary-content">
                 <h3>${total}</h3>
-                <p>Total de solicitudes</p>
+                <p>Total de solicitudes 📋</p>
             </div>
         </div>
     `;

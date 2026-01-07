@@ -23,10 +23,7 @@ function newToggleHousingFields() {
 
     // Ocultar todos los campos dinámicos
     const fieldsToHide = [
-        'newQuintaFields',
-        'newApartamentoFields',
-        'newEstablecimientoFields',
-        'newCentroComercialFields'
+        'newApartamentoFields'
     ];
 
     fieldsToHide.forEach(fieldId => {
@@ -60,7 +57,7 @@ function newToggleHousingFields() {
             newLoadEdificios();
             break;
         default:
-            console.warn('⚠️ Tipo de vivienda no soportado o desconocido:', housingType);
+            console.warn('⚠️ Solo se permite el registro de Apartamentos en este momento.');
             break;
     }
 }
